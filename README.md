@@ -26,10 +26,13 @@ Steps:
 2) Make a copy of the example config file and enter all correct values:
 
 `cd app`
+
 `cp orl_settings.example.py orl_settings.py`
+
 (now open with your favorite editor and add all the info)
 
 3) Run ORL!
 
 `cd app`
+
 `python main.py <port_number>`
