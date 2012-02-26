@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Welcome Back, {{ escape(user.email) }}</h2>
+<a href="/logout">(Log Out)</a>
+
+<p>
+Past Runs:
+
+(TODO)
+</p>
+{% end %}
