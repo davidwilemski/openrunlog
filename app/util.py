@@ -6,3 +6,6 @@ def hash_pwd(password):
 
 def check_pwd(password, hashed):
     return bcrypt.hashpw(password, hashed) == hashed
+
+def validate_time(time):
+    return True 

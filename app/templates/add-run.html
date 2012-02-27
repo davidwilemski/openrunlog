@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Add A Run:</h2>
+
+<form action="/add" method="POST">
+    <input type="text" name="distance" id="distance" />
+    <label for="distance">Distance</label>
+    <br />
+    <input type="text" name="time" id="time" />
+    <label for="time">Time (HH:MM:SS)</label>
+    <br />
+    <label for="notes">Notes:</label>
+    <br />
+    <textarea name="notes" id="notes"></textarea>
+    <br />
+    <input type="submit" name="submit" value="Add Run" />
+</form>
+
+{% end %}

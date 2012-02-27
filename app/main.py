@@ -11,6 +11,7 @@ application = web.Application([
     (r'/logout', 'login.LogoutHandler'),
     (r'/register', 'login.RegisterHandler'),
     (r'/dashboard', 'dashboard.DashboardHandler'),
+    (r'/add', 'runs.AddRunHandler'),
 ])
 
 application.config = orl_settings.ORLSettings()

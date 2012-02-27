@@ -5,8 +5,15 @@
 <a href="/logout">(Log Out)</a>
 
 <p>
-Past Runs:
+<a href="/add">Add a run</a>
+</p>
 
-(TODO)
+<p>
+Recent Runs:
+
+{% for run in recent_runs %}
+    <div>{{ escape(str(run.distance)) }} Miles - {{ escape(run.time) }}</div>
+{% end %}
+
 </p>
 {% end %}
