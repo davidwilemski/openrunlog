@@ -1,15 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Welcome Back, {{ escape(user.email) }}</h2>
-<a href="/logout">(Log Out)</a>
-
+<h1>Recent Runs:</h1>
 <p>
 <a href="/add">Add a run</a>
 </p>
 
 <p>
-Recent Runs:
 
 {% for run in recent_runs %}
     <div>{{ escape(str(run.distance)) }} Miles - {{ escape(run.time) }}</div>

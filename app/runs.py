@@ -9,7 +9,7 @@ class AddRunHandler(base.BaseHandler):
     @web.asynchronous
     @web.authenticated
     def get(self):
-        self.render('add-run.html', page_title='Add A Run', user=self.get_current_user)
+        self.render('add-run.html', page_title='Add A Run', user=self.get_current_user())
 
     @web.asynchronous
     @web.authenticated

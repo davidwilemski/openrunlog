@@ -12,4 +12,4 @@ class HomeHandler(base.BaseHandler):
             self.redirect('/dashboard')
             return
 
-        self.render('home.html', page_title='Home')
+        self.render('home.html', page_title='Home', user=user)

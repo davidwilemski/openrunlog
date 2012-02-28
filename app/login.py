@@ -8,7 +8,9 @@ import util
 class LoginHandler(base.BaseHandler):
     @web.asynchronous
     def get(self):
-        self.render('login.html', page_title='Log In')
+        if self.get_current_user() is not None:
+            self.redirect('/')
+        self.render('login.html', page_title='Log In', user=None)
 
     @web.asynchronous
     def post(self):
@@ -40,6 +42,8 @@ class LoginHandler(base.BaseHandler):
 class RegisterHandler(base.BaseHandler):
     @web.asynchronous
     def get(self):
+        if self.get_current_user() is not None:
+            self.redirect('/')
         self.render('register.html', page_title='Register')
 
     @web.asynchronous
