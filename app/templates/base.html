@@ -1,15 +1,32 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title>Open Run Log | {{ escape(page_title) }}</title>
         <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}" type="text/css" />
+        <style>
+          body {
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+          }
+        </style>
         {% block head %}
         {% end %}
     </head>
 
     <body>
-        <h1>Open Run Log</h1>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand" href="/">
+                        Open Run Log
+                    </a> 
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
         {% block content %}
         {% end %}
+        </div>
 
     </body>
     {% block bottom %}
