@@ -2,6 +2,7 @@
 import orl_settings
 
 import sys
+import os
 import mongoengine
 from tornado import web, ioloop
 
@@ -20,10 +21,12 @@ application.settings = {
         'debug': application.config.debug,
         'cookie_secret': application.config.cookie_secret,
         'template_path': 'templates/',
+        'static_path': os.path.join(os.path.dirname(__file__), "static"),
 }
 
 
 if __name__ == '__main__':
+    print application.settings['static_path']
     port = 8888
     if len(sys.argv) > 1:
         port = sys.argv[1]
