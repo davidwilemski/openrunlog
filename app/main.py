@@ -6,6 +6,14 @@ import os
 import mongoengine
 from tornado import web, ioloop
 
+config = orl_settings.ORLSettings()
+settings = {
+        'debug': config.debug,
+        'cookie_secret': config.cookie_secret,
+        'template_path': 'templates/',
+        'static_path': os.path.join(os.path.dirname(os.path.abspath(__file__)), "static"),
+}
+
 application = web.Application([
     (r'/', 'home.HomeHandler'),
     (r'/login', 'login.LoginHandler'),
@@ -13,20 +21,13 @@ application = web.Application([
     (r'/register', 'login.RegisterHandler'),
     (r'/dashboard', 'dashboard.DashboardHandler'),
     (r'/add', 'runs.AddRunHandler'),
-])
+], **settings)
 
-application.config = orl_settings.ORLSettings()
+application.config = config
 
-application.settings = {
-        'debug': application.config.debug,
-        'cookie_secret': application.config.cookie_secret,
-        'template_path': 'templates/',
-        'static_path': os.path.join(os.path.dirname(__file__), "static"),
-}
 
 
 if __name__ == '__main__':
-    print application.settings['static_path']
     port = 8888
     if len(sys.argv) > 1:
         port = sys.argv[1]
