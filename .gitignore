@@ -1,3 +1,4 @@
 *.swp
 *.pyc
 orl_settings.py
+*.DS_Store
