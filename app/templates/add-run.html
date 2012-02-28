@@ -4,17 +4,16 @@
 <h2>Add A Run:</h2>
 
 <form action="/add" method="POST">
-    <input type="text" name="distance" id="distance" />
-    <label for="distance">Distance</label>
+    <label for="distance">Distance (Miles)</label>
+    <input type="text" name="distance" id="distance" placeholder="4" />
     <br />
-    <input type="text" name="time" id="time" />
     <label for="time">Time (HH:MM:SS)</label>
+    <input type="text" name="time" id="time" placeholder="00:28:00"/>
     <br />
     <label for="notes">Notes:</label>
+    <textarea name="notes" id="notes" placeholder="Thoughts about your run here"></textarea>
     <br />
-    <textarea name="notes" id="notes"></textarea>
-    <br />
-    <input type="submit" name="submit" value="Add Run" />
+    <button type="submit" class="btn-primary">Add Run</button>
 </form>
 
 {% end %}
