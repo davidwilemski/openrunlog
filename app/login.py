@@ -42,9 +42,10 @@ class LoginHandler(base.BaseHandler):
 class RegisterHandler(base.BaseHandler):
     @web.asynchronous
     def get(self):
-        if self.get_current_user() is not None:
+        user = self.get_current_user()
+        if user is not None:
             self.redirect('/')
-        self.render('register.html', page_title='Register')
+        self.render('register.html', page_title='Register', user=user)
 
     @web.asynchronous
     def post(self):
