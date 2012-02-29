@@ -3,7 +3,7 @@
 {% block content %}
 <h1>Recent Runs:</h1>
 <p>
-<a href="/add">Add a run</a>
+<a class="label label-success" data-toggle="modal" href="#addrun" >Add a run</a>
 </p>
 
 <p>
@@ -13,4 +13,32 @@
 {% end %}
 
 </p>
+
+<div class="modal fade" id="addrun">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">x</a>
+        <h3>Add A Run</h3>
+    </div>
+    <form action="/add" method="POST">
+    <div class="modal-body">
+            <label for="distance">Distance (Miles)</label>
+            <input type="text" name="distance" id="distance" placeholder="4" />
+            <br />
+            <label for="time">Time (HH:MM:SS)</label>
+            <input type="text" name="time" id="time" placeholder="00:28:00"/>
+            <br />
+            <label for="notes">Notes:</label>
+            <textarea name="notes" id="notes" placeholder="Thoughts about your run here"></textarea>
+            <br />
+    </div>
+    <div class="modal-footer">
+            <button type="submit" class="btn-primary">Add Run</button>
+    </div>
+    </form>
+</div>
+{% end %}
+
+{% block bottom %}
+<script src="{{ static_url('js/bootstrap-modal.js') }}"></script>
+<script src="{{ static_url('js/bootstrap-transition.js') }}"></script>
 {% end %}
