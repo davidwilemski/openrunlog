@@ -11,6 +11,7 @@ def check_pwd(password, hashed):
 def validate_time(time):
     return True 
 
+# XXX md5 module deprecated, use hashlib
 def gravatar_html(email):
     h = md5.md5(email.lower()).hexdigest()
     html = '<img src="http://www.gravatar.com/avatar/%s.jpg?s=15" />' % h
