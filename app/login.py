@@ -66,12 +66,20 @@ class RegisterHandler(base.BaseHandler):
             self.finish()
             return
 
-        user = models.User(email=email)
-        user.password = util.hash_pwd(password)
-        user.save()
+        user = models.User.objects(email=email).first()
+        if not user:
 
-        self.set_secure_cookie('user', str(user.id))
-        self.redirect('/')
+            user = models.User(email=email)
+            user.password = util.hash_pwd(password)
+            user.save()
+
+            self.set_secure_cookie('user', str(user.id))
+            self.redirect('/')
+        else:
+            self.write('User already exists.<br />')
+            self.write('Plase <a href="/register">try again.</a>')
+            self.finish()
+
 
 class LogoutHandler(base.BaseHandler):
     @web.asynchronous
