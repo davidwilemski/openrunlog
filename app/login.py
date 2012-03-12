@@ -66,19 +66,19 @@ class RegisterHandler(base.BaseHandler):
             self.finish()
             return
 
+        # check that email hasn't already been used
         user = models.User.objects(email=email).first()
-        if not user:
-
-            user = models.User(email=email)
-            user.password = util.hash_pwd(password)
-            user.save()
-
-            self.set_secure_cookie('user', str(user.id))
-            self.redirect('/')
-        else:
-            self.write('User already exists.<br />')
+        if user:
+            self.write('.<br />')
             self.write('Plase <a href="/register">try again.</a>')
             self.finish()
+
+        user = models.User(email=email)
+        user.password = util.hash_pwd(password)
+        user.save()
+
+        self.set_secure_cookie('user', str(user.id))
+        self.redirect('/')
 
 
 class LogoutHandler(base.BaseHandler):
