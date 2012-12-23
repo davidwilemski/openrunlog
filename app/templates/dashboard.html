@@ -9,7 +9,7 @@
 <p>
 
 {% for run in recent_runs %}
-    <div>{{ escape(str(run.distance)) }} Miles - {{ escape(run.time) }}</div>
+<div>{{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ escape(run.time) }}</div>
 {% end %}
 
 </p>
@@ -19,7 +19,7 @@
         <a class="close" data-dismiss="modal">x</a>
         <h3>Add A Run</h3>
     </div>
-    <form action="/add" method="POST">
+    <form id="addrunform">
     <div class="modal-body">
             <label for="distance">Distance (Miles)</label>
             <input type="text" name="distance" id="distance" placeholder="4" />
@@ -32,7 +32,7 @@
             <br />
     </div>
     <div class="modal-footer">
-            <button type="submit" class="btn-primary">Add Run</button>
+            <button id="addrunbtn" onclick="return false;" type="submit" class="btn-primary">Add Run</button>
     </div>
     </form>
 </div>
@@ -41,4 +41,18 @@
 {% block bottom %}
 <script src="{{ static_url('js/bootstrap-modal.js') }}"></script>
 <script src="{{ static_url('js/bootstrap-transition.js') }}"></script>
+
+<script>
+    $(function() {
+        $("#msg").ajaxError(function(event, request, settings){
+          $(this).append("<li>Error requesting page " + settings.url + "</li>");
+        });
+
+        $("#addrunbtn").click(function(){
+            $.post("/add",$("#addrunform").serialize(), function(data){
+                alert("hiya");
+            });
+        });
+    });
+</script>
 {% end %}
