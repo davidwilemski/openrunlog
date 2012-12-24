@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block head %}
+<link rel="stylesheet" href="{{ static_url('css/xcharts.min.css') }}" type="text/css" />
+{% end %}
+
 {% block content %}
 <h1>Recent Runs:</h1>
 <p>
@@ -45,6 +49,8 @@
 {% block bottom %}
 <script src="{{ static_url('js/bootstrap-modal.js') }}"></script>
 <script src="{{ static_url('js/bootstrap-transition.js') }}"></script>
+<script src="{{ static_url('js/d3.v2.min.js') }}"></script>
+<script src="{{ static_url('js/xcharts.min.js') }}"></script>
 
 <script>
     $(function() {
