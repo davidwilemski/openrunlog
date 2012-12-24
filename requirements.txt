@@ -3,3 +3,5 @@ tornado
 mongoengine
 supervisor
 python-dateutil
+fabric
+fabtools
