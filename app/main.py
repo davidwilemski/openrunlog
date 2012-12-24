@@ -28,7 +28,7 @@ application.config = config
 
 
 if __name__ == '__main__':
-    port = 8888
+    port = 11000
     if len(sys.argv) > 1:
         port = sys.argv[1]
 
