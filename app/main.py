@@ -4,7 +4,7 @@ import orl_settings
 import sys
 import os
 import mongoengine
-from tornado import web, ioloop
+from tornado import web, ioloop, process
 from tornado.options import define, options, parse_command_line
 
 config = orl_settings.ORLSettings()
@@ -40,6 +40,8 @@ if __name__ == '__main__':
             username=application.config.db_username, 
             password=application.config.db_password)
 
+    if not config.debug:
+        process.fork_processes(process.cpu_count()*2 + 1)
     application.listen(options.port)
     ioloop.IOLoop.instance().start()
 
