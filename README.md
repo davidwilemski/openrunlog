@@ -35,4 +35,4 @@ Steps:
 
 `cd app`
 
-`python main.py <port_number>`
+`supervisord`
