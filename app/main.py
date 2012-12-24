@@ -5,6 +5,7 @@ import sys
 import os
 import mongoengine
 from tornado import web, ioloop
+from tornado.options import define, options, parse_command_line
 
 config = orl_settings.ORLSettings()
 settings = {
@@ -29,9 +30,8 @@ application.config = config
 
 
 if __name__ == '__main__':
-    port = 11000
-    if len(sys.argv) > 1:
-        port = sys.argv[1]
+    define('port', default=11000, help='TCP port to listen on')
+    parse_command_line()
 
     mongoengine.connect(
             application.config.db_name, 
@@ -40,6 +40,6 @@ if __name__ == '__main__':
             username=application.config.db_username, 
             password=application.config.db_password)
 
-    application.listen(port)
+    application.listen(options.port)
     ioloop.IOLoop.instance().start()
 
