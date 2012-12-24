@@ -1,3 +1,4 @@
 py-bcrypt
 tornado
 mongoengine
+supervisor

@@ -10,7 +10,7 @@ config = orl_settings.ORLSettings()
 settings = {
         'debug': config.debug,
         'cookie_secret': config.cookie_secret,
-        'template_path': 'templates/',
+        'template_path': os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates"),
         'static_path': os.path.join(os.path.dirname(os.path.abspath(__file__)), "static"),
 }
 
