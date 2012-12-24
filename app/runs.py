@@ -2,6 +2,7 @@
 import base
 import models
 import util
+import dateutil.parser
 
 from tornado import web
 
@@ -14,6 +15,8 @@ class AddRunHandler(base.BaseHandler):
     @web.asynchronous
     @web.authenticated
     def post(self):
+        date = self.get_argument('date', '')
+        date = dateutil.parser.parse(date, fuzzy=True)
         distance = self.get_argument('distance', '')
         time = self.get_argument('time', '')
         notes = self.get_argument('notes', '')

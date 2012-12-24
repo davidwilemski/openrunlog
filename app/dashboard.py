@@ -1,4 +1,5 @@
 
+import datetime
 from tornado import web
 
 import base
@@ -10,4 +11,4 @@ class DashboardHandler(base.BaseHandler):
     def get(self):
         user = self.get_current_user()
         recent_runs = models.Run.objects(user=user)[:10]
-        self.render('dashboard.html', page_title='Dashboard', user=user, recent_runs=recent_runs)
+        self.render('dashboard.html', page_title='Dashboard', user=user, recent_runs=recent_runs, today=datetime.date.today().strftime("%x"))

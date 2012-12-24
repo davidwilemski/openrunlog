@@ -21,6 +21,9 @@
     </div>
     <form id="addrunform">
     <div class="modal-body">
+            <label for="date">Date (MM-DD-YY)</label>
+            <input type="text" name="date" id="date" value="{{ today }}"/>
+            <br />
             <label for="distance">Distance (Miles)</label>
             <input type="text" name="distance" id="distance" placeholder="4" />
             <br />
@@ -32,7 +35,8 @@
             <br />
     </div>
     <div class="modal-footer">
-            <button id="addrunbtn" onclick="return false;" type="submit" class="btn-primary">Add Run</button>
+            <button id="addrunbtn" onclick="" type="submit" class="btn-primary">Add Run</button>
+            <!--<button id="addrunbtn" onclick="return false;" type="submit" class="btn-primary">Add Run</button>-->
     </div>
     </form>
 </div>
@@ -48,11 +52,13 @@
           $(this).append("<li>Error requesting page " + settings.url + "</li>");
         });
 
+        /*
         $("#addrunbtn").click(function(){
             $.post("/add",$("#addrunform").serialize(), function(data){
                 alert("hiya");
             });
         });
+        */
     });
 </script>
 {% end %}
