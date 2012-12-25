@@ -23,6 +23,7 @@ application = web.Application([
     (r'/register', 'login.RegisterHandler'),
     (r'/dashboard', 'dashboard.DashboardHandler'),
     (r'/add', 'runs.AddRunHandler'),
+    (r'/data/this_week', 'data.ThisWeekHandler'),
 ], **settings)
 
 application.config = config
@@ -34,11 +35,8 @@ if __name__ == '__main__':
     parse_command_line()
 
     mongoengine.connect(
-            application.config.db_name, 
-            host=application.config.db_host, 
-            port=application.config.db_port, 
-            username=application.config.db_username, 
-            password=application.config.db_password)
+            config.db_name, 
+            host=config.db_uri)
 
     if not config.debug:
         process.fork_processes(process.cpu_count()*2 + 1)

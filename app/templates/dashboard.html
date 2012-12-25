@@ -5,25 +5,37 @@
 {% end %}
 
 {% block content %}
-<h1>Recent Runs:</h1>
-<p>
-<a class="label label-success" data-toggle="modal" href="#addrun" >Add a run</a>
-</p>
+<div class="row">
+    <div class="span4">
+    <h1>Recent Runs:</h1>
+    <p>
+        <a class="label label-success" data-toggle="modal" href="#addrun" >Add a run</a>
+    </p>
 
-<p>
+    <p>
 
-{% for run in recent_runs %}
-<div>{{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ escape(run.time) }}</div>
-{% end %}
+        {% for run in recent_runs %}
+            <div>{{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ escape(run.time) }}</div>
+        {% end %}
 
-</p>
+    </p>
+    </div>
+    <div class="span8">
+        <h2>This Week</h2>
+        <figure style="width: 650px; height: 300px;" id="week"></figure>
+
+        <h2>Weekly Mileage</h2>
+        <figure style="width: 650px; height: 300px;" id="weekly"></figure>
+
+    </div>
+</div>
 
 <div class="modal fade" id="addrun">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">x</a>
         <h3>Add A Run</h3>
     </div>
-    <form id="addrunform">
+    <form id="addrunform" method="POST" action="/add">
     <div class="modal-body">
             <label for="date">Date (MM-DD-YY)</label>
             <input type="text" name="date" id="date" value="{{ today }}"/>
@@ -56,6 +68,10 @@
     $(function() {
         $("#msg").ajaxError(function(event, request, settings){
           $(this).append("<li>Error requesting page " + settings.url + "</li>");
+        });
+
+        $.get("/data/this_week", function(data) {
+            var weekChart = new xChart('bar', data, '#week');
         });
 
         /*

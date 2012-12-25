@@ -8,10 +8,7 @@ class ORLSettings(object):
     debug = True #change to False for production
 
     # change to correct values:
-    db_name = 'orl_test' 
-    db_host = 'localhost'
-    db_port = 2117
-    db_username = 'orl'
-    db_password = 'orlpassword'
+    db_name = 'openrunlog'
+    db_uri = 'mongodb://localhost/openrunlog'
 
     cookie_secret = 'create_your_own_here'
