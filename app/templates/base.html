@@ -39,9 +39,25 @@
         </div>
 
         <div class="container">
-        {% block content %}
-        {% end %}
-        </div>
+            <div class="row">
+                <div class="span2">
+                    <p>&nbsp;</p>
+                </div>
+                <div class="span8">
+                    {% if 'error' in locals() and error %}
+                        <div class="alert alert-error">
+                            <p>{{ error }}</p>
+                        </div>
+                    {% end %}
+                </div>
+                <div class="span2">
+                    <p>&nbsp;</p>
+                </div>
+            </div>
+
+       {% block content %}
+       {% end %}
+       </div>
 
     </body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>

@@ -29,10 +29,10 @@ class LoginHandler(base.BaseHandler):
         if user and not util.check_pwd(password, user.password):
             error = True
 
+        error_text = ''
         if error:
-            self.write('invalid username or password incorrect<br />') 
-            self.write('Plase <a href="/login">try again.</a>')
-            self.finish()
+            error_text = "Yo! You gave an invalid username or incorrect password!"
+            self.render('login.html', page_title='Log In', user=None, error=error_text)
             return
         
         self.set_secure_cookie('user', str(user.id))
@@ -61,17 +61,24 @@ class RegisterHandler(base.BaseHandler):
             error = True
 
         if error == True:
-            self.write('Missing a field or passwords do not match, all fields are required.<br />')
-            self.write('Plase <a href="/register">try again.</a>')
-            self.finish()
+            error_text = 'Missing a field or passwords do not match, all fields are required.'
+            self.render(
+                    'register.html', 
+                    page_title='Register', 
+                    user=user, 
+                    error=error_text)
             return
 
         # check that email hasn't already been used
         user = models.User.objects(email=email).first()
         if user:
-            self.write('.<br />')
-            self.write('Plase <a href="/register">try again.</a>')
-            self.finish()
+            error_text = 'Please try again.'
+            self.render(
+                    'register.html', 
+                    page_title='Register', 
+                    user=user, 
+                    error=error_text)
+            return
 
         user = models.User(email=email)
         user.password = util.hash_pwd(password)
