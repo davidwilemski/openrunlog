@@ -26,7 +26,7 @@ class LoginHandler(base.BaseHandler):
         if not user:
             error = True
 
-        if not util.check_pwd(password, user.password):
+        if user and not util.check_pwd(password, user.password):
             error = True
 
         if error:
