@@ -1,6 +1,7 @@
 
 import datetime
 import dateutil
+import logging
 from tornado import web, escape
 
 import base
@@ -18,6 +19,13 @@ class ThisWeekHandler(base.BaseHandler):
         date = datetime.date.today() - delta
         this_week_runs = models.Run.objects(date__gte=date)
 
+        expected_dates = set()
+        for x in range(7):
+            logging.debug(date)
+            expected_dates.add(date)
+            date += dateutil.relativedelta.relativedelta(days=1)
+        logging.debug(expected_dates)
+
         runs = []
         dates = set()
         for r in this_week_runs:
@@ -29,6 +37,10 @@ class ThisWeekHandler(base.BaseHandler):
                     if r2['x'] == r.date.strftime("%x"):
                         r2['y'] += float(r.distance)
             dates.add(r.date)
+
+        # for days without runs yet, add 0 mileage
+        for d in expected_dates - dates:
+            runs.append({'x': d.strftime("%x"), 'y': 0.0})
 
         data = {
                 'xScale': 'ordinal',
