@@ -18,7 +18,17 @@ class ThisWeekHandler(base.BaseHandler):
         date = datetime.date.today() - delta
         this_week_runs = models.Run.objects(date__gte=date)
 
-        runs = [ {'x': r.date.strftime("%x"), 'y': float(r.distance)} for r in this_week_runs]
+        runs = []
+        dates = set()
+        for r in this_week_runs:
+            if r.date not in dates:
+                runs.append({'x': r.date.strftime("%x"), 'y': float(r.distance)})
+            else:
+                # find and add data
+                for r2 in runs:
+                    if r2['x'] == r.date.strftime("%x"):
+                        r2['y'] += float(r.distance)
+            dates.add(r.date)
 
         data = {
                 'xScale': 'ordinal',
