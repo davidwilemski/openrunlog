@@ -52,7 +52,5 @@ class ThisWeekHandler(base.BaseHandler):
                 ]
         }
 
-        self.set_header('Content-Type', 'application/json')
-        self.write(escape.json_encode(data))
-        self.finish()
+        self.finish(data)
 
