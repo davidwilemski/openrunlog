@@ -1,4 +1,5 @@
 
+import logging
 from tornado import web
 
 import base
@@ -10,7 +11,7 @@ class LoginHandler(base.BaseHandler):
     def get(self):
         if self.get_current_user() is not None:
             self.redirect('/')
-        self.render('login.html', page_title='Log In', user=None)
+        self.render('login.html', page_title='Log In', user=None, error='')
 
     @web.asynchronous
     def post(self):
@@ -29,7 +30,6 @@ class LoginHandler(base.BaseHandler):
         if user and not util.check_pwd(password, user.password):
             error = True
 
-        error_text = ''
         if error:
             error_text = "Yo! You gave an invalid username or incorrect password!"
             self.render('login.html', page_title='Log In', user=None, error=error_text)
@@ -45,7 +45,7 @@ class RegisterHandler(base.BaseHandler):
         user = self.get_current_user()
         if user is not None:
             self.redirect('/')
-        self.render('register.html', page_title='Register', user=user)
+        self.render('register.html', page_title='Register', user=user, error='')
 
     @web.asynchronous
     def post(self):
@@ -65,14 +65,14 @@ class RegisterHandler(base.BaseHandler):
             self.render(
                     'register.html', 
                     page_title='Register', 
-                    user=user, 
+                    user=None,
                     error=error_text)
             return
 
         # check that email hasn't already been used
         user = models.User.objects(email=email).first()
         if user:
-            error_text = 'Please try again.'
+            error_text = 'The email you tried already has an account. Please log in or register with a different email address.'
             self.render(
                     'register.html', 
                     page_title='Register', 
