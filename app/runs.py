@@ -9,11 +9,6 @@ from tornado import web
 class AddRunHandler(base.BaseHandler):
     @web.asynchronous
     @web.authenticated
-    def get(self):
-        self.render('add-run.html', page_title='Add A Run', user=self.get_current_user())
-
-    @web.asynchronous
-    @web.authenticated
     def post(self):
         date = self.get_argument('date', '')
         date = dateutil.parser.parse(date, fuzzy=True)
