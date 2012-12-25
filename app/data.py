@@ -13,10 +13,10 @@ class ThisWeekHandler(base.BaseHandler):
     def get(self):
         user = self.get_current_user()
 
-        delta = dateutil.relativedelta.relativedelta()
-        delta.days = 7
+        delta = dateutil.relativedelta.relativedelta(
+                weekday=dateutil.relativedelta.MO(-1))
         date = datetime.date.today() - delta
-        this_week_runs = models.Run.objects(date__gt=date)
+        this_week_runs = models.Run.objects(date__gte=date)
 
         runs = [ {'x': r.date.strftime("%x"), 'y': float(r.distance)} for r in this_week_runs]
 
