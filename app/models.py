@@ -44,7 +44,11 @@ def seconds_to_time(seconds):
     while minutes > 59:
         minutes -= 60
         hours += 1
-    return ':'.join((str(hours), str(minutes), str(seconds)))
+    
+    if hours == 0:
+        return '00:{:02}:{:02}'.format(minutes, seconds)
+    else:
+        return '{}:{:02}:{:02}'.format(hours, minutes, seconds)
 
 
 
