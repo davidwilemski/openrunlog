@@ -13,11 +13,8 @@ class ThisWeekHandler(base.BaseHandler):
     @web.asynchronous
     def get(self):
         user = self.get_current_user()
-
-        delta = dateutil.relativedelta.relativedelta(
-                weekday=dateutil.relativedelta.MO(-1))
-        date = datetime.date.today() - delta
-        this_week_runs = models.Run.objects(user=user, date__gte=date)
+        date = models.Run._current_monday()
+        this_week_runs = models.Run.this_week_runs(user)
 
         expected_dates = set()
         for x in range(7):

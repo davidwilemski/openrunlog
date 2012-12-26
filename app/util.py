@@ -15,3 +15,4 @@ def gravatar_html(email):
     h = hashlib.md5(email.lower()).hexdigest()
     html = '<img src="http://www.gravatar.com/avatar/%s.jpg?s=15" />' % h
     return html
+
