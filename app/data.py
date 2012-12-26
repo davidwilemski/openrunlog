@@ -17,7 +17,7 @@ class ThisWeekHandler(base.BaseHandler):
         delta = dateutil.relativedelta.relativedelta(
                 weekday=dateutil.relativedelta.MO(-1))
         date = datetime.date.today() - delta
-        this_week_runs = models.Run.objects(date__gte=date)
+        this_week_runs = models.Run.objects(user=user, date__gte=date)
 
         expected_dates = set()
         for x in range(7):
