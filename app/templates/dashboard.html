@@ -76,6 +76,17 @@
             var weekChart = new xChart('bar', data, '#week');
         });
 
+        $.get("/data/mileage/weekly", function(data) {
+
+            var opts = {
+          "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
+          "tickFormatX": function (x) { return d3.time.format('%x')(x); }
+};
+            var mileageChart = new xChart('line', data, '#weekly', opts);
+        });
+
+
+
         /*
         $("#addrunbtn").click(function(){
             $.post("/add",$("#addrunform").serialize(), function(data){

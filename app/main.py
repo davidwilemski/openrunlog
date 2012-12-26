@@ -24,6 +24,7 @@ application = web.Application([
     (r'/dashboard', 'dashboard.DashboardHandler'),
     (r'/add', 'runs.AddRunHandler'),
     (r'/data/this_week', 'data.ThisWeekHandler'),
+    (r'/data/mileage/weekly', 'data.WeeklyMileageHandler'),
 ], **settings)
 
 application.config = config
