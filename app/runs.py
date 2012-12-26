@@ -13,7 +13,14 @@ class AddRunHandler(base.BaseHandler):
         date = self.get_argument('date', '')
         date = dateutil.parser.parse(date, fuzzy=True)
         distance = self.get_argument('distance', '')
-        time = self.get_argument('time', '')
+        time = self.get_argument('time', '0')
+        try:
+            time = models.time_to_seconds(time)
+        except ValueError, e:
+            # error
+            print 'error!'
+            self.finish('unexpected error')
+            return
         notes = self.get_argument('notes', '')
         user = self.get_current_user()
 
@@ -25,6 +32,16 @@ class AddRunHandler(base.BaseHandler):
         run.distance = distance
         run.time = time
         run.notes = notes
+        run.date = date
         run.save() # record the run
+
+        # add info to week aggregate
+        monday = models._current_monday()
+        week = models.Week.objects(date=monday, user=user).first()
+        if not week:
+            week = models.Week(date=monday, user=user)
+        week.time += run.time
+        week.distance += run.distance
+        week.save()
 
         self.redirect('/')
