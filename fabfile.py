@@ -12,9 +12,9 @@ PROJ_DIR = '~/{}/'.format(PROJ_NAME)
 @task
 def deploy():
     with prefix('source ' + VENV_DIR + 'bin/activate'):
-        fabtools.python.install_requirements(PROJ_DIR + 'requirements.txt')
         with cd(PROJ_DIR):
             run('git pull')
+            fabtools.python.install_requirements(PROJ_DIR + 'requirements.txt')
             run('python setup.py install')
     restart()
 
