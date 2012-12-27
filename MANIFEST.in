@@ -1,0 +1,7 @@
+include fabfile.py
+include LICENSE
+include README.md
+include supervisord.conf
+include requirements.txt
+graft openrunlog/templates
+graft openrunlog/static

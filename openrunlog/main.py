@@ -7,6 +7,12 @@ import mongoengine
 from tornado import web, ioloop, process
 from tornado.options import define, options, parse_command_line
 
+import home
+import login
+import dashboard
+import data
+import runs
+
 config = orl_settings.ORLSettings()
 settings = {
         'debug': config.debug,
@@ -17,14 +23,14 @@ settings = {
 }
 
 application = web.Application([
-    (r'/', 'home.HomeHandler'),
-    (r'/login', 'login.LoginHandler'),
-    (r'/logout', 'login.LogoutHandler'),
-    (r'/register', 'login.RegisterHandler'),
-    (r'/dashboard', 'dashboard.DashboardHandler'),
-    (r'/add', 'runs.AddRunHandler'),
-    (r'/data/this_week', 'data.ThisWeekHandler'),
-    (r'/data/mileage/weekly', 'data.WeeklyMileageHandler'),
+    (r'/', home.HomeHandler),
+    (r'/login', login.LoginHandler),
+    (r'/logout', login.LogoutHandler),
+    (r'/register', login.RegisterHandler),
+    (r'/dashboard', dashboard.DashboardHandler),
+    (r'/add', runs.AddRunHandler),
+    (r'/data/this_week', data.ThisWeekHandler),
+    (r'/data/mileage/weekly', data.WeeklyMileageHandler),
 ], **settings)
 
 application.config = config

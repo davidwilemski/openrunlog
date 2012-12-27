@@ -3,6 +3,7 @@
 orl_settings.py
 *.DS_Store
 *.pid
+/build/
 /dist/
 /*.egg-info
  */*.egg
