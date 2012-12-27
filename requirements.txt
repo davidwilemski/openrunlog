@@ -5,3 +5,4 @@ supervisor
 python-dateutil
 fabric
 fabtools
+env

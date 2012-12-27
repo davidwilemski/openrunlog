@@ -23,11 +23,14 @@ Steps:
 
 `pip install -r requirements.txt`
 
-2) Make a copy of the example config file and enter all correct values:
+2) Configure via environment variables
 
-`cd openrunlog`
-
-`cp orl_settings.example.py orl_settings.py`
+```
+export ORL_DB_NAME="openrunlog"
+export ORL_DB_URI="mongodb://localhost/openrunlog"
+export ORL_DEBUG="True"
+export ORL_COOKIE_SECRET="insertyourrandomstringhere"
+```
 
 (now open with your favorite editor and add all the info)
 
