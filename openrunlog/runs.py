@@ -35,7 +35,7 @@ class AddRunHandler(base.BaseHandler):
         run.save() # record the run
 
         # add info to week aggregate
-        monday = models._current_monday()
+        monday = date - dateutil.relativedelta.relativedelta(days=date.weekday())
         week = models.Week.objects(date=monday, user=user).first()
         if not week:
             week = models.Week(date=monday, user=user)

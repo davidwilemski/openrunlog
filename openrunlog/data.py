@@ -64,7 +64,7 @@ class WeeklyMileageHandler(base.BaseHandler):
         weeks.append({'x': next_monday.strftime('%x'), 'y': 0})
 
         data = {
-                'xScale': 'ordinal',
+                'xScale': 'time',
                 'yScale': 'linear',
                 'main': [
                     {
