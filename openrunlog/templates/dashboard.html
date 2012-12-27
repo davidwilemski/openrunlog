@@ -85,7 +85,7 @@
             var mileageChart = new xChart('line', data, '#weekly', opts);
         });
 
-        $.get("/data/mileage/weekly?since=2012", function(data) {
+        $.get("/data/mileage/weekly?since={{ this_year }}", function(data) {
             var opts = {
           "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
           "tickFormatX": function (x) { return d3.time.format('%x')(x); }
