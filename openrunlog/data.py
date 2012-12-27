@@ -18,10 +18,8 @@ class ThisWeekHandler(base.BaseHandler):
 
         expected_dates = set()
         for x in range(7):
-            logging.debug(date)
             expected_dates.add(date)
             date += dateutil.relativedelta.relativedelta(days=1)
-        logging.debug(expected_dates)
 
         runs = []
         dates = set()

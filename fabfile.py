@@ -15,6 +15,7 @@ def deploy():
         fabtools.python.install_requirements(PROJ_DIR + 'requirements.txt')
         with cd(PROJ_DIR):
             run('git pull')
+            run('python setup.py install')
     restart()
 
 @task
@@ -48,5 +49,8 @@ def setup():
         
         # install requirements
         fabtools.python.install_requirements(PROJ_DIR + 'requirements.txt')
+
+        with cd(PROJ_DIR):
+            run('python setup.py install')
 
     start()
