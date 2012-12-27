@@ -55,13 +55,24 @@ class WeeklyMileageHandler(base.BaseHandler):
     @web.asynchronous
     def get(self):
         user = self.get_current_user()
-        weeks = models.Week.objects(user=user)
+        since = self.get_argument('since', '')
+        try:
+            since = int(since)
+        except ValueError:
+            since = None
+
+        if since:
+            since = datetime.date(since, 1, 1)
+            weeks = models.Week.objects(user=user, date__gte=since)
+        else:
+            weeks = models.Week.objects(user=user)
 
         weeks = [ {'x': w.date.strftime('%x'), 'y': w.distance} for w in weeks]
 
-        # display next week too
-        next_monday = models._current_monday() + dateutil.relativedelta.relativedelta(days=7)
-        weeks.append({'x': next_monday.strftime('%x'), 'y': 0})
+        # if the user only has 1 week display the last week too
+        if len(weeks) == 1:
+            last_monday = dateutil.parser.parse(weeks[0]['x']) - dateutil.relativedelta.relativedelta(days=7)
+            weeks.append({'x': last_monday.strftime('%x'), 'y': 0})
 
         data = {
                 'xScale': 'time',
@@ -74,5 +85,4 @@ class WeeklyMileageHandler(base.BaseHandler):
         }
 
         self.finish(data)
-
 

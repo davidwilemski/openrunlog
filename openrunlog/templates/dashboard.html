@@ -25,9 +25,10 @@
         <figure style="width: 100%; height: 300px;" id="week"></figure>
 
         <h2>Weekly Mileage</h2>
-        <p>Miles this week: {{ week.distance }}</p>
-        <p>Time this week: {{ week.pretty_time }}</p>
         <figure style="width: 650px; height: 300px;" id="weekly"></figure>
+
+        <h2>Mileage This Year</h2>
+        <figure style="width: 650px; height: 300px;" id="year"></figure>
 
     </div>
 </div>
@@ -77,12 +78,19 @@
         });
 
         $.get("/data/mileage/weekly", function(data) {
-
             var opts = {
           "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
           "tickFormatX": function (x) { return d3.time.format('%x')(x); }
 };
             var mileageChart = new xChart('line', data, '#weekly', opts);
+        });
+
+        $.get("/data/mileage/weekly?since=2012", function(data) {
+            var opts = {
+          "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
+          "tickFormatX": function (x) { return d3.time.format('%x')(x); }
+};
+            var mileageChart = new xChart('cumulative', data, '#year', opts);
         });
 
 
