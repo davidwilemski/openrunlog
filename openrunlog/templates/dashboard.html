@@ -68,13 +68,16 @@
 <script src="{{ static_url('js/xcharts.min.js') }}"></script>
 
 <script>
+    var weekChart;
+    var mileageChart;
+    var totalMileageChart;
     $(function() {
         $("#msg").ajaxError(function(event, request, settings){
           $(this).append("<li>Error requesting page " + settings.url + "</li>");
         });
 
         $.get("/data/this_week", function(data) {
-            var weekChart = new xChart('bar', data, '#week');
+            weekChart = new xChart('bar', data, '#week');
         });
 
         $.get("/data/mileage/weekly", function(data) {
@@ -82,7 +85,7 @@
           "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
           "tickFormatX": function (x) { return d3.time.format('%x')(x); }
 };
-            var mileageChart = new xChart('line', data, '#weekly', opts);
+            mileageChart = new xChart('line', data, '#weekly', opts);
         });
 
         $.get("/data/mileage/weekly?since={{ this_year }}", function(data) {
@@ -90,7 +93,7 @@
           "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
           "tickFormatX": function (x) { return d3.time.format('%x')(x); }
 };
-            var mileageChart = new xChart('cumulative', data, '#year', opts);
+            totalMileageChart = new xChart('cumulative', data, '#year', opts);
         });
 
 
