@@ -25,17 +25,17 @@ class ThisWeekHandler(base.BaseHandler):
         dates = set()
         for r in this_week_runs:
             if r.date not in dates:
-                runs.append({'x': r.date.strftime("%x"), 'y': float(r.distance)})
+                runs.append({'x': r.date.strftime("%c"), 'y': r.distance})
             else:
                 # find and add data
                 for r2 in runs:
-                    if r2['x'] == r.date.strftime("%x"):
+                    if r2['x'] == r.date.strftime("%c"):
                         r2['y'] += float(r.distance)
             dates.add(r.date)
 
         # for days without runs yet, add 0 mileage
         for d in expected_dates - dates:
-            runs.append({'x': d.strftime("%x"), 'y': 0.0})
+            runs.append({'x': d.strftime("%c"), 'y': 0.0})
 
         data = {
                 'xScale': 'ordinal',
