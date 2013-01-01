@@ -56,11 +56,24 @@
                 </div>
             </div>
 
-       {% block content %}
-       {% end %}
+            {% block content %}
+            {% end %}
+
+            <div class="row">
+                <div class="span12 footer">
+                    <hr />
+                    <h6>Open Run Log made by <a href="https://twitter.com/davidwilemski">@davidwilemski</a></h6>
+                </div> 
+            </div>
+
        </div>
 
     </body>
+    <style>
+        .footer{
+            text-align:center;
+        }
+    </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="{{ static_url('js/bootstrap-dropdown.js') }}"></script>
     {% block bottom %}
