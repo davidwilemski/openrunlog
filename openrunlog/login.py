@@ -50,6 +50,7 @@ class RegisterHandler(base.BaseHandler):
     @web.asynchronous
     def post(self):
         email = self.get_argument('email', '')
+        display_name = self.get_argument('display_name', '')
         password = self.get_argument('password', '')
         password_confirm = self.get_argument('password_confirm', '')
 
@@ -81,6 +82,7 @@ class RegisterHandler(base.BaseHandler):
             return
 
         user = models.User(email=email)
+        user.display_name = display_name
         user.password = util.hash_pwd(password)
         user.save()
 

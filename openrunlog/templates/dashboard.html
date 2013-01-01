@@ -7,7 +7,14 @@
 {% block content %}
 <div class="row">
     <div class="span3">
-    <h1>Recent Runs:</h1>
+    {% raw gravatar_html(user.email, 200) %}
+    <h1>{{ user.display_name }}</h1>
+    <p>
+        All Time: {{ user.total_mileage }} Miles<br />
+        {{ this_year }}: {{ user.yearly_mileage }} Miles
+    </p>
+
+    <h2>Recent Runs:</h2>
     <p>
         <a class="label label-success" data-toggle="modal" href="#addrun" >Add a run</a>
     </p>

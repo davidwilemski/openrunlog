@@ -53,8 +53,19 @@ def seconds_to_time(seconds):
 
 
 class User(mongoengine.Document):
+    display_name = mongoengine.StringField(required=True)
     email = mongoengine.EmailField(required=True, unique=True)
     password = mongoengine.StringField()
+
+    @property
+    def total_mileage(self):
+        return Run.get_mileage(self)
+
+    @property
+    def yearly_mileage(self):
+        year = datetime.date.today().year
+        date = dateutil.parser.parse('1-1-{}'.format(year))
+        return Run.get_mileage(self, date=date)
 
 class Run(mongoengine.Document):
     user = mongoengine.ReferenceField(User)
@@ -65,25 +76,31 @@ class Run(mongoengine.Document):
 
     @classmethod
     def this_week_runs(cls, user):
-        return cls.get_runs(user, _current_monday())
+        return cls.get_runs(user, date=_current_monday())
 
     @classmethod
-    def get_runs(cls, user, date):
+    def get_runs(cls, user, date=None):
         """
         Will return a QuerySet of runs that happened on or after the specified date
         """
-        return cls.objects(user=user, date__gte=date)
+        if date:
+            return cls.objects(user=user, date__gte=date)
+        return cls.objects(user=user)
 
     @classmethod
     def this_week_mileage(cls, user):
-        return cls.get_mileage(user, _current_monday())
+        return cls.get_mileage(user, date=_current_monday())
 
     @classmethod
-    def get_mileage(cls, user, date):
+    def get_mileage(cls, user, date=None):
         """
         returns total mileage run on and since date
         """
-        runs = cls.get_runs(user, date)
+        if date:
+            runs = cls.get_runs(user, date=date)
+        else:
+            runs = cls.get_runs(user)
+
         
         def _accumulate(r1, r2):
             return float(r1) + float(r2.distance)
