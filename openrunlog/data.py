@@ -74,6 +74,7 @@ class WeeklyMileageHandler(base.BaseHandler):
             last_monday = dateutil.parser.parse(weeks[0]['x']) - dateutil.relativedelta.relativedelta(days=7)
             weeks.append({'x': last_monday.strftime('%x'), 'y': 0})
 
+
         data = {
                 'xScale': 'time',
                 'yScale': 'linear',
@@ -83,6 +84,13 @@ class WeeklyMileageHandler(base.BaseHandler):
                     }
                 ]
         }
+
+        # 0 fill some data if there is none so that the graph shows
+        if since and not weeks:
+            weeks.append({'x': since.strftime('%x'), 'y':0})
+            weeks.append({'x': (since + dateutil.relativedelta.relativedelta(days=7)).strftime('%x'), 'y':0})
+            data['yMin'] = 0
+            data['yMax'] = 100
 
         self.finish(data)
 
