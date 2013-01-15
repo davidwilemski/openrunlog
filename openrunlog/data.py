@@ -71,7 +71,7 @@ class WeeklyMileageHandler(base.BaseHandler):
 
         # handle the beginning of the year
         year = datetime.date.today().year
-        if weeks[0].date != datetime.date(year, 1, 1):
+        if since and weeks[0].date != datetime.date(year, 1, 1):
             # manually build a partial week
             runs = models.Run.objects(user=user, date__lt=weeks[0].date, date__gte=datetime.date(year, 1, 1))
             week = models.Week(user=user)
