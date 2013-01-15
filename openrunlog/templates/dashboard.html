@@ -36,6 +36,8 @@
             <ul class="nav nav-tabs" id="weekly-tabs">
                 <li class="active"><a href="#tab1" data-toggle="tab">All Time</a></li>
                 <li><a href="#tab2" data-toggle="tab">This Year</a></li>
+                <li><a href="#tab3" data-toggle="tab">6 Months</a></li>
+                <li><a href="#tab4" data-toggle="tab">3 Months</a></li>
             </ul>
 
             <div class="tab-content">
@@ -44,6 +46,12 @@
                 </div>
                 <div class="tab-pane" id="tab2">
                     <figure style="width: 650px; height: 300px;" id="weekly-thisyear"></figure>
+                </div>
+                <div class="tab-pane" id="tab3">
+                    <figure style="width: 650px; height: 300px;" id="weekly-6months"></figure>
+                </div>
+                <div class="tab-pane" id="tab4">
+                    <figure style="width: 650px; height: 300px;" id="weekly-3months"></figure>
                 </div>
             </div>
             
@@ -91,6 +99,8 @@
     var weekChart;
     var mileageChart;
     var mileageChartThisYear;
+    var mileageChartSixMonths;
+    var mileageChartThreeMonths;
     var totalMileageChart;
     $(function() {
         $('#weekly-tabs a').click(function (e) {
@@ -116,6 +126,22 @@
           "tickFormatX": function (x) { return d3.time.format('%x')(x); }
 };
             mileageChart = new xChart('line', data, '#weekly', opts);
+        });
+
+        $.get("/data/mileage/weekly?window_weeks=12", function(data) {
+            var opts = {
+          "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
+          "tickFormatX": function (x) { return d3.time.format('%x')(x); }
+};
+            mileageChart = new xChart('line-dotted', data, '#weekly-3months', opts);
+        });
+
+        $.get("/data/mileage/weekly?window_weeks=24", function(data) {
+            var opts = {
+          "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
+          "tickFormatX": function (x) { return d3.time.format('%x')(x); }
+};
+            mileageChart = new xChart('line-dotted', data, '#weekly-6months', opts);
         });
 
         $.get("/data/mileage/weekly?since={{ this_year }}", function(data) {

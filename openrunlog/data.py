@@ -56,6 +56,10 @@ class WeeklyMileageHandler(base.BaseHandler):
     def get(self):
         user = self.get_current_user()
         since = self.get_argument('since', '')
+        window_weeks = self.get_argument('window_weeks', '')
+        if window_weeks:
+            window_weeks = dateutil.relativedelta.relativedelta(weeks=int(window_weeks))
+
         try:
             since = int(since)
         except ValueError:
@@ -65,7 +69,10 @@ class WeeklyMileageHandler(base.BaseHandler):
             since = datetime.date(since, 1, 1)
             weeks = models.Week.objects(user=user, date__gte=since)
         else:
-            weeks = models.Week.objects(user=user)
+            if window_weeks:
+                weeks = models.Week.objects(user=user, date__gte=datetime.date.today() - window_weeks)
+            else:
+                weeks = models.Week.objects(user=user)
 
         weeks = [week for week in weeks]
 
