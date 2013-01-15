@@ -121,10 +121,10 @@
 
         $.get("/data/mileage/weekly?since={{ this_year }}", function(data) {
             var opts = {
-          "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
-          "tickFormatX": function (x) { return d3.time.format('%x')(x); }
-};
-            mileageChartThisYear = new xChart('line', data, '#weekly-thisyear', opts);
+                "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
+                "tickFormatX": function (x) { return d3.time.format('%x')(x); }
+            };
+            mileageChartThisYear = new xChart('line-dotted', data, '#weekly-thisyear', opts);
         });
 
         $.get("/data/mileage/weekly?since={{ this_year }}", function(data) {
