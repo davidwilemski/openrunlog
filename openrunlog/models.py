@@ -64,7 +64,7 @@ def seconds_to_time(seconds):
 
 class User(mongoengine.Document):
     display_name = mongoengine.StringField(required=True)
-    url = mongoengine.StringField(default="", unique=True)
+    url = mongoengine.StringField(default="")
     public = mongoengine.BooleanField(required=True)
     email = mongoengine.EmailField(required=True, unique=True)
     password = mongoengine.StringField()
