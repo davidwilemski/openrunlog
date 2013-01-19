@@ -7,11 +7,11 @@
 {% block content %}
 <div class="row">
     <div class="span3">
-    {% raw gravatar_html(user.email, 200) %}
-    <h1>{{ user.display_name }}</h1>
+    {% raw gravatar_html(profile.email, 200) %}
+    <h1>{{ profile.display_name }}</h1>
     <p>
-        All Time: {{ user.total_mileage }} Miles<br />
-        {{ this_year }}: {{ user.yearly_mileage }} Miles
+        All Time: {{ profile.total_mileage }} Miles<br />
+        {{ this_year }}: {{ profile.yearly_mileage }} Miles
     </p>
 
     <h2>Recent Runs:</h2>
@@ -112,7 +112,7 @@
           $(this).append("<li>Error requesting page " + settings.url + "</li>");
         });
 
-        $.get("/data/this_week", function(data) {
+        $.get("/data/{{ str(profile.id) }}/this_week", function(data) {
             var opts = {
               "dataFormatX": function (x) { return d3.time.format('%c').parse(x); },
               "tickFormatX": function (x) { return d3.time.format('%A')(x); }
@@ -120,7 +120,7 @@
             weekChart = new xChart('bar', data, '#week', opts);
         });
 
-        $.get("/data/mileage/weekly", function(data) {
+        $.get("/data/{{ str(profile.id) }}/mileage/weekly", function(data) {
             var opts = {
           "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
           "tickFormatX": function (x) { return d3.time.format('%x')(x); }
@@ -128,7 +128,7 @@
             mileageChart = new xChart('line', data, '#weekly', opts);
         });
 
-        $.get("/data/mileage/weekly?window_weeks=12", function(data) {
+        $.get("/data/{{ str(profile.id) }}/mileage/weekly?window_weeks=12", function(data) {
             var opts = {
           "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
           "tickFormatX": function (x) { return d3.time.format('%x')(x); }
@@ -136,7 +136,7 @@
             mileageChart = new xChart('line-dotted', data, '#weekly-3months', opts);
         });
 
-        $.get("/data/mileage/weekly?window_weeks=24", function(data) {
+        $.get("/data/{{ str(profile.id) }}/mileage/weekly?window_weeks=24", function(data) {
             var opts = {
           "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
           "tickFormatX": function (x) { return d3.time.format('%x')(x); }
@@ -144,7 +144,7 @@
             mileageChart = new xChart('line-dotted', data, '#weekly-6months', opts);
         });
 
-        $.get("/data/mileage/weekly?since={{ this_year }}", function(data) {
+        $.get("/data/{{ str(profile.id) }}/mileage/weekly?since={{ this_year }}", function(data) {
             var opts = {
                 "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
                 "tickFormatX": function (x) { return d3.time.format('%x')(x); }
@@ -152,7 +152,7 @@
             mileageChartThisYear = new xChart('line-dotted', data, '#weekly-thisyear', opts);
         });
 
-        $.get("/data/mileage/weekly?since={{ this_year }}", function(data) {
+        $.get("/data/{{ str(profile.id) }}/mileage/weekly?since={{ this_year }}", function(data) {
             var opts = {
           "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
           "tickFormatX": function (x) { return d3.time.format('%x')(x); }

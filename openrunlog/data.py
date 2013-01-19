@@ -9,12 +9,15 @@ import models
 import util
 
 class ThisWeekHandler(base.BaseHandler):
-    @web.authenticated
     @web.asynchronous
-    def get(self):
+    def get(self, uid):
         user = self.get_current_user()
+        data_user = models.User.objects(id=uid).first()
+        if not data_user.public and (not user or user.email != data_user.email):
+            self.write_error(403)
+            return
         date = models._current_monday()
-        this_week_runs = models.Run.this_week_runs(user)
+        this_week_runs = models.Run.this_week_runs(data_user)
 
         expected_dates = set()
         for x in range(7):
@@ -51,12 +54,17 @@ class ThisWeekHandler(base.BaseHandler):
 
 
 class WeeklyMileageHandler(base.BaseHandler):
-    @web.authenticated
     @web.asynchronous
-    def get(self):
+    def get(self, uid):
         user = self.get_current_user()
         since = self.get_argument('since', '')
         window_weeks = self.get_argument('window_weeks', '')
+
+        data_user = models.User.objects(id=uid).first()
+        if not data_user.public and (not user or user.email != data_user.email):
+            self.write_error(403)
+            return
+
         if window_weeks:
             window_weeks = dateutil.relativedelta.relativedelta(weeks=int(window_weeks))
 
@@ -67,12 +75,12 @@ class WeeklyMileageHandler(base.BaseHandler):
 
         if since:
             since = datetime.date(since, 1, 1)
-            weeks = models.Week.objects(user=user, date__gte=since)
+            weeks = models.Week.objects(user=data_user, date__gte=since)
         else:
             if window_weeks:
-                weeks = models.Week.objects(user=user, date__gte=datetime.date.today() - window_weeks)
+                weeks = models.Week.objects(user=data_user, date__gte=datetime.date.today() - window_weeks)
             else:
-                weeks = models.Week.objects(user=user)
+                weeks = models.Week.objects(user=data_user)
 
         weeks = [week for week in weeks]
 
@@ -80,8 +88,8 @@ class WeeklyMileageHandler(base.BaseHandler):
         year = datetime.date.today().year
         if since and weeks[0].date != datetime.date(year, 1, 1):
             # manually build a partial week
-            runs = models.Run.objects(user=user, date__lt=weeks[0].date, date__gte=datetime.date(year, 1, 1))
-            week = models.Week(user=user)
+            runs = models.Run.objects(user=data_user, date__lt=weeks[0].date, date__gte=datetime.date(year, 1, 1))
+            week = models.Week(user=data_user)
             week.date = datetime.date(year, 1, 1)
             for run in runs:
                 week.distance += run.distance
