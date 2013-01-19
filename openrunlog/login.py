@@ -84,7 +84,8 @@ class RegisterHandler(base.BaseHandler):
             return
  
         error = False
-        if public == 'yes' and not url:
+        public = True if public == 'yes' else False
+        if public and not url:
             error = 'A profile URL is required for public accounts!'
         # make sure url is unique
         if not models.url_unique(url, user):
@@ -96,6 +97,8 @@ class RegisterHandler(base.BaseHandler):
         user = models.User(email=email)
         user.display_name = display_name
         user.password = util.hash_pwd(password)
+        user.url = url
+        user.public = public
         user.save()
 
         self.set_secure_cookie('user', str(user.id))
