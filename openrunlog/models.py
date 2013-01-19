@@ -3,6 +3,16 @@ import mongoengine
 import datetime
 import dateutil
 
+def url_unique(url, user):
+    unique = True 
+    urls = User.objects(url=url)
+    if urls.count() > 1:
+        unique = False
+    else:
+        if urls.first() and urls.first().email != user.email:
+            unique = False
+    return unique
+
 def _current_monday():
     delta = dateutil.relativedelta.relativedelta(
                 weekday=dateutil.relativedelta.MO(-1))
@@ -54,6 +64,8 @@ def seconds_to_time(seconds):
 
 class User(mongoengine.Document):
     display_name = mongoengine.StringField(required=True)
+    url = mongoengine.StringField(default="", unique=True)
+    public = mongoengine.BooleanField(required=True)
     email = mongoengine.EmailField(required=True, unique=True)
     password = mongoengine.StringField()
 

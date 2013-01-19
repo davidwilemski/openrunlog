@@ -1,20 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Register</h2>
+<h2>Settings</h2>
 
-<form action="/register" method="POST">
-    <label for="email">Email Address:</label>
-    <input type="email" name="email" id="email" required />
+<form action="/settings" method="POST">
+    <label for="displayname">Display Name:</label>
+    <input type="displayname" name="displayname" id="displayname" value="{{ user.display_name }}" required />
     <br />
-    <label for="display_name">Display Name:</label>
-    <input type="text" name="display_name" id="display_name" required />
-    <br />
-    <label for="password">Password:</label>
-    <input type="password" name="password" id="password" required />
-    <br />
-    <label for="password_confirm">Password (confirm):</label>
-    <input type="password" name="password_confirm" id="password_confirm" required />
+
     Public Profile: <br />
     <label class="radio inline">
         <input type="radio" name="public" id="public_yes" value="yes" checked>
@@ -28,11 +21,13 @@
     <div class="input-prepend" id="url-wrapper">
         <label for="url">Profile URL:</label>
         <span class="add-on">/user/</span>
-        <input type="text" name="url" id="url" value="" />
+        <input type="text" name="url" id="url" value="{{ user.url }}" />
     </div>
+
     <br />
-    <input type="submit" value="Register" name="submit" class="btn-primary"/>
+    <button type="submit" class="btn-primary">Save</button>
 </form>
+
 {% end %}
 
 {% block bottom %}
@@ -55,7 +50,6 @@
             }
             else { // empty url field
                 $("#url").removeAttr('required');
-                $("#url").val('');
                 $("#url-wrapper").hide()
             }
         });
