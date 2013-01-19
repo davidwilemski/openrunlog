@@ -50,16 +50,24 @@ class RemoveRunHandler(base.BaseHandler):
     @web.authenticated
     def post(self):
         run_id = self.get_argument('run_id', '')
-        if run_id == '': return self.redirect('/')
-        run = models.Run.objects(id=run_id).get()
-        if not run: return self.finish('error. run not found')
+        if run_id == '':
+            self.redirect_msg('/', {'error': 'Could not find run (invalid).'})
+            return
+        try:
+            run = models.Run.objects(id=run_id).get()
+            if not run: raise Exception
+        except Exception:
+            self.redirect_msg('/', {'error': 'Could not find run (non-zero).'})
+            return
 
         # remove this run from the week's aggregate
         monday = run.date - dateutil.relativedelta.relativedelta(days=run.date.weekday())
         week = models.Week.objects(date=monday, user=self.get_current_user()).first()
         if not week:
             # we shouldn't get here - there should be a week for this run
-            self.finish('error, something went really, really wrong removing the run')
+            self.redirect_msg('/', {'error': 'Something went really, really wrong removing the run (weekly totals)'})
+            return
+
         week.time -= run.time
         week.distance -= run.distance
         if week.time == 0 and week.distance == 0:
