@@ -23,8 +23,15 @@
 
     <p>
 
+        <form id="remove_run" action="/remove" method="post" style="display:none;">
+            <input type="hidden" name="run_id" value="">
+            <input type="submit">
+        </form>
         {% for run in recent_runs %}
-            <div>{{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ run.pace }}</div>
+            <div class="recent_run" data-run-id="{{ run.id }}">
+                <span style="display:none;" class="remove_run label label-important"><i type="submit" class="icon-remove icon-white"></i></span>
+                {{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ run.pace }}
+            </div>
         {% end %}
 
     </p>
@@ -162,6 +169,18 @@
             totalMileageChart = new xChart('cumulative', data, '#year', opts);
         });
 
+        $('.recent_run').on('mouseenter', function() {
+            $(this).children('.label').first().show();
+            $('form#remove_run > input[name="run_id"]').val($(this).attr('data-run-id'));
+        });
+        $('.recent_run').on('mouseleave', function() {
+            $(this).children('.label').first().hide();
+            $('form#remove_run > input[name="run_id"]').val('');
+        });
+        $('span.remove_run').on('click', function() {
+            if($('form#remove_run > input[name="run_id"]').val() === '') return;
+            $('form#remove_run').submit();
+        });
 
 
         /*

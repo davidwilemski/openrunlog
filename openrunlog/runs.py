@@ -44,3 +44,15 @@ class AddRunHandler(base.BaseHandler):
         week.save()
 
         self.redirect('/')
+
+class RemoveRunHandler(base.BaseHandler):
+    @web.asynchronous
+    @web.authenticated
+    def post(self):
+        run_id = self.get_argument('run_id', '')
+        if run_id == '': return self.redirect('/')
+        run = models.Run.objects(id=run_id).get()
+        if not run: return self.finish('error. run not found')
+        run.delete()
+
+        self.redirect('/')
