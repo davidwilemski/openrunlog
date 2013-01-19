@@ -22,7 +22,7 @@
     <p>
 
         {% for run in recent_runs %}
-            <div>{{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ run.pretty_time }}</div>
+            <div>{{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ run.pace }}</div>
         {% end %}
 
     </p>
