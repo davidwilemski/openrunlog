@@ -53,6 +53,23 @@ class RemoveRunHandler(base.BaseHandler):
         if run_id == '': return self.redirect('/')
         run = models.Run.objects(id=run_id).get()
         if not run: return self.finish('error. run not found')
+
+        # remove this run from the week's aggregate
+        monday = run.date - dateutil.relativedelta.relativedelta(days=run.date.weekday())
+        week = models.Week.objects(date=monday, user=self.get_current_user()).first()
+        if not week:
+            # we shouldn't get here - there should be a week for this run
+            self.finish('error, something went really, really wrong removing the run')
+        week.time -= run.time
+        week.distance -= run.distance
+        if week.time == 0 and week.distance == 0:
+            # there is no more data for this week, delete it
+            week.delete()
+        else:
+            # there still is week data, save it
+            week.save()
+
+        # remove the run itself, always
         run.delete()
 
         self.redirect('/')
