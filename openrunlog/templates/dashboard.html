@@ -15,9 +15,11 @@
     </p>
 
     <h2>Recent Runs:</h2>
+    {% if user and user.email == profile.email %}
     <p>
         <a class="label label-success" data-toggle="modal" href="#addrun" >Add a run</a>
     </p>
+    {% end %}
 
     <p>
 
