@@ -34,6 +34,7 @@ application = web.Application([
     (r'/logout', login.LogoutHandler),
     (r'/register', login.RegisterHandler),
     (r'/settings', login.SettingsHandler),
+    (r'/dashboard', dashboard.DashboardHandler),
     (r'/u/([a-zA-Z0-9]+)', dashboard.ProfileHandler),
     (r'/add', runs.AddRunHandler),
     (r'/data/([A-Za-z0-9]{24})/this_week', data.ThisWeekHandler),
