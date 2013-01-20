@@ -135,3 +135,33 @@ class WeeklyMileageHandler(base.BaseHandler):
 
         self.finish(data)
 
+class WeekdayRunsHandler(base.BaseHandler):
+    @web.asynchronous
+    def get(self, uid):
+        data_user = models.User.objects(id=uid).first()
+        run_map = '''
+            function() {
+                // remember, we need 0 to be Monday, so let's adjust
+                //var day = this.date.getDay() - 1;
+                //if(day < 0) { day = 6; }
+                emit(this.date.getDay(), 1);
+            };
+        '''
+        run_reduce = '''
+            function(day, counts) {
+                return Array.sum(counts);
+            };
+        '''
+        map_reduce_document = models.Run.objects(user=data_user).map_reduce(run_map, run_reduce, 'test_run_map_reduce');
+        runs_per_weekday = [0] * 7
+        for i in map_reduce_document: runs_per_weekday[int(i.key)] = int(i.value)
+        
+        data = {
+            'xScale': 'ordinal',
+            'yScale': 'linear',
+            'main': [
+                { 'data': [{'x':i, 'y':runs_per_weekday[i]} for i in range(len(runs_per_weekday))]}
+            ]
+        }
+
+        self.finish(data)

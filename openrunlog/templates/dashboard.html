@@ -37,6 +37,9 @@
     </p>
     </div>
     <div class="span9">
+        <h2>Runs per Weekday</h2>
+        <figure style="width: 100%; height: 300px;" id="runs-weekday"></figure>
+
         <h2>This Week ({{ week.distance }} miles)</h2>
         <figure style="width: 100%; height: 300px;" id="week"></figure>
 
@@ -167,6 +170,14 @@
           "tickFormatX": function (x) { return d3.time.format('%m-%d-%Y')(x); }
 };
             totalMileageChart = new xChart('cumulative', data, '#year', opts);
+        });
+
+        $.get("/data/{{ str(profile.id) }}/runs/weekday", function(data) {
+            var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            var opts = {
+              "tickFormatX": function (x) { return days[x]; }
+            };
+            weekChart = new xChart('bar', data, '#runs-weekday', opts);
         });
 
         {% if user and user.email == profile.email %}

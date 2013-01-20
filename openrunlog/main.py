@@ -40,6 +40,7 @@ application = web.Application([
     (r'/remove', runs.RemoveRunHandler),
     (r'/data/([A-Za-z0-9]{24})/this_week', data.ThisWeekHandler),
     (r'/data/([A-Za-z0-9]{24})/mileage/weekly', data.WeeklyMileageHandler),
+    (r'/data/([A-Za-z0-9]{24})/runs/weekday', data.WeekdayRunsHandler),
 ], **settings)
 
 application.config = config
