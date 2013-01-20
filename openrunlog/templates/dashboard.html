@@ -131,32 +131,32 @@
 
         $.get("/data/{{ str(profile.id) }}/mileage/weekly", function(data) {
             var opts = {
-          "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
-          "tickFormatX": function (x) { return d3.time.format('%x')(x); }
+          "dataFormatX": function (x) { return d3.time.format('%m-%d-%Y').parse(x); },
+          "tickFormatX": function (x) { return d3.time.format('%m-%d-%Y')(x); }
 };
             mileageChart = new xChart('line', data, '#weekly', opts);
         });
 
         $.get("/data/{{ str(profile.id) }}/mileage/weekly?window_weeks=12", function(data) {
             var opts = {
-          "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
-          "tickFormatX": function (x) { return d3.time.format('%x')(x); }
+          "dataFormatX": function (x) { return d3.time.format('%m-%d-%Y').parse(x); },
+          "tickFormatX": function (x) { return d3.time.format('%m-%d-%Y')(x); }
 };
             mileageChart = new xChart('line-dotted', data, '#weekly-3months', opts);
         });
 
         $.get("/data/{{ str(profile.id) }}/mileage/weekly?window_weeks=24", function(data) {
             var opts = {
-          "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
-          "tickFormatX": function (x) { return d3.time.format('%x')(x); }
+          "dataFormatX": function (x) { return d3.time.format('%m-%d-%Y').parse(x); },
+          "tickFormatX": function (x) { return d3.time.format('%m-%d-%Y')(x); }
 };
             mileageChart = new xChart('line-dotted', data, '#weekly-6months', opts);
         });
 
         $.get("/data/{{ str(profile.id) }}/mileage/weekly?since={{ this_year }}", function(data) {
             var opts = {
-                "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
-                "tickFormatX": function (x) { return d3.time.format('%x')(x); }
+                "dataFormatX": function (x) { return d3.time.format('%m-%d-%Y').parse(x); },
+                "tickFormatX": function (x) { return d3.time.format('%m-%d-%Y')(x); }
             };
             mileageChartThisYear = new xChart('line-dotted', data, '#weekly-thisyear', opts);
         });
@@ -164,7 +164,7 @@
         $.get("/data/{{ str(profile.id) }}/mileage/weekly?since={{ this_year }}", function(data) {
             var opts = {
           "dataFormatX": function (x) { return d3.time.format('%m/%d/%y').parse(x); },
-          "tickFormatX": function (x) { return d3.time.format('%x')(x); }
+          "tickFormatX": function (x) { return d3.time.format('%m-%d-%Y')(x); }
 };
             totalMileageChart = new xChart('cumulative', data, '#year', opts);
         });

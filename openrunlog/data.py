@@ -84,6 +84,17 @@ class WeeklyMileageHandler(base.BaseHandler):
 
         weeks = [week for week in weeks]
 
+        weeks = sorted(weeks, key=lambda w: w.date)
+        last_date = weeks[0].date
+        offset = dateutil.relativedelta.relativedelta(days=7)
+        for x in range(1, len(weeks)):
+            if last_date + offset != weeks[x].date:
+                while last_date + offset != weeks[x].date:
+                    w = models.Week(distance=0, time=0, date=last_date+offset)
+                    weeks.append(w)
+                    last_date += offset
+            last_date += offset
+
         # handle the beginning of the year
         year = datetime.date.today().year
         if since and weeks[0].date != datetime.date(year, 1, 1):
@@ -96,13 +107,14 @@ class WeeklyMileageHandler(base.BaseHandler):
                 week.time += run.time
             weeks.insert(0, week)
 
-        weeks = [ {'x': w.date.strftime('%x'), 'y': w.distance} for w in weeks]
+        weeks = sorted(weeks, key=lambda w: w.date)
+
+        weeks = [ {'x': w.date.strftime('%m-%d-%Y'), 'y': w.distance} for w in weeks]
 
         # if the user only has 1 week display the last week too
         if len(weeks) == 1:
             last_monday = dateutil.parser.parse(weeks[0]['x']) - dateutil.relativedelta.relativedelta(days=7)
-            weeks.append({'x': last_monday.strftime('%x'), 'y': 0})
-
+            weeks.append({'x': last_monday.strftime('%m-%d-%Y'), 'y': 0})
 
         data = {
                 'xScale': 'time',
@@ -117,7 +129,7 @@ class WeeklyMileageHandler(base.BaseHandler):
         # 0 fill some data if there is none so that the graph shows
         if since and not weeks:
             weeks.append({'x': since.strftime('%x'), 'y':0})
-            weeks.append({'x': (since + dateutil.relativedelta.relativedelta(days=7)).strftime('%x'), 'y':0})
+            weeks.append({'x': (since + dateutil.relativedelta.relativedelta(days=7)).strftime('%m-%d-%Y'), 'y':0})
             data['yMin'] = 0
             data['yMax'] = 100
 
