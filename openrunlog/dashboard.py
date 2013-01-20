@@ -25,6 +25,10 @@ class DashboardHandler(base.BaseHandler):
     def get(self):
         error = self.get_error()
         user = self.get_current_user()
+
+        if user.public:
+            self.redirect('/u/{}'.format(user.url))
+
         recent_runs = models.Run.objects(user=user).order_by('-date')[:10]
         week = models.Week.this_week(user)
         miles_this_week = models.Run.this_week_mileage(user)
