@@ -50,6 +50,7 @@ class RemoveRunHandler(base.BaseHandler):
     @web.authenticated
     def post(self):
         run_id = self.get_argument('run_id', '')
+        user = self.get_current_user()
         if run_id == '':
             self.redirect_msg('/', {'error': 'Could not find run (invalid).'})
             return
@@ -59,6 +60,9 @@ class RemoveRunHandler(base.BaseHandler):
         except Exception:
             self.redirect_msg('/', {'error': 'Could not find run (non-zero).'})
             return
+
+        if run.user.email != user.email:
+            self.redirect_msg('/', {'error': 'You do not have permission to delete that run!'})
 
         # remove this run from the week's aggregate
         monday = run.date - dateutil.relativedelta.relativedelta(days=run.date.weekday())
