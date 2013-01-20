@@ -51,13 +51,13 @@ class RemoveRunHandler(base.BaseHandler):
     def post(self):
         run_id = self.get_argument('run_id', '')
         user = self.get_current_user()
-        if run_id == '':
+
+        if not run_id:
             self.redirect_msg('/', {'error': 'Could not find run (invalid).'})
             return
-        try:
-            run = models.Run.objects(id=run_id).get()
-            if not run: raise Exception
-        except Exception:
+
+        run = models.Run.objects(id=run_id).first()
+        if not run:
             self.redirect_msg('/', {'error': 'Could not find run (non-zero).'})
             return
 
