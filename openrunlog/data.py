@@ -94,6 +94,7 @@ class WeeklyMileageHandler(base.BaseHandler):
                     weeks.append(w)
                     last_date += offset
             last_date += offset
+        weeks = sorted(weeks, key=lambda w: w.date)
 
         # handle the beginning of the year
         year = datetime.date.today().year
@@ -107,7 +108,6 @@ class WeeklyMileageHandler(base.BaseHandler):
                 week.time += run.time
             weeks.insert(0, week)
 
-        weeks = sorted(weeks, key=lambda w: w.date)
 
         weeks = [ {'x': w.date.strftime('%m-%d-%Y'), 'y': w.distance} for w in weeks]
 
