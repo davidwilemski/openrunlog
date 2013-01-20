@@ -169,7 +169,7 @@
             totalMileageChart = new xChart('cumulative', data, '#year', opts);
         });
 
-        {% if user.email == profile.email %}
+        {% if user and user.email == profile.email %}
         $('.recent_run').on('mouseenter', function() {
             $(this).children('.label').first().show();
             $('form#remove_run > input[name="run_id"]').val($(this).attr('data-run-id'));
