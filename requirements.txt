@@ -6,3 +6,4 @@ python-dateutil
 fabric
 fabtools
 env
+futures

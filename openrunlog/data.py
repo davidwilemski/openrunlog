@@ -1,8 +1,10 @@
 
 import datetime
 import dateutil
+import functools
 import logging
-from tornado import web, escape
+from tornado import web, escape, gen, concurrent
+from tornado.ioloop import IOLoop
 
 import base
 import models
@@ -137,28 +139,47 @@ class WeeklyMileageHandler(base.BaseHandler):
 
 class WeekdayRunsHandler(base.BaseHandler):
     @web.asynchronous
+    @gen.engine
     def get(self, uid):
         data_user = models.User.objects(id=uid).first()
-        run_map = '''
-            function() {
-                // remember, we need 0 to be Monday, so let's adjust
-                //var day = this.date.getDay() - 1;
-                //if(day < 0) { day = 6; }
-                emit(this.date.getDay(), 1);
-            };
-        '''
-        run_reduce = '''
-            function(day, counts) {
-                return Array.sum(counts);
-            };
-        '''
-        map_reduce_document = models.Run.objects(user=data_user).map_reduce(run_map, run_reduce, 'test_run_map_reduce');
+
+        thread_pool = concurrent.futures.ThreadPoolExecutor(2)
+        def runs_by_day(user, callback=None):
+            run_map = '''
+                function() {
+                    // remember, we need 0 to be Monday, so let's adjust
+                    //var day = this.date.getDay() - 1;
+                    //if(day < 0) { day = 6; }
+                    emit(this.date.getDay(), 1);
+                };
+            '''
+            run_reduce = '''
+                function(day, counts) {
+                    return Array.sum(counts);
+                };
+            '''
+
+            def _fn():
+                runs = models.Run.objects(user=user)
+                mrd = runs.map_reduce(run_map, run_reduce, 'test_run_map_reduce')
+                return mrd
+
+            future = thread_pool.submit(_fn)
+            future.add_done_callback(
+                    lambda future: IOLoop.instance().add_callback(
+                        functools.partial(callback, future)))
+            return future
+
+        map_reduce_document = (yield gen.Task(runs_by_day, data_user)).result()
+
         runs_per_weekday = [0] * 7
-        for i in map_reduce_document: runs_per_weekday[int(i.key)] = int(i.value)
-        
+        for i in map_reduce_document: 
+            runs_per_weekday[int(i.key)] = int(i.value)
+
         data = {
             'xScale': 'ordinal',
             'yScale': 'linear',
+            'yMin': 0,
             'main': [
                 { 'data': [{'x':i, 'y':runs_per_weekday[i]} for i in range(len(runs_per_weekday))]}
             ]

@@ -1,4 +1,7 @@
+import functools
+import futures
 from tornado import web
+from tornado.stack_context import ExceptionStackContext
 import urllib
 
 import models
@@ -23,4 +26,6 @@ class BaseHandler(web.RequestHandler):
             self.clear_cookie('msg_error')
         return error
 
-
+    @property
+    def thread_pool(self):
+        return self.application.thread_pool

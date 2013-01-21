@@ -1,8 +1,9 @@
 
 import env
+import futures
 import sys
-import os
 import mongoengine
+import os
 from tornado import web, ioloop, process
 from tornado.options import define, options, parse_command_line
 
@@ -44,6 +45,7 @@ application = web.Application([
 ], **settings)
 
 application.config = config
+application.thread_pool = futures.ThreadPoolExecutor(max_workers=3)
 
 
 if __name__ == '__main__':
