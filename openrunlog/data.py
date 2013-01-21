@@ -2,8 +2,9 @@
 import datetime
 import dateutil
 import functools
+import futures
 import logging
-from tornado import web, escape, gen, concurrent
+from tornado import web, escape, gen
 from tornado.ioloop import IOLoop
 
 import base
@@ -143,7 +144,7 @@ class WeekdayRunsHandler(base.BaseHandler):
     def get(self, uid):
         data_user = models.User.objects(id=uid).first()
 
-        thread_pool = concurrent.futures.ThreadPoolExecutor(2)
+        thread_pool = futures.ThreadPoolExecutor(2)
         def runs_by_day(user, callback=None):
             run_map = '''
                 function() {
