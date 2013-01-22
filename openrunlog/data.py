@@ -144,8 +144,7 @@ class WeekdayRunsHandler(base.BaseHandler):
     def get(self, uid):
         data_user = models.User.objects(id=uid).first()
 
-        thread_pool = futures.ThreadPoolExecutor(2)
-        def runs_by_day(user, callback=None):
+        def runs_by_day(user):
             run_map = '''
                 function() {
                     // remember, we need 0 to be Monday, so let's adjust
@@ -160,18 +159,15 @@ class WeekdayRunsHandler(base.BaseHandler):
                 };
             '''
 
-            def _fn():
-                runs = models.Run.objects(user=user)
-                mrd = runs.map_reduce(run_map, run_reduce, 'test_run_map_reduce')
-                return mrd
+            runs = models.Run.objects(user=user)
+            mrd = runs.map_reduce(run_map, run_reduce, 'inline')
+            logging.debug("values:")
+            return mrd
 
-            future = thread_pool.submit(_fn)
-            future.add_done_callback(
-                    lambda future: IOLoop.instance().add_callback(
-                        functools.partial(callback, future)))
-            return future
 
-        map_reduce_document = (yield gen.Task(runs_by_day, data_user)).result()
+        map_reduce_document = (yield gen.Task(
+            self.execute_thread, runs_by_day, data_user)).result()
+
 
         runs_per_weekday = [0] * 7
         for i in map_reduce_document: 
