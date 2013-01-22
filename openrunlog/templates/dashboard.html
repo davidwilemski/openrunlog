@@ -133,7 +133,7 @@
             $(this).tab('show');
         });
 
-        $('#weeks-tabs a').click(function (e) {
+        $('#thisweek a').click(function (e) {
             e.preventDefault();
             $(this).tab('show');
         });
@@ -196,7 +196,7 @@
                 "tickFormatX": function (x) { return days[x]; },
                 "yMin": 0
             };
-            weekChart = new xChart('bar', data, '#runs-weekday', opts);
+            weekChart = new xChart("bar", data, "#runs-weekday", opts);
         });
 
         {% if user and user.email == profile.email %}
