@@ -124,7 +124,8 @@
         $.get("/data/{{ str(profile.id) }}/this_week", function(data) {
             var opts = {
               "dataFormatX": function (x) { return d3.time.format('%c').parse(x); },
-              "tickFormatX": function (x) { return d3.time.format('%A')(x); }
+              "tickFormatX": function (x) { return d3.time.format('%A')(x); },
+              "yMin": 0
             };
             weekChart = new xChart('bar', data, '#week', opts);
         });
