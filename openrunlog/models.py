@@ -82,7 +82,7 @@ class User(mongoengine.Document):
         return Run.get_mileage(self, date=date)
 
 class Run(mongoengine.Document):
-    user = mongoengine.ReferenceField(User)
+    user = mongoengine.ReferenceField(User, dbref=True)
     date = mongoengine.DateTimeField(default=datetime.date.today())
     distance = mongoengine.FloatField()
     time = mongoengine.IntField() # store time in seconds for easy manipulation
@@ -141,7 +141,7 @@ class Week(mongoengine.Document):
     - Time is stored in Seconds
     - Distance is Miles
     """
-    user = mongoengine.ReferenceField(User)
+    user = mongoengine.ReferenceField(User, dbref=True)
     date = mongoengine.DateTimeField()
     distance = mongoengine.FloatField(default=0)
     time = mongoengine.IntField(default=0) # in seconds
