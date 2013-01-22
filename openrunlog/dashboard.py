@@ -28,6 +28,7 @@ class DashboardHandler(base.BaseHandler):
 
         if user.public:
             self.redirect('/u/{}'.format(user.url))
+            return
 
         recent_runs = models.Run.objects(user=user).order_by('-date')[:10]
         week = models.Week.this_week(user)

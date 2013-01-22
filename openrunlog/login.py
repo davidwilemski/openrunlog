@@ -4,6 +4,7 @@ from tornado import web
 
 import base
 import models
+import time
 import util
 
 class LoginHandler(base.BaseHandler):
@@ -27,8 +28,11 @@ class LoginHandler(base.BaseHandler):
         if not user:
             error = True
 
+        t = time.time()
         if user and not util.check_pwd(password, user.password):
             error = True
+        t2 = time.time()
+        logging.debug('check_pwd took {}'.format(t2 - t))
 
         if error:
             error_text = "Yo! You gave an invalid username or incorrect password!"
