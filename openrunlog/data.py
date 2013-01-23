@@ -1,8 +1,11 @@
 
 import datetime
 import dateutil
+import functools
+import futures
 import logging
-from tornado import web, escape
+from tornado import web, escape, gen
+from tornado.ioloop import IOLoop
 
 import base
 import models
@@ -135,3 +138,54 @@ class WeeklyMileageHandler(base.BaseHandler):
 
         self.finish(data)
 
+class WeekdayRunsHandler(base.BaseHandler):
+    @web.asynchronous
+    @gen.engine
+    def get(self, uid):
+        data_user = models.User.objects(id=uid).first()
+
+        def runs_by_day(user):
+            run_map = '''
+                function() {
+                    // remember, we need 0 to be Monday, so let's adjust
+                    //var day = this.date.getDay() - 1;
+                    //if(day < 0) { day = 6; }
+                    emit(this.date.getDay(), 1);
+                };
+            '''
+            run_reduce = '''
+                function(day, counts) {
+                    return Array.sum(counts);
+                };
+            '''
+
+            runs = models.Run.objects(user=user)
+            mrd = runs.map_reduce(run_map, run_reduce, 'inline')
+            logging.debug("values:")
+            return mrd
+
+
+        map_reduce_document = (yield gen.Task(
+            self.execute_thread, runs_by_day, data_user)).result()
+
+
+        runs_per_weekday = [0] * 7
+        for i in map_reduce_document: 
+            runs_per_weekday[int(i.key)] = int(i.value)
+
+        """
+        data = {
+            'xScale': 'ordinal',
+            'yScale': 'linear',
+            'yMin': 0,
+            'main': [
+                { 'data': [{'x':i, 'y':runs_per_weekday[i]} for i in range(len(runs_per_weekday))]}
+            ]
+        }
+        """
+        data = { 'data': 
+                [
+                    {'x':i, 'y':runs_per_weekday[i]} for i in range(
+                        len(runs_per_weekday))]}
+
+        self.finish(data)

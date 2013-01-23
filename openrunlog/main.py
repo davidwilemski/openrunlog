@@ -1,8 +1,9 @@
 
 import env
+import futures
 import sys
-import os
 import mongoengine
+import os
 from tornado import web, ioloop, process
 from tornado.options import define, options, parse_command_line
 
@@ -40,9 +41,11 @@ application = web.Application([
     (r'/remove', runs.RemoveRunHandler),
     (r'/data/([A-Za-z0-9]{24})/this_week', data.ThisWeekHandler),
     (r'/data/([A-Za-z0-9]{24})/mileage/weekly', data.WeeklyMileageHandler),
+    (r'/data/([A-Za-z0-9]{24})/runs/weekday', data.WeekdayRunsHandler),
 ], **settings)
 
 application.config = config
+application.thread_pool = futures.ThreadPoolExecutor(max_workers=3)
 
 
 if __name__ == '__main__':
