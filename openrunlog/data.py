@@ -173,6 +173,7 @@ class WeekdayRunsHandler(base.BaseHandler):
         for i in map_reduce_document: 
             runs_per_weekday[int(i.key)] = int(i.value)
 
+        """
         data = {
             'xScale': 'ordinal',
             'yScale': 'linear',
@@ -181,5 +182,10 @@ class WeekdayRunsHandler(base.BaseHandler):
                 { 'data': [{'x':i, 'y':runs_per_weekday[i]} for i in range(len(runs_per_weekday))]}
             ]
         }
+        """
+        data = { 'data': 
+                [
+                    {'x':i, 'y':runs_per_weekday[i]} for i in range(
+                        len(runs_per_weekday))]}
 
         self.finish(data)
