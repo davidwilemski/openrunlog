@@ -105,6 +105,11 @@ class Run(mongoengine.Document):
         return cls.get_runs(user, date=_current_monday())
 
     @classmethod
+    def get_recent_runs(cls, user, num_runs):
+        return Run.objects(user=user).order_by('-date')[:num_runs]
+
+
+    @classmethod
     def get_runs(cls, user, date=None):
         """
         Will return a QuerySet of runs that happened on or after the specified date
