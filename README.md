@@ -32,8 +32,6 @@ export ORL_DEBUG="True"
 export ORL_COOKIE_SECRET="insertyourrandomstringhere"
 ```
 
-(now open with your favorite editor and add all the info)
-
 3) Run ORL!
 
 `supervisord`
