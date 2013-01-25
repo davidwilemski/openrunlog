@@ -70,6 +70,9 @@ class User(mongoengine.Document):
     public = mongoengine.BooleanField(required=True)
     email = mongoengine.EmailField(required=True, unique=True)
     password = mongoengine.StringField()
+    meta = {
+        'indexes': ['id', 'url', 'email']
+    }
 
     @property
     def total_mileage(self):
@@ -87,6 +90,9 @@ class Run(mongoengine.Document):
     distance = mongoengine.FloatField()
     time = mongoengine.IntField() # store time in seconds for easy manipulation
     notes = mongoengine.StringField()
+    meta = {
+        'indexes': [('user', '-date')]
+    }
 
     @property
     def pace(self):
