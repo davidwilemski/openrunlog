@@ -161,7 +161,6 @@ class WeekdayRunsHandler(base.BaseHandler):
 
             runs = models.Run.objects(user=user)
             mrd = runs.map_reduce(run_map, run_reduce, 'inline')
-            logging.debug("values:")
             return mrd
 
 
