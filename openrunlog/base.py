@@ -38,3 +38,7 @@ class BaseHandler(web.RequestHandler):
                 lambda future: IOLoop.instance().add_callback(
                     functools.partial(callback, future)))
         return future
+
+    @property
+    def redis(self):
+        return self.application.redis

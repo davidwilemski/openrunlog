@@ -7,3 +7,4 @@ fabric
 fabtools
 env
 futures
+tornado-redis

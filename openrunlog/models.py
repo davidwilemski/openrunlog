@@ -70,6 +70,8 @@ class User(mongoengine.Document):
     public = mongoengine.BooleanField(required=True)
     email = mongoengine.EmailField(required=True, unique=True)
     password = mongoengine.StringField()
+    dailymile_token = mongoengine.StringField()
+    export_to_dailymile = mongoengine.BooleanField(default=False)
     meta = {
         'indexes': ['id', 'url', 'email']
     }
@@ -90,6 +92,7 @@ class Run(mongoengine.Document):
     distance = mongoengine.FloatField()
     time = mongoengine.IntField() # store time in seconds for easy manipulation
     notes = mongoengine.StringField()
+    exported_to_dailymile = mongoengine.BooleanField(default=False)
     meta = {
         'indexes': [('user', '-date')]
     }

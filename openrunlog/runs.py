@@ -1,5 +1,6 @@
 
 import base
+import crosspost
 import models
 import util
 import dateutil.parser
@@ -42,6 +43,9 @@ class AddRunHandler(base.BaseHandler):
         week.time += run.time
         week.distance += run.distance
         week.save()
+
+        if user.export_to_dailymile:
+            crosspost.send_run(self.redis, run)
 
         self.redirect('/')
 

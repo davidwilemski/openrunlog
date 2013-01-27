@@ -1,10 +1,13 @@
 
 import logging
-from tornado import web
+from tornado import web, auth, httpclient, gen, escape
 
 import base
+import crosspost
+import env
 import models
 import time
+import urllib
 import util
 
 class LoginHandler(base.BaseHandler):
@@ -162,3 +165,76 @@ class SettingsHandler(base.BaseHandler):
 
         self.redirect('/settings')
 
+class DailyMileHandler(base.BaseHandler, auth.OAuth2Mixin):
+    _OAUTH_AUTHORIZE_URL = 'https://api.dailymile.com/oauth/authorize'
+    _OAUTH_ACCESS_TOKEN_URL = 'https://api.dailymile.com/oauth/token'
+
+    @web.authenticated
+    @web.asynchronous
+    def get(self):
+        redirect_uri=self.application.config['dailymile_redirect']
+        client_id=self.application.config['dailymile_client_id']
+        client_secret=self.application.config['dailymile_client_secret']
+
+
+        logging.debug('auth handler') 
+        if self.get_argument("code", None):
+            logging.debug('after redirect') 
+            self.get_authenticated_user(self._on_auth)
+            return
+
+        logging.debug('before redirect') 
+        extra = {'response_type': 'code'}
+        self.authorize_redirect(
+                redirect_uri=self.redirect_uri,
+                client_id=self.client_id,
+                client_secret=self.client_secret,
+                extra_params=extra)
+
+    @gen.engine
+    def get_authenticated_user(self, callback):
+        """Fetches the authenticated dailymile user.
+        """
+        redirect_uri=self.application.config['dailymile_redirect']
+        client_id=self.application.config['dailymile_client_id']
+        client_secret=self.application.config['dailymile_client_secret']
+
+        code = self.get_argument("code")
+        extra = {
+                'grant_type': 'authorization_code',
+        }
+        url = self._OAUTH_ACCESS_TOKEN_URL
+        params = {
+                'code': code,
+                'redirect_uri': self.redirect_uri,
+                'client_id': self.client_id,
+                'client_secret': self.client_secret,
+                'grant_type': 'authorization_code'
+        }
+        client = httpclient.AsyncHTTPClient()
+        response = yield gen.Task(client.fetch, url, method='POST',
+                body=urllib.urlencode(params))
+        callback(escape.json_decode(response.body))
+    
+    
+    def _on_auth(self, data):
+        user = self.get_current_user()
+        user.dailymile_token = data['access_token']
+        user.export_to_dailymile = True
+        user.save()
+
+        crosspost.send_user(self.redis, user)
+
+        # queue past runs for the worker process to cross post
+        self.redirect('/settings')
+
+class DailyMileLogoutHandler(base.BaseHandler):
+    @web.authenticated
+    @web.asynchronous
+    def post(self):
+        user = self.get_current_user()
+        user.export_to_dailymile = False
+        user.dailymile_token = ''
+        user.save()
+
+        self.redirect('/settings')

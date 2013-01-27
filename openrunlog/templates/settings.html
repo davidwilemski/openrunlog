@@ -3,6 +3,17 @@
 {% block content %}
 <h2>Settings</h2>
 
+<div>
+    {% if not user.dailymile_token %}
+        <a href="/auth/dailymile"><p>Also post runs to dailymile</p></a>
+    {% else %}
+        <p>Posting runs to dailymile</p>
+        <form action="/settings/dailymile/noexport" method="POST">
+            <button type="submit" class="btn-primary">Disconnect from dailymile</button>
+        </form>
+    {% end %}
+</div>
+
 <form action="/settings" method="POST">
     <label for="displayname">Display Name:</label>
     <input type="displayname" name="displayname" id="displayname" value="{{ user.display_name }}" required />
