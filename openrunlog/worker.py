@@ -51,7 +51,7 @@ def export_run(run):
 
     client = tornado.httpclient.AsyncHTTPClient()
     response = yield tornado.gen.Task(client.fetch, url, method='POST', body=json.dumps(body), headers=headers)
-    logging.debug(response.request)
+    logging.debug(body)
     logging.debug(response)
 
     if response.code == 201:
