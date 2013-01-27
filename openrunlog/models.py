@@ -45,7 +45,7 @@ def time_to_seconds(time):
         raise ValueError('Time not in correct format')
     return seconds
 
-def seconds_to_time(seconds, pace=False):
+def seconds_to_time(seconds):
     hours = 0
     minutes = 0
     while seconds > 59:
@@ -56,9 +56,7 @@ def seconds_to_time(seconds, pace=False):
         hours += 1
     
     if hours == 0:
-        if pace:
-            return '{:01}:{:02}'.format(minutes, seconds)
-        return '00:{:02}:{:02}'.format(minutes, seconds)
+        return '{:01}:{:02}'.format(minutes, seconds)
     else:
         return '{}:{:02}:{:02}'.format(hours, minutes, seconds)
 
@@ -101,7 +99,7 @@ class Run(mongoengine.Document):
     def pace(self):
         if not self.time:
             return 'N/A'
-        return seconds_to_time(int(self.time/self.distance), pace=True) + ' pace'
+        return seconds_to_time(int(self.time/self.distance)) + ' pace'
 
     @classmethod
     def this_week_runs(cls, user):
