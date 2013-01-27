@@ -186,9 +186,9 @@ class DailyMileHandler(base.BaseHandler, auth.OAuth2Mixin):
         logging.debug('before redirect') 
         extra = {'response_type': 'code'}
         self.authorize_redirect(
-                redirect_uri=self.redirect_uri,
-                client_id=self.client_id,
-                client_secret=self.client_secret,
+                redirect_uri=redirect_uri,
+                client_id=client_id,
+                client_secret=client_secret,
                 extra_params=extra)
 
     @gen.engine
@@ -206,9 +206,9 @@ class DailyMileHandler(base.BaseHandler, auth.OAuth2Mixin):
         url = self._OAUTH_ACCESS_TOKEN_URL
         params = {
                 'code': code,
-                'redirect_uri': self.redirect_uri,
-                'client_id': self.client_id,
-                'client_secret': self.client_secret,
+                'redirect_uri': redirect_uri,
+                'client_id': client_id,
+                'client_secret': client_secret,
                 'grant_type': 'authorization_code'
         }
         client = httpclient.AsyncHTTPClient()
