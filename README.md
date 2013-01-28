@@ -15,6 +15,7 @@ personal use you can follow these simple steps.
 First, some dependencies:
 
 - MongoDB 
+- redis
 - Python (I use 2.7 but 2.6 *should* work as well)
 
 Steps:
