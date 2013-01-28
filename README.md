@@ -36,7 +36,7 @@ export ORL_DAILYMILE_CLIENT_ID=""
 export ORL_DAILYMILE_CLIENT_SECRET=""
 ```
 
-The DailyMile OAuth credentials may be obtained from http://www.dailymile.com/api.
+The dailymile OAuth credentials may be obtained from http://www.dailymile.com/api.
 
 3) Run ORL!
 
