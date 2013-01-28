@@ -3,62 +3,81 @@
 {% block content %}
 <h2>Register</h2>
 
-<form action="/register" method="POST">
-    <label for="email">Email Address:</label>
-    <input type="email" name="email" id="email" required />
-    <br />
-    <label for="display_name">Display Name:</label>
-    <input type="text" name="display_name" id="display_name" required />
-    <br />
-    <label for="password">Password:</label>
-    <input type="password" name="password" id="password" required />
-    <br />
-    <label for="password_confirm">Password (confirm):</label>
-    <input type="password" name="password_confirm" id="password_confirm" required />
-    <br />
-    Public Profile: <br />
-    <label class="radio inline">
-        <input type="radio" name="public" id="public_yes" value="yes" checked>
-        Yes
-    </label>
-    <label class="radio inline">
-        <input type="radio" name="public" id="public_no" value="no">
-        No
-    </label>
-
-    <div class="input-prepend" id="url-wrapper">
-        <label for="url">Profile URL:</label>
-        <span class="add-on">/user/</span>
-        <input type="text" name="url" id="url" value="" />
+<form id="register-form" action="/register" method="POST" class="form-horizontal">
+    <div class="control-group">
+        <label class="control-label" for="email">Email Address:</label>
+        <div class="controls">
+            <input type="text" name="email" id="email" data-required="true" data-type="email"/>
+        </div>
     </div>
-    <br />
-    <input type="submit" value="Register" name="submit" class="btn-primary"/>
+
+    <div class="control-group">
+        <label class="control-label" for="display_name">Display Name:</label>
+        <div class="controls">
+            <input type="text" name="display_name" id="display_name" data-required="true" data-type="alphanum" />
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="password">Password:</label>
+        <div class="controls">
+            <input type="password" name="password" id="password" data-required="true" />
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="password_confirm">Password (confirm):</label>
+        <div class="controls">
+            <input type="password" name="password_confirm" id="password_confirm" data-required="true" />
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="public">Public Profile:</label>
+        <div class="controls">
+            <label class="radio">
+                Yes
+                <input type="radio" name="public" id="public_yes" value="yes" data-required="true" checked />
+            </label>
+            <label class="radio">
+                No
+                <input type="radio" name="public" id="public_no" value="no" data-required="true" />
+            </label>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="url">Profile URL:</label>
+        <div class="controls">
+            <div class="input-prepend" id="url-wrapper">
+                <span class="add-on">/user/</span>
+                <input type="text" name="url" id="url" value="" data-required="true" data-type="alphanum" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <input type="submit" value="Register" name="submit" class="btn btn-primary"/>
+    </div>
 </form>
 {% end %}
 
 {% block bottom %}
+<script type="text/javascript" src="/static/js/parsley.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        var id = $("input[@name=public_yes]:checked").attr('id');
-        if(id == 'public_yes') { // then make url required
-            $("#url").attr('required', 'true');
-        }
-
-        $("input:radio").click(function() {
-            console.log("hi");
-
-            id = $("input[@name=public_yes]:checked").attr('id');
-            if(id == 'public_yes') { // then make url required
-                if(!$("#url").attr('required')){
-                    $("#url").attr('required', 'true');
-                    $("#url-wrapper").show()
-                }
-            }
-            else { // empty url field
-                $("#url").removeAttr('required');
-                $("#url").val('');
-                $("#url-wrapper").hide()
-            }
+        $('#register-form').parsley({
+            trigger: 'change',
+            successClass: 'success',
+            errorClass: 'error',
+            validationMinlength: '1',
+            errors: {
+                classHandler: function(elem) {
+                    return $(elem).parents('div.control-group').first();
+                },
+                errorsWrapper: '<span class="help-inline"></span>',
+                errorElem: '<span></span>',
+            },
         });
     });
 </script>
