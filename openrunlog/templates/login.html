@@ -3,12 +3,43 @@
 {% block content %}
 <h2>Login</h2>
 
-<form action="/login" method="POST">
-    <label for="email">Email Address:</label>
-    <input type="email" name="email" id="email" required />
-    <label for="password">Password:</label>
-    <input type="password" name="password" id="password" required />
-    <br />
-    <button type="submit" class="btn-primary">Log in</button>
+<form id="login-form" action="/login" method="POST" class="form form-horizontal">
+    <div class="control-group">
+        <label class="control-label" for="email">Email Address:</label>
+        <div class="controls">
+            <input type="email" name="email" id="email" data-required="required" data-type="email" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="password">Password:</label>
+        <div class="controls">
+            <input type="password" name="password" id="password" data-required="required" />
+        </div>
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Log in</button>
+    </div>
 </form>
+{% end %}
+
+{% block bottom %}
+<script type="text/javascript" src="/static/js/parsley.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#login-form').parsley({
+            trigger: 'change',
+            successClass: 'success',
+            errorClass: 'error',
+            validationMinlength: '1',
+            errors: {
+                classHandler: function(elem) {
+                    return $(elem).parents('div.control-group').first();
+                },
+                errorsWrapper: '<span class="help-inline"></span>',
+                errorElem: '<span></span>',
+            },
+        });
+        $('input#date').change();
+    });
+</script>
 {% end %}

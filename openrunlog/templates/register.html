@@ -28,7 +28,7 @@
     <div class="control-group">
         <label class="control-label" for="password_confirm">Password (confirm):</label>
         <div class="controls">
-            <input type="password" name="password_confirm" id="password_confirm" data-required="true" />
+            <input type="password" name="password_confirm" id="password_confirm" data-required="true" data-equalTo="#password" />
         </div>
     </div>
 
@@ -37,7 +37,7 @@
         <div class="controls">
             <label class="radio">
                 Yes
-                <input type="radio" name="public" id="public_yes" value="yes" data-required="true" checked />
+                <input type="radio" name="public" id="public_yes" value="yes" data-required="true" />
             </label>
             <label class="radio">
                 No
