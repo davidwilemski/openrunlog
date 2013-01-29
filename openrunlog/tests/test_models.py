@@ -15,7 +15,8 @@ class TimeTests(unittest.TestCase):
 
     def test_valid_seconds_to_time(self):
         self.assertTrue(models.seconds_to_time(4980) == '1:23:00')
-        self.assertTrue(models.seconds_to_time(300) == '00:05:00')
+        self.assertTrue(models.seconds_to_time(300) == '5:00')
+        self.assertTrue(models.seconds_to_time(600) == '10:00')
 
 
 if __name__ == '__main__':
