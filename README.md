@@ -1,5 +1,7 @@
 #Open Run Log
 
+[![Build Status](https://travis-ci.org/davidwilemski/openrunlog.png?branch=master)](https://travis-ci.org/davidwilemski/openrunlog)
+
 ## What is Open Run Log?
 I intend for Open Run Log (ORL) to be an open source platform 
 that allows people to easily and quickly record their runs and additionally
