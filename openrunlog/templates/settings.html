@@ -14,55 +14,58 @@
     {% end %}
 </div>
 
-<form action="/settings" method="POST">
-    <label for="displayname">Display Name:</label>
-    <input type="displayname" name="displayname" id="displayname" value="{{ user.display_name }}" required />
-    <br />
-
-    Public Profile: <br />
-    <label class="radio inline">
-        <input type="radio" name="public" id="public_yes" value="yes" checked>
-        Yes
-    </label>
-    <label class="radio inline">
-        <input type="radio" name="public" id="public_no" value="no">
-        No
-    </label>
-
-    <div class="input-prepend" id="url-wrapper">
-        <label for="url">Profile URL:</label>
-        <span class="add-on">/user/</span>
-        <input type="text" name="url" id="url" value="{{ user.url }}" />
+<form id="settings" action="/settings" method="POST" class="form form-horizontal">
+    <div class="control-group">
+        <label class="control-label" for="displayname">Display Name:</label>
+        <div class="controls">
+            <input type="text" name="displayname" id="displayname" value="{{ user.display_name }}" data-required="true" />
+        </div>
     </div>
-
-    <br />
-    <button type="submit" class="btn-primary">Save</button>
+    <div class="control-group">
+        <label class="control-label">Public Profile:</label>
+        <div class="controls">
+        <label class="radio">
+            Yes
+            <input type="radio" name="public" id="public_yes" value="yes" data-required="true" {% if user.public %}checked{% end %}>
+        </label>
+        <label class="radio">
+            No
+            <input type="radio" name="public" id="public_no" value="no" data-required="true" {% if not user.public %}checked{% end %}>
+        </label>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="url">Profile URL:</label>
+        <div class="controls">
+            <div class="input-prepend" id="url-wrapper">
+                <span class="add-on">/user/</span>
+                <input type="text" name="url" id="url" value="{{ user.url }}" data-trigger="change" data-regex=".*" />
+            </div>
+        </div>
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
 </form>
 
 {% end %}
 
 {% block bottom %}
+<script type="text/javascript" src="/static/js/parsley.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        var id = $("input[@name=public_yes]:checked").attr('id');
-        if(id == 'public_yes') { // then make url required
-            $("#url").attr('required', 'true');
-        }
-
-        $("input:radio").click(function() {
-            console.log("hi");
-
-            id = $("input[@name=public_yes]:checked").attr('id');
-            if(id == 'public_yes') { // then make url required
-                if(!$("#url").attr('required')){
-                    $("#url").attr('required', 'true');
-                    $("#url-wrapper").show()
-                }
-            }
-            else { // empty url field
-                $("#url").removeAttr('required');
-                $("#url-wrapper").hide()
-            }
+        $('form#settings').parsley({
+            trigger: 'change',
+            successClass: 'success',
+            errorClass: 'error',
+            validationMinlength: '1',
+            errors: {
+                classHandler: function(elem) {
+                    return $(elem).parents('div.control-group').first();
+                },
+                errorsWrapper: '<span class="help-inline"></span>',
+                errorElem: '<span></span>',
+            },
         });
     });
 </script>
