@@ -9,68 +9,90 @@
     </head>
 
     <body>
-        <div class="navbar">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a class="brand" href="/">
-                        Open Run Log
-                    </a> 
-                    <ul class="nav pull-right">
-                        <li class="divider-vertical"></li>
-                        {% if user %}
-                        <li class="dropdown">
-                            <a href="#"
-                                class="dropdown-toggle"
-                                data-toggle="dropdown">
-                                    {% raw gravatar_html(user.email) %}
-                                    {{ user.email }} 
-                                    <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="/settings">Settings</a></li>
-                                <li><a href="/logout">Log Out</a></li>
-                            </ul>
-                        </li>
-                        {% else %}
-                        <li><a href="/login">Log In</a></li>
+        <div id="wrapper">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="container">
+                        <a class="brand" href="/">
+                            Open Run Log
+                        </a> 
+                        <ul class="nav pull-right">
+                            <li class="divider-vertical"></li>
+                            {% if user %}
+                            <li class="dropdown">
+                                <a href="#"
+                                    class="dropdown-toggle"
+                                    data-toggle="dropdown">
+                                        {% raw gravatar_html(user.email) %}
+                                        {{ user.email }} 
+                                        <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/settings">Settings</a></li>
+                                    <li><a href="/logout">Log Out</a></li>
+                                </ul>
+                            </li>
+                            {% else %}
+                            <li><a href="/login">Log In</a></li>
+                            {% end %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="span2">
+                        <p>&nbsp;</p>
+                    </div>
+                    <div class="span8">
+                        {% if error %}
+                            <div class="alert alert-error">
+                                <p>{{ error }}</p>
+                            </div>
                         {% end %}
-                    </ul>
+                    </div>
+                    <div class="span2">
+                        <p>&nbsp;</p>
+                    </div>
+                </div>
+
+                {% block content %}
+                {% end %}
+
+            </div>
+
+            <div id="push"></div>
+
+        </div>
+
+        <div id="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="span12">
+                        <h6>Open Run Log made by <a href="https://twitter.com/davidwilemski">@davidwilemski</a></h6>
+                    </div> 
                 </div>
             </div>
         </div>
 
-        <div class="container">
-            <div class="row">
-                <div class="span2">
-                    <p>&nbsp;</p>
-                </div>
-                <div class="span8">
-                    {% if error %}
-                        <div class="alert alert-error">
-                            <p>{{ error }}</p>
-                        </div>
-                    {% end %}
-                </div>
-                <div class="span2">
-                    <p>&nbsp;</p>
-                </div>
-            </div>
-
-            {% block content %}
-            {% end %}
-
-            <div class="row">
-                <div class="span12 footer">
-                    <hr />
-                    <h6>Open Run Log made by <a href="https://twitter.com/davidwilemski">@davidwilemski</a></h6>
-                </div> 
-            </div>
-
-       </div>
-
     </body>
     <style>
-        .footer{
+        html, body {
+            height: 100%;
+        }
+        div#wrapper {
+            min-height:100%;
+            height: auto !important;
+            height: 100%;
+            margin: 0 auto -60px;
+        }
+        div#push,
+        div#footer {
+            height: 60px;
+        }
+        div#footer {
+            background-color: #f5f5f5;
             text-align:center;
         }
     </style>
