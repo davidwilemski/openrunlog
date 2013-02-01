@@ -128,6 +128,16 @@
 {% end %}
 
 {% block bottom %}
+<style>
+span.remove_run.label {
+    margin-left: -26px;
+}
+div.recent_run {
+    height: 20px;
+    white-space: nowrap;
+}
+</style>
+
 <script src="{{ static_url('js/d3.v2.min.js') }}"></script>
 <script src="{{ static_url('js/xcharts.min.js') }}"></script>
 
