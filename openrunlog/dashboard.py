@@ -11,7 +11,16 @@ class ProfileHandler(base.BaseHandler):
     def get(self, url):
         error = self.get_error()
         user = self.get_current_user()
-        profile = models.User.objects(url=url).first()
+        profile = user
+
+        # if we're not looking at our own, we show another profile if it's public
+        if user.url != url:
+            other_user = models.User.objects(url=url).first()
+            if other_user and other_user.public:
+                profile = other_user
+            else:
+                self.redirect('/u/%s' % user.url)
+
         f1 = yield gen.Task(self.execute_thread, 
                 models.Run.get_recent_runs, profile, 10)
         f2 = yield gen.Task(self.execute_thread, 
@@ -24,29 +33,3 @@ class ProfileHandler(base.BaseHandler):
         year = datetime.date.today().year
 
         self.render('dashboard.html', page_title='Dashboard', user=user, recent_runs=recent_runs, today=datetime.date.today().strftime("%x"), error=error, miles_this_week=miles_this_week, week=week, this_year=year, profile=profile)
-
-
-class DashboardHandler(base.BaseHandler):
-    @web.authenticated
-    @web.asynchronous
-    @gen.engine
-    def get(self):
-        error = self.get_error()
-        user = self.get_current_user()
-
-        if user.public:
-            self.redirect('/u/{}'.format(user.url))
-            return
-
-        f1 = yield gen.Task(self.execute_thread, 
-                models.Run.get_recent_runs, user, 10)
-        f2 = yield gen.Task(self.execute_thread, 
-            models.Week.this_week, user)
-        f3 = yield gen.Task(self.execute_thread, 
-            models.Run.this_week_mileage, user)
-        recent_runs = f1.result()
-        week = f2.result()
-        miles_this_week = f3.result()
-        year = datetime.date.today().year
-
-        self.render('dashboard.html', page_title='Dashboard', user=user, recent_runs=recent_runs, today=datetime.date.today().strftime("%x"), error=error, miles_this_week=miles_this_week, week=week, this_year=year, profile=user)
