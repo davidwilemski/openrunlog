@@ -19,7 +19,7 @@ class AddRunHandler(base.BaseHandler):
             time = models.time_to_seconds(time)
         except ValueError, e:
             msg = "The value you entered for time was not valid. Please enter your time in format HH:MM:SS or MM:SS or MM."
-            self.redirect_msg('/dashboard', {'error': msg})
+            self.redirect_msg('/u/%s' % user.url, {'error': msg})
             return
         notes = self.get_argument('notes', '')
         user = self.get_current_user()

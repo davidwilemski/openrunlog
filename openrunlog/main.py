@@ -38,7 +38,6 @@ application = web.Application([
     (r'/settings', login.SettingsHandler),
     (r'/settings/dailymile/noexport', login.DailyMileLogoutHandler),
     (r'/auth/dailymile', login.DailyMileHandler),
-    (r'/dashboard', dashboard.DashboardHandler),
     (r'/u/([a-zA-Z0-9]+)', dashboard.ProfileHandler),
     (r'/add', runs.AddRunHandler),
     (r'/remove', runs.RemoveRunHandler),
