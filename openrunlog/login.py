@@ -61,54 +61,39 @@ class RegisterHandler(base.BaseHandler):
         password = self.get_argument('password', '')
         password_confirm = self.get_argument('password_confirm', '')
         url = self.get_argument('url', '')
-        public = self.get_argument('public', '')
+        public = True if self.get_argument('public', '') == 'yes' else False
 
+        # check for general errors
         error = False
-        if not email or not password or not password_confirm:
+        if not email or not password or not password_confirm or not url:
             error = True
-
         if password != password_confirm:
             error = True
-
-        if error == True:
+        if error:
             error_text = 'Missing a field or passwords do not match, all fields are required.'
-            self.render(
-                    'register.html', 
-                    page_title='Register', 
-                    user=None,
-                    error=error_text)
+            self.render('register.html', page_title='Register', user=None, error=error_text)
             return
 
         # check that email hasn't already been used
-        user = models.User.objects(email=email).first()
-        if user:
+        check_user = models.User.objects(email=email).first()
+        if check_user:
             error_text = 'The email you tried already has an account. Please log in or register with a different email address.'
-            self.render(
-                    'register.html', 
-                    page_title='Register', 
-                    user=user, 
-                    error=error_text)
+            self.render('register.html', page_title='Register', user=None, error=error_text)
             return
  
-        error = False
-        public = True if public == 'yes' else False
-        if public and not url:
-            error = 'A profile URL is required for public accounts!'
         # make sure url is unique
-        if not models.url_unique(url, user):
-            error = 'A profile URL is required for public accounts!'
-        if error:
-            self.render("settings.html", page_title="Settings for {}".format(user.display_name), user=user, error=error)
-            return
+        if url and not models.url_unique(url):
+            error_text = 'A unique profile URL is required for public accounts!'
+            self.render("register.html", page_title="Register", user=None, error=error_text)
 
-        user = models.User(email=email)
-        user.display_name = display_name
-        user.password = util.hash_pwd(password)
-        user.url = url
-        user.public = public
-        user.save()
+        new_user = models.User(email=email)
+        new_user.password = util.hash_pwd(password)
+        new_user.display_name = display_name
+        new_user.url = url
+        new_user.public = public
+        new_user.save()
 
-        self.set_secure_cookie('user', str(user.id))
+        self.set_secure_cookie('user', str(new_user.id))
         self.redirect('/')
 
 
@@ -139,27 +124,20 @@ class SettingsHandler(base.BaseHandler):
             self.render("settings.html", page_title="Settings for {}".format(user.display_name), user=user, error=error)
             return
 
-        if public == 'yes':
-            public = True
-            if not url:
-                error = 'A profile URL is required for public accounts!'
-                self.render("settings.html", page_title="Settings for {}".format(user.display_name), user=user, error=error)
-                return
+        public = True if public == 'yes' else False
 
-            user.public = True
-            user.url = url
-        else:
-            public = False
-            user.public = False
-            user.url = ''
-
-        # make sure url is unique
-        if public and not models.url_unique(url, user):
+        error = False
+        if url == '':
             error = 'A profile URL is required for public accounts!'
+            # make sure url is unique
+            if not models.url_unique(url, user):
+                error = 'A profile URL is required for public accounts!'
+        if error:
             self.render("settings.html", page_title="Settings for {}".format(user.display_name), user=user, error=error)
             return
 
-
+        user.public = public
+        user.url = url
         user.display_name = display_name
         user.save()
 

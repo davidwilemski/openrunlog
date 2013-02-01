@@ -3,12 +3,12 @@ import mongoengine
 import datetime
 import dateutil
 
-def url_unique(url, user):
+def url_unique(url, user=None):
     unique = True 
     urls = User.objects(url=url)
     if urls.count() > 1:
         unique = False
-    else:
+    elif user:
         if urls.first() and urls.first().email != user.email:
             unique = False
     return unique
