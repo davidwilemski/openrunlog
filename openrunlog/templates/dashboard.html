@@ -30,7 +30,9 @@
         {% for run in recent_runs %}
             <div class="recent_run" data-run-id="{{ run.id }}">
                 <span style="display:none;" class="remove_run label label-important"><i type="submit" class="icon-remove icon-white"></i></span>
-                {{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ run.pace }}
+                {% if run.notes %}<span rel="tooltip" data-placement="right" data-title="{{ run.notes }}">{% end %}
+                    {{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ run.pace }}
+                {% if run.notes %}</span>{% end %}
             </div>
         {% end %}
 
@@ -264,6 +266,7 @@ div.recent_run {
             if($('form#remove_run > input[name="run_id"]').val() === '') return;
             $('form#remove_run').submit();
         });
+        $('.recent_run > span[rel="tooltip"]').tooltip();
         {% end %}
 
 
