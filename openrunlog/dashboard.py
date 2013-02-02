@@ -9,6 +9,7 @@ class ProfileHandler(base.BaseHandler):
     @web.asynchronous
     @gen.engine
     def get(self, url):
+        self.tf.send({'profile.dashboard.views': 1}, lambda x: x)
         error = self.get_error()
         user = self.get_current_user()
         profile = user

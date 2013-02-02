@@ -6,11 +6,12 @@ import util
 import datetime
 import dateutil.parser
 
-from tornado import web
+from tornado import web, gen
 
 class AddRunHandler(base.BaseHandler):
     @web.asynchronous
     @web.authenticated
+    @gen.engine
     def post(self):
         date = self.get_argument('date', '')
         date = dateutil.parser.parse(date, fuzzy=True)
@@ -48,11 +49,13 @@ class AddRunHandler(base.BaseHandler):
         if user.export_to_dailymile:
             crosspost.send_run(self.redis, run)
 
+        yield gen.Task(self.tf.send, {'profile.runs.added': 1})
         self.redirect('/')
 
 class RemoveRunHandler(base.BaseHandler):
     @web.asynchronous
     @web.authenticated
+    @gen.engine
     def post(self):
         run_id = self.get_argument('run_id', '')
         user = self.get_current_user()
@@ -89,11 +92,13 @@ class RemoveRunHandler(base.BaseHandler):
         # remove the run itself, always
         run.delete()
 
+        yield gen.Task(self.tf.send, {'profile.runs.removed': 1})
         self.redirect('/')
 
 
 class ShowRunHandler(base.BaseHandler):
     @web.asynchronous
+    @gen.engine
     def get(self, userurl, run):
         user = self.get_current_user()
         profile = models.User.objects(url=userurl).first()
@@ -104,4 +109,5 @@ class ShowRunHandler(base.BaseHandler):
         run = models.Run.objects(id=run).first()
         year = datetime.date.today().year
 
+        yield gen.Task(self.tf.send, {'profile.runs.views': 1})
         self.render('run.html', page_title='{}\' {} mile run'.format(profile.display_name, run.distance), user=user, profile=profile, run=run, error=None, this_year=year)

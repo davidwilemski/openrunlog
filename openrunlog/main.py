@@ -7,6 +7,7 @@ import os
 from tornado import web, ioloop, process
 from tornado.options import define, options, parse_command_line
 import tornadoredis
+import tornadotinyfeedback
 
 import home
 import login
@@ -49,6 +50,7 @@ application = web.Application([
 
 application.config = config
 application.thread_pool = futures.ThreadPoolExecutor(max_workers=3)
+application.tf = tornadotinyfeedback.Client('openrunlog')
 application.redis = tornadoredis.Client()
 
 application.redis.connect()

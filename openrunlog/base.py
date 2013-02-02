@@ -41,4 +41,9 @@ class BaseHandler(web.RequestHandler):
 
     @property
     def redis(self):
+        self.tf.send({'redis.getconnection': 1}, lambda x: x)
         return self.application.redis
+
+    @property
+    def tf(self):
+        return self.application.tf

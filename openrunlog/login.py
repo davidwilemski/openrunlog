@@ -18,6 +18,7 @@ class LoginHandler(base.BaseHandler):
         self.render('login.html', page_title='Log In', user=None, error='')
 
     @web.asynchronous
+    @gen.engine
     def post(self):
         email = self.get_argument('email', '')
         password = self.get_argument('password', '')
@@ -40,9 +41,11 @@ class LoginHandler(base.BaseHandler):
         if error:
             error_text = "Yo! You gave an invalid username or incorrect password!"
             self.render('login.html', page_title='Log In', user=None, error=error_text)
+            self.tf.send({'users.logins.failure': 1}, lambda x: x)
             return
         
         self.set_secure_cookie('user', str(user.id))
+        self.tf.send({'users.logins.success': 1}, lambda x: x)
         self.redirect('/')
 
 
@@ -94,13 +97,16 @@ class RegisterHandler(base.BaseHandler):
         new_user.save()
 
         self.set_secure_cookie('user', str(new_user.id))
+        self.tf.send({'users.registrations': 1}, lambda x: x)
         self.redirect('/')
 
 
 class LogoutHandler(base.BaseHandler):
     @web.asynchronous
+    @gen.engine
     def get(self):
         self.clear_cookie('user')
+        yield gen.Task(self.tf.send, {'users.logouts': 1})
         self.redirect('/')
 
 class SettingsHandler(base.BaseHandler):
@@ -112,6 +118,7 @@ class SettingsHandler(base.BaseHandler):
 
     @web.authenticated
     @web.asynchronous
+    @gen.engine
     def post(self):
         user = self.get_current_user()
         url = self.get_argument('url', '')
@@ -141,6 +148,7 @@ class SettingsHandler(base.BaseHandler):
         user.display_name = display_name
         user.save()
 
+        yield gen.Task(self.tf.send, {'users.settings.changed': 1})
         self.redirect('/settings')
 
 class DailyMileHandler(base.BaseHandler, auth.OAuth2Mixin):
@@ -204,15 +212,18 @@ class DailyMileHandler(base.BaseHandler, auth.OAuth2Mixin):
         crosspost.send_user(self.redis, user)
 
         # queue past runs for the worker process to cross post
+        self.tf.send({'users.dailymile.login': 1}, lambda x: x)
         self.redirect('/settings')
 
 class DailyMileLogoutHandler(base.BaseHandler):
     @web.authenticated
     @web.asynchronous
+    @gen.engine
     def post(self):
         user = self.get_current_user()
         user.export_to_dailymile = False
         user.dailymile_token = ''
         user.save()
 
+        yield gen.Task(self.tf.send, {'users.dailymile.logout': 1})
         self.redirect('/settings')
