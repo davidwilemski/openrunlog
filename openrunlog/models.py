@@ -84,6 +84,10 @@ class User(mongoengine.Document):
         date = dateutil.parser.parse('1-1-{}'.format(year))
         return Run.get_mileage(self, date=date)
 
+    @property
+    def uri(self):
+        return '/u/{}'.format(self.url)
+
 class Run(mongoengine.Document):
     user = mongoengine.ReferenceField(User, dbref=True)
     date = mongoengine.DateTimeField(default=datetime.date.today())

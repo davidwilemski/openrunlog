@@ -23,7 +23,7 @@
     </div>
     <div class="span9">
         <div class="hero-unit">
-        <p class="lead center">{{ profile.display_name }} ran {{ run.distance }} miles in {{ run.pretty_time }} ({{ run.pace }})</p>
+            <p class="lead center"><a href="{{ profile.uri }}">{{ profile.display_name }}</a> ran {{ run.distance }} miles in {{ run.pretty_time }} ({{ run.pace }})</p>
 
         <blockquote>
             <p>{{ run.notes }}</p>
