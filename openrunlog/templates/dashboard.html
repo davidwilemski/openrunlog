@@ -7,12 +7,7 @@
 {% block content %}
 <div class="row">
     <div class="span3">
-    {% raw gravatar_html(profile.email, 200) %}
-    <h1>{{ profile.display_name }}</h1>
-    <p>
-        All Time: {{ profile.total_mileage }} Miles<br />
-        {{ this_year }}: {{ profile.yearly_mileage }} Miles
-    </p>
+    {% include '_profile_starter.html' %}
 
     <h2>Recent Runs:</h2>
     {% if user and user.email == profile.email %}
