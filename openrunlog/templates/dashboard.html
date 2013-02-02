@@ -31,7 +31,7 @@
             <div class="recent_run" data-run-id="{{ run.id }}">
                 <span style="display:none;" class="remove_run label label-important"><i type="submit" class="icon-remove icon-white"></i></span>
                 {% if run.notes %}<span rel="tooltip" data-placement="right" data-title="{{ run.notes }}">{% end %}
-                    {{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ run.pace }}
+                    <a href="{{ run.uri }}">{{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ run.pace }}</a>
                 {% if run.notes %}</span>{% end %}
             </div>
         {% end %}

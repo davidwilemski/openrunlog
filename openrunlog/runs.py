@@ -3,6 +3,7 @@ import base
 import crosspost
 import models
 import util
+import datetime
 import dateutil.parser
 
 from tornado import web
@@ -89,3 +90,17 @@ class RemoveRunHandler(base.BaseHandler):
         run.delete()
 
         self.redirect('/')
+
+
+class ShowRunHandler(base.BaseHandler):
+    @web.asynchronous
+    def get(self, userurl, run):
+        user = self.get_current_user()
+        profile = models.User.objects(url=userurl).first()
+        run = models.Run.objects(id=run).first()
+        year = datetime.date.today().year
+
+        if not profile.public and profile.email != user.email:
+            self.write('this page is private!')
+
+        self.render('run.html', page_title='{}\' {} mile run'.format(profile.display_name, run.distance), user=user, profile=profile, run=run, error=None, this_year=year)

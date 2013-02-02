@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ static_url('css/xcharts.min.css') }}" type="text/css" />
+
+<style>
+    .center {
+        text-align: center;
+    }
+</style>
+{% end %}
+
+{% block content %}
+<div class="row">
+    <div class="span3">
+    {% raw gravatar_html(profile.email, 200) %}
+    <h1>{{ profile.display_name }}</h1>
+    <p>
+        All Time: {{ profile.total_mileage }} Miles<br />
+        {{ this_year }}: {{ profile.yearly_mileage }} Miles
+    </p>
+
+    </div>
+    <div class="span9">
+        <div class="hero-unit">
+        <p class="lead center">{{ profile.display_name }} ran {{ run.distance }} miles in {{ run.pretty_time }} ({{ run.pace }})</p>
+
+        <blockquote>
+            <p>{{ run.notes }}</p>
+        </blockquote>
+    </div>
+    </div>
+
+</div>
+
+{% end %}

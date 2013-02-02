@@ -143,6 +143,9 @@ class Run(mongoengine.Document):
     def pretty_time(self):
         return seconds_to_time(self.time)
 
+    @property
+    def uri(self):
+        return '/u/{}/run/{}'.format(self.user.url, str(self.id))
 
 
 class Week(mongoengine.Document):
