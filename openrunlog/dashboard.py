@@ -14,12 +14,10 @@ class ProfileHandler(base.BaseHandler):
         profile = user
 
         # if we're not looking at our own, we show another profile if it's public
-        if user.url != url:
-            other_user = models.User.objects(url=url).first()
-            if other_user and other_user.public:
-                profile = other_user
-            else:
-                self.redirect('/u/%s' % user.url)
+        if not user or user.url != url:
+            profile = models.User.objects(url=url).first()
+            if not profile.public:
+                self.render('private.html', page_title='Private Profile', user=user, profile=profile, error=None)
 
         f1 = yield gen.Task(self.execute_thread, 
                 models.Run.get_recent_runs, profile, 10)

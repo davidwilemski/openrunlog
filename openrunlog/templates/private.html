@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ static_url('css/xcharts.min.css') }}" type="text/css" />
+
+<style>
+    .center {
+        text-align: center;
+    }
+</style>
+{% end %}
+
+{% block content %}
+<div class="row">
+    <div class="span2">
+    </div>
+
+    <div class="span8">
+        <div class="hero-unit">
+            <p class="lead center">This user's runs are not being shared.</p>
+        </div>
+    </div>
+
+    <div class="span2">
+    </div>
+
+</div>
+
+{% end %}
+

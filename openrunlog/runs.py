@@ -97,10 +97,11 @@ class ShowRunHandler(base.BaseHandler):
     def get(self, userurl, run):
         user = self.get_current_user()
         profile = models.User.objects(url=userurl).first()
+
+        if not profile.public and (not user or profile.email != user.email):
+            self.render('private.html', page_title='Private Profile', user=user, profile=profile, error=None)
+
         run = models.Run.objects(id=run).first()
         year = datetime.date.today().year
-
-        if not profile.public and profile.email != user.email:
-            self.write('this page is private!')
 
         self.render('run.html', page_title='{}\' {} mile run'.format(profile.display_name, run.distance), user=user, profile=profile, run=run, error=None, this_year=year)
