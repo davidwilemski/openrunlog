@@ -110,4 +110,4 @@ class ShowRunHandler(base.BaseHandler):
         year = datetime.date.today().year
 
         yield gen.Task(self.tf.send, {'profile.runs.views': 1})
-        self.render('run.html', page_title='{}\' {} mile run'.format(profile.display_name, run.distance), user=user, profile=profile, run=run, error=None, this_year=year)
+        self.render('run.html', page_title='{}\'s {} mile run'.format(profile.display_name, run.distance), user=user, profile=profile, run=run, error=None, this_year=year)
