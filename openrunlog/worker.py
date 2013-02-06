@@ -56,7 +56,7 @@ def export_run(run):
     response = yield tornado.gen.Task(client.fetch, url, method='POST', body=json.dumps(body), headers=headers)
     logging.debug(body)
     logging.debug(response)
-    tf.send({'users.dailymile.run.sent'}, lambda x: x)
+    tf.send({'users.dailymile.run.sent': 1}, lambda x: x)
 
     if response.code == 201:
         run.exported_to_dailymile = True
