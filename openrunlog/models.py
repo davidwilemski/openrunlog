@@ -96,15 +96,16 @@ class User(mongoengine.Document):
         if len(runs) == 1: return 1
         current_streak = 1
         longest_streak = 1
-        longest_streak_start = 0
         for i in range(0, len(runs) - 1):
             day_delta = relativedelta(runs[i+1].date, runs[i].date).days
             if day_delta == 1:
                 current_streak += 1
+                if current_streak > longest_streak:
+                    longest_streak = current_streak
             elif day_delta == 0:
                 continue
-            if current_streak > longest_streak:
-                longest_streak = current_streak
+            else:
+                current_streak = 1
         return longest_streak
 
 class Run(mongoengine.Document):
