@@ -2,6 +2,7 @@
 import mongoengine
 import datetime
 import dateutil
+from dateutil.relativedelta import relativedelta
 
 def url_unique(url, user=None):
     unique = True 
@@ -88,6 +89,24 @@ class User(mongoengine.Document):
     def uri(self):
         return '/u/{}'.format(self.url)
 
+    @property
+    def get_longest_streak(self):
+        runs = Run.objects(user=self).order_by('date')
+        if len(runs) == 0: return 0
+        if len(runs) == 1: return 1
+        current_streak = 1
+        longest_streak = 1
+        longest_streak_start = 0
+        for i in range(0, len(runs) - 1):
+            day_delta = relativedelta(runs[i+1].date, runs[i].date).days
+            if day_delta == 1:
+                current_streak += 1
+            elif day_delta == 0:
+                continue
+            if current_streak > longest_streak:
+                longest_streak = current_streak
+        return longest_streak
+
 class Run(mongoengine.Document):
     user = mongoengine.ReferenceField(User, dbref=True)
     date = mongoengine.DateTimeField(default=datetime.date.today())
@@ -150,7 +169,6 @@ class Run(mongoengine.Document):
     @property
     def uri(self):
         return '/u/{}/run/{}'.format(self.user.url, str(self.id))
-
 
 class Week(mongoengine.Document):
     """
