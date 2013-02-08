@@ -196,17 +196,22 @@ class DailyRunsHandler(base.BaseHandler):
         user = models.User.objects(id=uid).first()
         
         def runs_per_day(user):
-            data = []
-            minus_one_year = datetime.timedelta(days=-365)
+            minus_one_year = datetime.timedelta(weeks=-52)
             plus_one_day = datetime.timedelta(days=1)
             today = datetime.date.today()
             d = today + minus_one_year
-            runs = models.Run.objects(user=user,date__gte=d)
-            runs = sorted(runs, key=lambda r: r.date)
-            return [[str(r.date).split(' ')[0], 1] for r in runs]
+            runs = models.Run.objects(user=user,date__gt=d)
+            data = {str(r.date).split(' ')[0]: [r.date.isocalendar()[1], 1] for r in runs}
+            while d <= today:
+                if str(d) not in data.keys():
+                    data[str(d)] = [d.isocalendar()[1], 0]
+                d += plus_one_day
+            ret_data = [[k, v[0], v[1]] for k,v in data.iteritems()]
+            ret_data = sorted(ret_data, key=lambda i: i[0])
+            return ret_data
 
         runs = (yield gen.Task(
             self.execute_thread, runs_per_day, user)).result()
 
         self.finish(str(runs).replace("'", '"'))
-            
+
