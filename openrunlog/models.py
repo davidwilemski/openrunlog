@@ -102,7 +102,7 @@ class User(mongoengine.Document):
         longest_streak_start = -1
         for i in range(0, len(runs) - 1):
             day_delta = relativedelta(runs[i+1].date, runs[i].date).days
-            if day_delta == 1:
+            if day_delta == 1 and runs[i].distance > 0:
                 if current_streak == 1:
                     current_streak_start = i
                 current_streak += 1
@@ -129,7 +129,7 @@ class User(mongoengine.Document):
         else:
             for i in range(len(runs)-1, -1, -1):
                 day_delta = relativedelta(runs[i-1].date, runs[i].date).days
-                if day_delta == -1:
+                if day_delta == -1 and runs[i].distance > 0:
                     current_streak += 1
                 elif day_delta == 0:
                     continue
