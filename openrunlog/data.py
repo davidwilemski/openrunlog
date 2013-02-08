@@ -196,10 +196,12 @@ class DailyRunsHandler(base.BaseHandler):
         user = models.User.objects(id=uid).first()
         
         def runs_per_day(user):
-            minus_one_year = datetime.timedelta(weeks=-52)
             plus_one_day = datetime.timedelta(days=1)
             today = datetime.date.today()
-            d = today + minus_one_year
+            if today.month == 2 and today.day == 29:
+                d = datetime.date(today.year-1, today.month, today.day-1)
+            else:
+                d = datetime.date(today.year-1, today.month, today.day)
             runs = models.Run.objects(user=user,date__gt=d)
             data = {str(r.date).split(' ')[0]: [r.date.isocalendar()[1], 1] for r in runs}
             while d <= today:
