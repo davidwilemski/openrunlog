@@ -52,6 +52,9 @@
             </ul>
         </div>
 
+        <h2>Run Days</h2>
+        <div style="width: 650px; height: 300px;" id="run-calendar"></div>
+
         <h2>Weekly Mileage</h2>
         <div class="tabbable tabs-below">
             <div class="tab-content">
@@ -272,7 +275,48 @@ div.recent_run {
             });
         });
         */
+{
+    var today = new Date()
+    var day = today.getDate()
+    var month = today.getMonth()
+    var year = today.getFullYear()
+    var year_ago = new Date(year=year-1, month=month, day=day)
+
+    var width = 650
+    var pw = 14
+    var box_side = ~~((width-pw*2)/53)
+    var ph = box_side >> 1
+    var height = box_side * 7
+
+    var day_range = d3.range(0,360);
+    var vis = d3.select("#run-calendar")
+        .append("svg:svg")
+        .attr("height", 300)
+        .attr("width", height)
+
+    d3.json("/data/510739e034a0d605f3bf17bf/runs/year", function (json) {
+        var color = d3.scale.quantize().domain([-.05,.05]).range(d3.range(9))
+        var format = d3.time.format("%Y-%m-%d")
+        var week = function(d) { console.log(format.parse(d[0]).week ) ;return format.parse(d[0]).week }
+        var dow = function(d) { return format.parse(d[0]).getDay() }
+        
+        vis.selectAll("rect")
+            .data(json)
+            .enter().append("svg:rect")
+            .attr("x", function(d) { return week(d) * box_side + pw })
+            .attr("y", function(d) { return dow(d) * box_side})
+            .attr("stroke-width", "none")
+            .attr("fill", function() { return color(Math.random()) })
+            .attr("fill-opacity", .5)
+            .attr("visibility", "visible")
+            .attr("width", box_side)
+            .attr("height", box_side)
     });
+}
+
+    });
+
+
 </script>
 
 <script type="text/javascript">

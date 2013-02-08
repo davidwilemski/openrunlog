@@ -188,3 +188,25 @@ class WeekdayRunsHandler(base.BaseHandler):
                         len(runs_per_weekday))]}
 
         self.finish(data)
+
+class DailyRunsHandler(base.BaseHandler):
+    @web.asynchronous
+    @gen.engine
+    def get(self, uid):
+        user = models.User.objects(id=uid).first()
+        
+        def runs_per_day(user):
+            data = []
+            minus_one_year = datetime.timedelta(days=-365)
+            plus_one_day = datetime.timedelta(days=1)
+            today = datetime.date.today()
+            d = today + minus_one_year
+            runs = models.Run.objects(user=user,date__gte=d)
+            runs = sorted(runs, key=lambda r: r.date)
+            return [[str(r.date).split(' ')[0], 1] for r in runs]
+
+        runs = (yield gen.Task(
+            self.execute_thread, runs_per_day, user)).result()
+
+        self.finish(str(runs).replace("'", '"'))
+            
