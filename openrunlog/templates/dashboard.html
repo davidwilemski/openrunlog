@@ -282,10 +282,10 @@ div.recent_run {
     var year = today.getFullYear()
 
     var width = 700
-    var pw = 0
+    var pw = 20
     var box_side = ~~((width-pw*2)/53)
     var ph = box_side >> 1
-    var height = box_side * 7
+    var height = ph + box_side * 8
 
     var day_range = d3.range(0,360);
     var vis = d3.select("#run-calendar")
@@ -318,17 +318,43 @@ div.recent_run {
                                      } else {
                                         return x + last_year_x_offset; 
                                      } })
-            .attr("y", function(d) { return dow(d) * box_side})
+            .attr("y", function(d) { return ph + (1 + dow(d)) * box_side})
             .attr("data-date", function(d) { return d[0] })
             .attr("data-dow", function(d) { return dow(d) })
             .attr("data-woy", function(d) { return d[1] })
-            .attr("stroke-width", "1.0px")
+            .attr("data-month", function(d) { return month(d); })
+            .attr("stroke-width", "0.8px")
             .attr("stroke", "#ccc")
             .attr("fill", function(d) { if (d[2] == 0) { return "#eee"; } else { return "#1e6823"; } })
             .attr("fill-opacity", .5)
             .attr("visibility", "visible")
             .attr("width", box_side)
             .attr("height", box_side)
+        
+        vis.selectAll("text.month")
+            .data(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])
+            .enter().append("svg:text")
+            .attr("class", "month")
+            .attr("x", function(d, i) { return (box_side - 2 + parseInt($(d3.select('rect[data-dow="0"][data-month="' + i + '"]')[0][0]).attr("x"))); })
+            .attr("y", box_side)
+            .attr("text-anchor", "middle")
+            .attr("fill", "#ccc")
+            .attr("style", "font-size:" + box_side + "px;")
+            .text(String)
+
+        vis.selectAll("text.dow")
+            .data(["S", "M", "T", "W", "T", "F", "S"])
+            .enter().append("svg:text")
+            .attr("class", "dow")
+            .attr("x", box_side-2)
+            .attr("y", function(d, i) { return ph + (i + 2) * box_side - 1; })
+            .attr("text-anchor", "middle")
+            .attr("fill", "#ccc")
+            .attr("style", function(d, i) { if (i % 2 == 0) return "display:none;";
+                                            else return "font-size:" + (box_side) + "px;";
+                                            })
+            .text(String)
+
     });
 }
 
