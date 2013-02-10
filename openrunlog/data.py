@@ -217,3 +217,28 @@ class DailyRunsHandler(base.BaseHandler):
 
         self.finish(str(runs).replace("'", '"'))
 
+class MonthRunsHandler(base.BaseHandler):
+    @web.asynchronous
+    @gen.engine
+    def get(self, uid):
+        user = models.User.objects(id=uid).first()
+        
+        def runs_in_month(user):
+            plus_one_day = datetime.timedelta(days=1)
+            today = datetime.date.today()
+            d = today - (31 * plus_one_day)
+            runs = models.Run.objects(user=user,date__gt=d)
+            data = {str(r.date).split(' ')[0]: [r.date.isocalendar()[1], 1] for r in runs}
+            while d <= today:
+                if str(d) not in data.keys():
+                    data[str(d)] = [d.isocalendar()[1], 0]
+                d += plus_one_day
+            ret_data = [[k, v[0], v[1]] for k,v in data.iteritems()]
+            ret_data = sorted(ret_data, key=lambda i: i[0])
+            return ret_data
+
+        runs = (yield gen.Task(
+            self.execute_thread, runs_in_month, user)).result()
+
+        self.finish(str(runs).replace("'", '"'))
+

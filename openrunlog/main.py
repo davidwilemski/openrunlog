@@ -47,6 +47,7 @@ application = web.Application([
     (r'/data/([A-Za-z0-9]{24})/mileage/weekly', data.WeeklyMileageHandler),
     (r'/data/([A-Za-z0-9]{24})/runs/weekday', data.WeekdayRunsHandler),
     (r'/data/([A-Za-z0-9]{24})/runs/year', data.DailyRunsHandler),
+    (r'/data/([A-Za-z0-9]{24})/runs/month', data.MonthRunsHandler),
 ], **settings)
 
 application.config = config
