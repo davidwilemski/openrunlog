@@ -227,7 +227,7 @@ class MonthRunsHandler(base.BaseHandler):
             plus_one_day = datetime.timedelta(days=1)
             today = datetime.date.today()
             d = today - (31 * plus_one_day)
-            runs = models.Run.objects(user=user,date__gt=d)
+            runs = models.Run.objects(user=user,date__gte=d)
             data = {str(r.date).split(' ')[0]: [r.date.isocalendar()[1], 1] for r in runs}
             while d <= today:
                 if str(d) not in data.keys():
