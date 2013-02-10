@@ -5,11 +5,13 @@
 <p>
     All Time: {{ profile.total_mileage }} Miles<br />
     {{ this_year }}: {{ profile.yearly_mileage }} Miles<br />
-    {# {% set streaks = profile.get_streaks %}
-    {% set streak = streaks['longest'] %}
-    Longest Streak: {{ streak['length'] }} days<br />
-    <small>{{ streak['start'] }} - {{ streak['end'] }}</small><br />
-    {% set current_streak = streaks['current'] %}
-    Current Streak: {{ current_streak['length'] }} days<br />
-    <small>{{ current_streak['start'] }} - {{ current_streak['end'] }}</small><br /> #}
+    {% set streaks = profile.streaks %}
+    {% if streaks %}
+        {% set streak = streaks['longest'] %}
+        Longest Streak: {{ streak['length'] }} days<br />
+        <small>{{ streak['start'] }} - {{ streak['end'] }}</small><br />
+        {% set current_streak = streaks['current'] %}
+        Current Streak: {{ current_streak['length'] }} days<br />
+        <small>{{ current_streak['start'] }} - {{ current_streak['end'] }}</small><br />
+    {% end %}
 </p>

@@ -9,3 +9,4 @@ env
 futures
 tornado-redis
 -e git://github.com/davidwilemski/tornado-tinyfeedback.git#egg=tornado-tinyfeedback
+redis

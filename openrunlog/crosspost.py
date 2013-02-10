@@ -13,9 +13,11 @@ def send_user(r, user):
             logging.debug('queueing run of {} miles'.format(run.distance))
             r.rpush(dailymile_export, str(run.id))
 
+
 @gen.engine
 def send_run(r, run):
     r.rpush(dailymile_export, str(run.id))
+
 
 @gen.engine
 def get(r, callback):

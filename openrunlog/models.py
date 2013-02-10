@@ -4,8 +4,9 @@ import datetime
 import dateutil
 from dateutil.relativedelta import relativedelta
 
+
 def url_unique(url, user=None):
-    unique = True 
+    unique = True
     urls = User.objects(url=url)
     if urls.count() > 1:
         unique = False
@@ -55,12 +56,11 @@ def seconds_to_time(seconds):
     while minutes > 59:
         minutes -= 60
         hours += 1
-    
+
     if hours == 0:
         return '{:01}:{:02}'.format(minutes, seconds)
     else:
         return '{}:{:02}:{:02}'.format(hours, minutes, seconds)
-
 
 
 class User(mongoengine.Document):
@@ -71,6 +71,7 @@ class User(mongoengine.Document):
     password = mongoengine.StringField()
     dailymile_token = mongoengine.StringField()
     export_to_dailymile = mongoengine.BooleanField(default=False)
+    streaks = mongoengine.DictField(default=None)
     meta = {
         'indexes': ['id', 'url', 'email']
     }
@@ -89,8 +90,7 @@ class User(mongoengine.Document):
     def uri(self):
         return '/u/{}'.format(self.url)
 
-    @property
-    def get_streaks(self):
+    def calculate_streaks(self):
         runs = Run.objects(user=self, distance__gt=0).order_by('date')
         if len(runs) == 0:
             return 0
@@ -139,15 +139,18 @@ class User(mongoengine.Document):
                 'length': current_streak,
                 'start': runs[len(runs)-1-current_streak].date.strftime(
                     "%m/%d/%Y"),
-                'end': runs[len(runs)-1].date.strftime("%m/%d/%Y")}
+                'end': runs[len(runs)-1].date.strftime("%m/%d/%Y")
+            }
 
-        return {'longest': longest, 'current': current}
+        self.streaks = {'longest': longest, 'current': current}
+        self.save()
+
 
 class Run(mongoengine.Document):
     user = mongoengine.ReferenceField(User, dbref=True)
     date = mongoengine.DateTimeField(default=datetime.date.today())
     distance = mongoengine.FloatField()
-    time = mongoengine.IntField() # store time in seconds for easy manipulation
+    time = mongoengine.IntField()  # store time in seconds for easy manipulation
     notes = mongoengine.StringField()
     exported_to_dailymile = mongoengine.BooleanField(default=False)
     meta = {
