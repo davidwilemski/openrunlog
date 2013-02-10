@@ -8,7 +8,7 @@ import mongoengine
 
 def main(r):
     while True:
-        key, userid = r.blpop(constants.run_added)
+        key, userid = r.blpop(constants.calculate_streaks)
         user = models.User.objects(id=userid).first()
         calculate_streaks(user)
         logging.info('computed streaks for {}'.format(user.display_name))
