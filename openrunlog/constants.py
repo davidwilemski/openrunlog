@@ -1,2 +1,2 @@
 
-run_added = 'orl:workers:streaks'
+calculate_streaks = 'orl:workers:streaks'
