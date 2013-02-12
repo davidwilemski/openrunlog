@@ -1,5 +1,16 @@
 var Calendar = {
-    year: function(user_id) {
+    year: function(element) {
+        var element = $(element)
+        if (!element || element === '') {
+            console.log('Calendar needs element')
+            return false
+        }
+        var url = element.attr('data-url')
+        if (!url || url === '') {
+            console.log('Calendar needs data-url')
+            return false
+        }
+
         var today = new Date()
         var day = today.getDate()
         var month = today.getMonth()
@@ -17,7 +28,7 @@ var Calendar = {
             .attr("height", height + ph * 2)
             .attr("width", width)
     
-        d3.json("/data/" + user_id + "/runs/year", function (json) {
+        d3.json(url, function (json) {
             var format = d3.time.format("%Y-%m-%d")
             var today_dow = json[json.length-1][1]
             var this_year_x_offset = (52 - today_dow ) * box_side
