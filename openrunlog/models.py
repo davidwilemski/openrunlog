@@ -115,9 +115,9 @@ class User(mongoengine.Document):
                 current_streak = 1
         longest = {
             'length': longest_streak,
-            'start': runs[longest_streak_start].date.strftime("%m/%d/%Y"),
-            'end': runs[longest_streak_start+longest_streak].date.strftime(
-                "%m/%d/%Y")}
+            'start': runs[longest_streak_start].date.strftime("%m/%d/%Y") if longest_streak_start != -1 else '',
+            'end': runs[longest_streak_start+longest_streak].date.strftime("%m/%d/%Y") if longest_streak_start != -1 else ''
+        }
 
         current_streak = 1
         today = datetime.date.today()
