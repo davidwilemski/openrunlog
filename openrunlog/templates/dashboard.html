@@ -52,6 +52,9 @@
             </ul>
         </div>
 
+        <h2>Run Days</h2>
+        <div style="width: 700px;" id="run-calendar" data-url="/data/{{ profile.id }}/runs/month"></div>
+
         <h2>Weekly Mileage</h2>
         <div class="tabbable tabs-below">
             <div class="tab-content">
@@ -137,6 +140,7 @@ div.recent_run {
 
 <script src="{{ static_url('js/d3.v2.min.js') }}"></script>
 <script src="{{ static_url('js/xcharts.min.js') }}"></script>
+<script src="{{ static_url('js/d3-calendars.js') }}"></script>
 
 <script>
     var weekChart;
@@ -272,7 +276,12 @@ div.recent_run {
             });
         });
         */
+
+        Calendar.month("#run-calendar");
+
     });
+
+
 </script>
 
 <script type="text/javascript">

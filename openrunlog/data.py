@@ -188,3 +188,69 @@ class WeekdayRunsHandler(base.BaseHandler):
                         len(runs_per_weekday))]}
 
         self.finish(data)
+
+class DailyRunsHandler(base.BaseHandler):
+    @web.asynchronous
+    @gen.engine
+    def get(self, uid):
+        user = models.User.objects(id=uid).first()
+        
+        def runs_per_day(user):
+            plus_one_day = datetime.timedelta(days=1)
+            today = datetime.date.today()
+            if today.month == 2 and today.day == 29:
+                d = datetime.date(today.year-1, today.month, today.day-1)
+            else:
+                d = datetime.date(today.year-1, today.month, today.day)
+            runs = models.Run.objects(user=user,date__gte=d)
+            data = {str(r.date).split(' ')[0]: [r.date.isocalendar()[1], 1] for r in runs}
+            while d <= today:
+                if str(d) not in data.keys():
+                    data[str(d)] = [d.isocalendar()[1], 0]
+                d += plus_one_day
+            ret_data = [[k, v[0], v[1]] for k,v in data.iteritems()]
+            ret_data = sorted(ret_data, key=lambda i: i[0])
+            return ret_data
+
+        runs = (yield gen.Task(
+            self.execute_thread, runs_per_day, user)).result()
+
+        self.finish(str(runs).replace("'", '"'))
+
+class MonthRunsHandler(base.BaseHandler):
+    @web.asynchronous
+    @gen.engine
+    def get(self, uid):
+        user = models.User.objects(id=uid).first()
+
+        def runs_in_month(user, date):
+            run_map = '''
+                function() {
+                    emit(this.date, 1);
+                };
+            '''
+            run_reduce = '''
+                function(day, counts) {
+                    return Array.sum(counts);
+                };
+            '''
+
+            runs = models.Run.objects(user=user,date__gte=date)
+            mrd = runs.map_reduce(run_map, run_reduce, 'inline')
+            return mrd
+        
+        plus_one_day = datetime.timedelta(days=1)
+        today = datetime.date.today()
+        date = today - (31 * plus_one_day)
+        runs = (yield gen.Task(
+            self.execute_thread, runs_in_month, user, date)).result()
+
+        data = {i.key.strftime("%Y-%m-%d"): [i.key.isocalendar()[1], i.value] for i in runs}
+        while date <= today:
+            if date.strftime("%Y-%m-%d") not in data.keys():
+                data[date.strftime("%Y-%m-%d")] = [date.isocalendar()[1], 0]
+            date += plus_one_day
+        data = sorted([[k, v[0], v[1]] for k,v in data.iteritems()], key=lambda i: i[0])
+
+        self.finish(str(data).replace("'", '"'))
+
