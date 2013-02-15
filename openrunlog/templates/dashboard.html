@@ -32,6 +32,10 @@
         {% end %}
 
     </p>
+
+    <h2>Run Days</h2>
+    <div style="width: 700px;" id="run-calendar" data-url="/data/{{ profile.id }}/runs/month"></div>
+
     </div>
     <div class="span9">
         <div class="tabbable tabs-below">
@@ -51,9 +55,6 @@
                 <li><a href="#thisweek2" data-toggle="tab">Frequency By Day</a></li>
             </ul>
         </div>
-
-        <h2>Run Days</h2>
-        <div style="width: 700px;" id="run-calendar" data-url="/data/{{ profile.id }}/runs/month"></div>
 
         <h2>Weekly Mileage</h2>
         <div class="tabbable tabs-below">
