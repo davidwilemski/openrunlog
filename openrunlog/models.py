@@ -92,6 +92,11 @@ class User(mongoengine.Document):
 
     def calculate_streaks(self):
         runs = Run.objects(user=self, distance__gt=0).order_by('date')
+        self.streaks = self._calculate_streaks(runs)
+        self.save()
+
+    @classmethod
+    def _calculate_streaks(cls, runs):
         if len(runs) == 0:
             return 0
         if len(runs) == 1:
@@ -116,7 +121,7 @@ class User(mongoengine.Document):
         longest = {
             'length': longest_streak,
             'start': runs[longest_streak_start].date.strftime("%m/%d/%Y") if longest_streak_start != -1 else '',
-            'end': runs[longest_streak_start+longest_streak].date.strftime("%m/%d/%Y") if longest_streak_start != -1 else ''
+            'end': runs[longest_streak_start+longest_streak-1].date.strftime("%m/%d/%Y") if longest_streak_start != -1 else ''
         }
 
         current_streak = 1
@@ -142,8 +147,7 @@ class User(mongoengine.Document):
                 'end': runs[len(runs)-1].date.strftime("%m/%d/%Y")
             }
 
-        self.streaks = {'longest': longest, 'current': current}
-        self.save()
+        return {'longest': longest, 'current': current}
 
 
 class Run(mongoengine.Document):
@@ -195,7 +199,6 @@ class Run(mongoengine.Document):
         else:
             runs = cls.get_runs(user)
 
-        
         def _accumulate(r1, r2):
             return float(r1) + float(r2.distance)
 
