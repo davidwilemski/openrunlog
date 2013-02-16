@@ -72,7 +72,7 @@ class StreakTests(unittest.TestCase):
                     "%m/%d/%Y")
             },
         }
-        
+
         self.assertEqual(streaks, expected_streaks)
 
     def test_multiple_streaks_find_longest_with_current(self):
@@ -103,6 +103,52 @@ class StreakTests(unittest.TestCase):
                     "%m/%d/%Y"),
                 'end': today.strftime(
                     "%m/%d/%Y")
+            }
+        }
+
+        self.assertEqual(streaks, expected_streaks)
+
+    def test_single_day_streak_longest_and_current(self):
+        today = datetime.date.today()
+        runs = [
+            models.Run(date=today, distance=4)
+        ]
+
+        streaks = models.User._calculate_streaks(runs)
+
+        expected_streaks = {
+            'current': {
+                'length': 1,
+                'start': today.strftime(
+                    "%m/%d/%Y"),
+                'end': today.strftime(
+                    "%m/%d/%Y")
+            },
+            'longest': {
+                'length': 1,
+                'start': today.strftime(
+                    "%m/%d/%Y"),
+                'end': today.strftime(
+                    "%m/%d/%Y")
+            }
+        }
+
+        self.assertEqual(streaks, expected_streaks)
+    
+    def test_streaks_no_runs(self):
+        runs = []
+        streaks = models.User._calculate_streaks(runs)
+        
+        expected_streaks = {
+            'current': {
+                'length': 0,
+                'start': 'Couch',
+                'end': 'Potato Chips'
+            },
+            'longest': {
+                'length': 0,
+                'start': '',
+                'end': ''
             }
         }
 
