@@ -142,7 +142,7 @@ class User(mongoengine.Document):
                     break
             current = {
                 'length': current_streak,
-                'start': runs[len(runs)-1-current_streak].date.strftime(
+                'start': runs[len(runs)-current_streak].date.strftime(
                     "%m/%d/%Y"),
                 'end': runs[len(runs)-1].date.strftime("%m/%d/%Y")
             }

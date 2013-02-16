@@ -75,6 +75,38 @@ class StreakTests(unittest.TestCase):
         
         self.assertEqual(streaks, expected_streaks)
 
+    def test_multiple_streaks_find_longest_with_current(self):
+        today = datetime.date.today()
+        runs = [
+            models.Run(date=datetime.datetime(2012, 12, 3, 0, 0), distance=4),
+            models.Run(date=datetime.datetime(2013, 1, 1, 0, 0), distance=4),
+            models.Run(date=datetime.datetime(2013, 1, 2, 0, 0), distance=4),
+            models.Run(date=datetime.datetime(2013, 1, 3, 0, 0), distance=4),
+            models.Run(date=datetime.datetime(2013, 2, 2, 0, 0), distance=4),
+            models.Run(date=datetime.datetime(2013, 2, 3, 0, 0), distance=4),
+            models.Run(date=today, distance=4)
+        ]
+
+        streaks = models.User._calculate_streaks(runs)
+
+        expected_streaks = {
+            'longest': {
+                'length': 3,
+                'start': datetime.datetime(2013, 1, 1, 0, 0).strftime(
+                    "%m/%d/%Y"),
+                'end': datetime.datetime(2013, 1, 3, 0, 0).strftime(
+                    "%m/%d/%Y")
+            },
+            'current': {
+                'length': 1,
+                'start': today.strftime(
+                    "%m/%d/%Y"),
+                'end': today.strftime(
+                    "%m/%d/%Y")
+            }
+        }
+
+        self.assertEqual(streaks, expected_streaks)
 
 if __name__ == '__main__':
     unittest.main()
