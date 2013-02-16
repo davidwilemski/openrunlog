@@ -144,7 +144,7 @@ class User(mongoengine.Document):
                 'length': current_streak,
                 'start': runs[len(runs)-current_streak].date.strftime(
                     "%m/%d/%Y"),
-                'end': runs[-1].date.strftime("%m/%d/%Y")
+                'end': runs[len(runs)-1].date.strftime("%m/%d/%Y")
             }
 
         return {'longest': longest, 'current': current}
