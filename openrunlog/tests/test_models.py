@@ -147,8 +147,8 @@ class StreakTests(unittest.TestCase):
             },
             'longest': {
                 'length': 0,
-                'start': '',
-                'end': ''
+                'start': '1 step forward',
+                'end': '1 step back'
             }
         }
 
