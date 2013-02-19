@@ -286,6 +286,28 @@ div.recent_run {
 </script>
 
 <script type="text/javascript">
+    function time_to_seconds(time) {
+        var seconds = 0;
+        var parts = time.split(':');
+
+        if (parts.length == 3) {
+            seconds += parseInt(parts[0], 10) * 60 * 60;
+            seconds += parseInt(parts[1], 10) * 60;
+            seconds += parseInt(parts[2], 10);
+        }
+        else if (parts.length == 2) {
+            seconds += parseInt(parts[0], 10) *  60;
+            seconds += parseInt(parts[1], 10);
+        }
+        else if (parts.length == 1) {
+            seconds += parseInt(parts[0], 10) *  60;
+        }
+        else {
+            throw new Error("Time not in correct format");
+        }
+        return seconds;
+    }
+
     $(document).ready(function() {
         $('#addrunform').parsley({
             trigger: 'change',
@@ -302,11 +324,23 @@ div.recent_run {
             validators: {
                 time: function(val) {
                     var time = /^((\d+:\d\d:\d\d$)|(\d+:\d\d$)|(\d+$))/m;
-                    return time.test(val);
+                    var timetest = time.test(val);
+                    if(!timetest) {
+                        return false;
+                    }
+
+                    var distance = parseInt($("#distance")[0].value, 10);
+                    var seconds = time_to_seconds($("#time")[0].value);
+
+                    if(seconds/distance < 200) {
+                        return false;
+                    }
+
+                    return true;
                 }
             },
             messages: {
-                time: "HH:MM:SS, MM:SS, or MM formats only"
+                time: "HH:MM:SS, MM:SS, or MM formats only. Double check that you entered the correct time (we might have detected an impossibly fast pace)."
             }
 
         });
