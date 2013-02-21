@@ -19,21 +19,27 @@ def deploy():
     restart()
 
 @task
+def install_upstart_conf():
+    with cd(PROJ_DIR):
+        run('sudo cp openrunlog.conf /etc/init/openrunlog.conf')
+
+@task
 def start():
-    with prefix('source ' + VENV_DIR + 'bin/activate'):
-        with cd(PROJ_DIR):
-            run('supervisord')
+    run('sudo start openrunlog')
 
 @task
 def stop():
-    with prefix('source ' + VENV_DIR + 'bin/activate'):
-        with cd(PROJ_DIR):
-            run('kill `cat supervisord.pid`')
+    run('sudo stop openrunlog')
 
 @task
 def restart():
     stop()
     start()
+
+@task
+def uninstall():
+    run('rm -rf ' + PROJ_DIR)
+    run('sudo rm /etc/init/openrunlog.conf')
 
 @task
 def setup():
@@ -53,4 +59,5 @@ def setup():
         with cd(PROJ_DIR):
             run('python setup.py install')
 
+    install_upstart_conf()
     start()
