@@ -7,7 +7,7 @@ setup(name='openrunlog',
       author='David Wilemski',
       author_email='david@davidwilemski.com',
       license='BSD',
-      packages=['openrunlog'],
+      packages=['openrunlog', 'openrunlog.workers'],
       install_requires=[
       ],
       test_suite='openrunlog.tests',

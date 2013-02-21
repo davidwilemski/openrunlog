@@ -15,7 +15,10 @@ def deploy():
         with cd(PROJ_DIR):
             run('git pull')
             fabtools.python.install_requirements(PROJ_DIR + 'requirements.txt')
-            run('python setup.py install')
+            run('python setup.py sdist')
+            with cd('dist'):
+                run('tar xfzv openrunlog-0.1.tar.gz')
+                run('cp -r openrunlog-0.1/openrunlog $VIRTUAL_ENV/lib/python2.7/site-packages/')
     restart()
 
 @task
@@ -55,9 +58,10 @@ def setup():
         
         # install requirements
         fabtools.python.install_requirements(PROJ_DIR + 'requirements.txt')
-
-        with cd(PROJ_DIR):
-            run('python setup.py install')
+        run('python setup.py sdist')
+        with cd('dist'):
+            run('tar xfzv openrunlog-0.1.tar.gz')
+            run('cp -r openrunlog-0.1/openrunlog $VIRTUAL_ENV/lib/python2.7/site-packages/')
 
     install_upstart_conf()
     start()
