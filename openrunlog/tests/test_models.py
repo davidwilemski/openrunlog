@@ -134,6 +134,35 @@ class StreakTests(unittest.TestCase):
         }
 
         self.assertEqual(streaks, expected_streaks)
+
+    def test_different_single_day_streak_longest_and_current(self):
+        today = datetime.date.today()
+        d1 = datetime.datetime(2013, 1, 3, 0, 0)
+        runs = [
+            models.Run(date=d1, distance=4),
+            models.Run(date=today, distance=4)
+        ]
+
+        streaks = models.User._calculate_streaks(runs)
+
+        expected_streaks = {
+            'current': {
+                'length': 1,
+                'start': today.strftime(
+                    "%m/%d/%Y"),
+                'end': today.strftime(
+                    "%m/%d/%Y")
+            },
+            'longest': {
+                'length': 1,
+                'start': d1.strftime(
+                    "%m/%d/%Y"),
+                'end': d1.strftime(
+                    "%m/%d/%Y")
+            }
+        }
+
+        self.assertEqual(streaks, expected_streaks)
     
     def test_streaks_no_runs(self):
         runs = []
