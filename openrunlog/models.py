@@ -104,17 +104,17 @@ class User(mongoengine.Document):
                 'start': '1 step forward',
                 'end': '1 step back'
             }
-        elif len(runs) == 1 and runs[0].date != today.strftime("%m/%d/%Y"):
+        elif len(runs) == 1 and runs[0].date.strftime("%m/%d/%Y") != today.strftime("%m/%d/%Y"):
             longest = {
                 'length': 1,
-                'start': today.strftime("%m/%d/%Y"),
-                'end': today.strftime("%m/%d/%Y")
+                'start': runs[len(runs)-1].date.strftime("%m/%d/%Y"),
+                'end': runs[len(runs)-1].date.strftime("%m/%d/%Y")
             }
         else:
             current_streak = 1
             current_streak_start = -1
             longest_streak = 1
-            longest_streak_start = -1
+            longest_streak_start = 0
             for i in range(0, len(runs) - 1):
                 day_delta = relativedelta(runs[i+1].date, runs[i].date).days
                 if day_delta == 1:
@@ -130,8 +130,8 @@ class User(mongoengine.Document):
                     current_streak = 1
             longest = {
                 'length': longest_streak,
-                'start': runs[longest_streak_start].date.strftime("%m/%d/%Y") if longest_streak_start != -1 else '',
-                'end': runs[longest_streak_start+longest_streak-1].date.strftime("%m/%d/%Y") if longest_streak_start != -1 else ''
+                'start': runs[longest_streak_start].date.strftime("%m/%d/%Y"),
+                'end': runs[longest_streak_start+longest_streak-1].date.strftime("%m/%d/%Y"),
             }
 
         current_streak = 1
