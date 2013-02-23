@@ -245,12 +245,19 @@ class MonthRunsHandler(base.BaseHandler):
         runs = (yield gen.Task(
             self.execute_thread, runs_in_month, user, date)).result()
 
+        self.finish(self._fill_blank_days(runs))
+
+    @classmethod
+    def _fill_blank_days(cls, runs):
         data = {i.key.strftime("%Y-%m-%d"): [i.key.isocalendar()[1], i.value] for i in runs}
+
+        plus_one_day = datetime.timedelta(days=1)
+        today = datetime.date.today()
+        date = today - (31 * plus_one_day)
+
         while date <= today:
             if date.strftime("%Y-%m-%d") not in data.keys():
                 data[date.strftime("%Y-%m-%d")] = [date.isocalendar()[1], 0]
             date += plus_one_day
         data = sorted([[k, v[0], v[1]] for k,v in data.iteritems()], key=lambda i: i[0])
-
-        self.finish(str(data).replace("'", '"'))
-
+        return str(data).replace("'", '"')
