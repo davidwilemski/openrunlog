@@ -4,6 +4,7 @@ import datetime
 import dateutil
 import dateutil.parser
 from dateutil.relativedelta import relativedelta
+import logging
 
 
 def url_unique(url, user=None):
@@ -71,30 +72,20 @@ def get_this_week_run_data(user):
 
 def _format_this_week_run_data(given_runs):
     date = _current_monday()
-    expected_dates = set()
-    for x in range(7):
-        expected_dates.add(
-            (date + dateutil.relativedelta.relativedelta(days=x)).ctime())
+    this_week_runs = [Run(
+        date=date+dateutil.relativedelta.relativedelta(days=x),
+        distance=0.0)
+        for x in range(7)]
 
     runs = []
-    dates = set()
-    for r in given_runs:
-        if r.date.ctime() not in dates:
-            runs.append({'x': r.date.strftime("%c"), 'y': r.distance})
-        else:
-            # find and add data
-            for r2 in runs:
-                if r2['x'] == r.date.ctime():
-                    r2['y'] += float(r.distance)
-        dates.add(r.date.ctime())
+    for r in this_week_runs:
+        runs.append({'x': r.date.strftime("%c"), 'y': 0.0})
 
-    # for days without runs yet, add 0 mileage
-    import logging
-    logging.debug(expected_dates)
-    logging.debug(dates)
-    logging.debug(expected_dates - dates)
-    for d in (expected_dates - dates):
-        runs.append({'x': dateutil.parser.parse(d).strftime("%c"), 'y': 0.0})
+    for r in given_runs:
+        # find and add data
+        for r2 in runs:
+            if r2['x'] == r.date.ctime():
+                r2['y'] += float(r.distance)
 
     data = {
         'xScale': 'ordinal',
