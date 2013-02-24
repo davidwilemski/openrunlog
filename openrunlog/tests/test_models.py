@@ -1,5 +1,7 @@
 
 import datetime
+from dateutil.relativedelta import *
+import json
 import unittest
 from openrunlog import models
 
@@ -163,11 +165,11 @@ class StreakTests(unittest.TestCase):
         }
 
         self.assertEqual(streaks, expected_streaks)
-    
+
     def test_streaks_no_runs(self):
         runs = []
         streaks = models.User._calculate_streaks(runs)
-        
+
         expected_streaks = {
             'current': {
                 'length': 0,
@@ -183,5 +185,21 @@ class StreakTests(unittest.TestCase):
 
         self.assertEqual(streaks, expected_streaks)
 
+
+class TimeTests(unittest.TestCase):
+    def test_this_week_basic_formatting(self):
+        d = datetime.date(2, 18, 2013)
+        delta = relativedelta(days=1)
+
+        runs = [models.Run(date=d+relativedelta(days=x)) for x in range(7)]
+        runs[0].distance = 8
+        runs[4].distance = 7
+
+        this_week_json = json.dumps(models._format_this_week_run_data(runs))
+
+        expected_json = """
+        {"xScale": "ordinal", "main": [{"data": [{"y": 8.0, "x": "Mon Feb 18 00:00:00 2013"}, {"y": 0.0, "x": "Sun Feb 24 00:00:00 2013"}, {"y": 0.0, "x": "Wed Feb 20 00:00:00 2013"}, {"y": 0.0, "x": "Thu Feb 21 00:00:00 2013"}, {"y": 0.0, "x": "Sat Feb 23 00:00:00 2013"}, {"y": 7.0, "x": "Fri Feb 22 00:00:00 2013"}, {"y": 0.0, "x": "Tue Feb 19 00:00:00 2013"}]}], "yScale": "linear"}"""
+
+        self.assertEqual(this_week_json, expected_json)
 if __name__ == '__main__':
     unittest.main()

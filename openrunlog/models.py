@@ -2,6 +2,7 @@
 import mongoengine
 import datetime
 import dateutil
+import dateutil.parser
 from dateutil.relativedelta import relativedelta
 
 
@@ -61,6 +62,50 @@ def seconds_to_time(seconds):
         return '{:01}:{:02}'.format(minutes, seconds)
     else:
         return '{}:{:02}:{:02}'.format(hours, minutes, seconds)
+
+
+def get_this_week_run_data(user):
+    this_week_runs = Run.this_week_runs(user)
+    return _format_this_week_run_data(this_week_runs)
+
+
+def _format_this_week_run_data(given_runs):
+    date = _current_monday()
+    expected_dates = set()
+    for x in range(7):
+        expected_dates.add(
+            (date + dateutil.relativedelta.relativedelta(days=x)).ctime())
+
+    runs = []
+    dates = set()
+    for r in given_runs:
+        if r.date.ctime() not in dates:
+            runs.append({'x': r.date.strftime("%c"), 'y': r.distance})
+        else:
+            # find and add data
+            for r2 in runs:
+                if r2['x'] == r.date.ctime():
+                    r2['y'] += float(r.distance)
+        dates.add(r.date.ctime())
+
+    # for days without runs yet, add 0 mileage
+    import logging
+    logging.debug(expected_dates)
+    logging.debug(dates)
+    logging.debug(expected_dates - dates)
+    for d in (expected_dates - dates):
+        runs.append({'x': dateutil.parser.parse(d).strftime("%c"), 'y': 0.0})
+
+    data = {
+        'xScale': 'ordinal',
+        'yScale': 'linear',
+        'main': [
+            {
+                'data': runs
+            }
+        ]
+    }
+    return data
 
 
 class User(mongoengine.Document):
@@ -185,7 +230,6 @@ class Run(mongoengine.Document):
     def get_recent_runs(cls, user, num_runs):
         return Run.objects(user=user).order_by('-date')[:num_runs]
 
-
     @classmethod
     def get_runs(cls, user, date=None):
         """
@@ -198,6 +242,7 @@ class Run(mongoengine.Document):
     @classmethod
     def this_week_mileage(cls, user):
         return cls.get_mileage(user, date=_current_monday())
+
 
     @classmethod
     def get_mileage(cls, user, date=None):

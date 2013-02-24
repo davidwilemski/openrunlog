@@ -9,7 +9,7 @@ from tornado.ioloop import IOLoop
 
 import base
 import models
-import util
+
 
 class ThisWeekHandler(base.BaseHandler):
     @web.asynchronous
@@ -19,40 +19,8 @@ class ThisWeekHandler(base.BaseHandler):
         if not data_user.public and (not user or user.email != data_user.email):
             self.write_error(403)
             return
-        date = models._current_monday()
-        this_week_runs = models.Run.this_week_runs(data_user)
 
-        expected_dates = set()
-        for x in range(7):
-            expected_dates.add(date)
-            date += dateutil.relativedelta.relativedelta(days=1)
-
-        runs = []
-        dates = set()
-        for r in this_week_runs:
-            if r.date not in dates:
-                runs.append({'x': r.date.strftime("%c"), 'y': r.distance})
-            else:
-                # find and add data
-                for r2 in runs:
-                    if r2['x'] == r.date.strftime("%c"):
-                        r2['y'] += float(r.distance)
-            dates.add(r.date)
-
-        # for days without runs yet, add 0 mileage
-        for d in expected_dates - dates:
-            runs.append({'x': d.strftime("%c"), 'y': 0.0})
-
-        data = {
-                'xScale': 'ordinal',
-                'yScale': 'linear',
-                'main': [
-                    {
-                        'data': runs
-                    }
-                ]
-        }
-
+        data = models.get_this_week_run_data(data_user)
         self.finish(data)
 
 
