@@ -13,28 +13,20 @@ import models
 
 class ThisWeekHandler(base.BaseHandler):
     @web.asynchronous
+    @base.authorized_json
     def get(self, uid):
-        user = self.get_current_user()
         data_user = models.User.objects(id=uid).first()
-        if not data_user.public and (not user or user.email != data_user.email):
-            self.write_error(403)
-            return
-
         data = models.get_this_week_run_data(data_user)
         self.finish(data)
 
 
 class WeeklyMileageHandler(base.BaseHandler):
     @web.asynchronous
+    @base.authorized_json
     def get(self, uid):
-        user = self.get_current_user()
         since = self.get_argument('since', '')
         window_weeks = self.get_argument('window_weeks', '')
-
         data_user = models.User.objects(id=uid).first()
-        if not data_user.public and (not user or user.email != data_user.email):
-            self.write_error(403)
-            return
 
         if window_weeks:
             window_weeks = dateutil.relativedelta.relativedelta(weeks=int(window_weeks))
@@ -109,6 +101,7 @@ class WeeklyMileageHandler(base.BaseHandler):
 class WeekdayRunsHandler(base.BaseHandler):
     @web.asynchronous
     @gen.engine
+    @base.authorized_json
     def get(self, uid):
         data_user = models.User.objects(id=uid).first()
 
@@ -160,6 +153,7 @@ class WeekdayRunsHandler(base.BaseHandler):
 class DailyRunsHandler(base.BaseHandler):
     @web.asynchronous
     @gen.engine
+    @base.authorized_json
     def get(self, uid):
         user = models.User.objects(id=uid).first()
         
@@ -188,6 +182,7 @@ class DailyRunsHandler(base.BaseHandler):
 class MonthRunsHandler(base.BaseHandler):
     @web.asynchronous
     @gen.engine
+    @base.authorized_json
     def get(self, uid):
         user = models.User.objects(id=uid).first()
 

@@ -47,3 +47,16 @@ class BaseHandler(web.RequestHandler):
     @property
     def tf(self):
         return self.application.tf
+
+
+def authorized_json(method, *args):
+    """Decorate methods with this to require that the user be logged in."""
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        uid = args[0]
+        user = self.get_current_user()
+        data_user = models.User.objects(id=uid).first()
+        if not data_user.public and (not user or user.email != data_user.email):
+            raise web.HTTPError(403)
+        return method(self, *args, **kwargs)
+    return wrapper
