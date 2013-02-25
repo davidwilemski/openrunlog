@@ -104,12 +104,10 @@ class RemoveRunHandler(base.BaseHandler):
 class ShowRunHandler(base.BaseHandler):
     @web.asynchronous
     @gen.engine
+    @base.authorized
     def get(self, userurl, run):
         user = self.get_current_user()
         profile = models.User.objects(url=userurl).first()
-
-        if not profile.public and (not user or profile.email != user.email):
-            self.render('private.html', page_title='Private Profile', user=user, profile=profile, error=None)
 
         run = models.Run.objects(id=run).first()
         year = datetime.date.today().year

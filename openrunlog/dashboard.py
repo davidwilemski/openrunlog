@@ -8,6 +8,7 @@ import models
 class ProfileHandler(base.BaseHandler):
     @web.asynchronous
     @gen.engine
+    @base.authorized
     def get(self, url):
         self.tf.send({'profile.dashboard.views': 1}, lambda x: x)
         error = self.get_error()
@@ -17,8 +18,6 @@ class ProfileHandler(base.BaseHandler):
         # if we're not looking at our own, we show another profile if it's public
         if not user or user.url != url:
             profile = models.User.objects(url=url).first()
-            if not profile.public:
-                self.render('private.html', page_title='Private Profile', user=user, profile=profile, error=None)
 
         f1 = yield gen.Task(self.execute_thread, 
                 models.Run.get_recent_runs, profile, 10)

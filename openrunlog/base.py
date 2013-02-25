@@ -60,3 +60,20 @@ def authorized_json(method, *args):
             raise web.HTTPError(403)
         return method(self, *args, **kwargs)
     return wrapper
+
+
+def authorized(method, *args):
+    """Decorate methods with this to require that the user be logged in."""
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        url = args[0]
+        profile = models.User.objects(url=url).first()
+        user = self.get_current_user()
+        if not profile.public and (not user or user.url != profile.url):
+            return self.render(
+                'private.html',
+                page_title='Private Profile',
+                user=user, profile=profile, error=None)
+
+        return method(self, *args, **kwargs)
+    return wrapper
