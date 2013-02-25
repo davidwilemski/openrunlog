@@ -199,5 +199,16 @@ class ThisWeekTests(unittest.TestCase):
         expected_json = """{"xScale": "ordinal", "main": [{"data": [{"y": 8.0, "x": "Mon Feb 18 00:00:00 2013"}, {"y": 0.0, "x": "Tue Feb 19 00:00:00 2013"}, {"y": 0.0, "x": "Wed Feb 20 00:00:00 2013"}, {"y": 0.0, "x": "Thu Feb 21 00:00:00 2013"}, {"y": 7.0, "x": "Fri Feb 22 00:00:00 2013"}, {"y": 0.0, "x": "Sat Feb 23 00:00:00 2013"}, {"y": 0.0, "x": "Sun Feb 24 00:00:00 2013"}]}], "yScale": "linear"}"""
 
         self.assertEqual(this_week_json, expected_json)
+
+
+class FindMondayTests(unittest.TestCase):
+    def test_find_monday_basic(self):
+        mon = datetime.date(2013, 2, 18)
+        thurs = datetime.date(2013, 2, 21)
+
+        self.assertEqual(mon, models._find_monday(mon))
+        self.assertEqual(mon, models._find_monday(thurs))
+
+
 if __name__ == '__main__':
     unittest.main()

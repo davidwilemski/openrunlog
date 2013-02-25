@@ -70,8 +70,23 @@ def get_this_week_run_data(user):
     return _format_this_week_run_data(this_week_runs)
 
 
+def _find_monday(date):
+    """
+    given a datetime object, return a datetime object of the
+    previous monday.
+
+    IE - if date is a monday, return date. If date is a wednesday,
+    return the datetime object from 2 days earlier
+    """
+    while date.weekday() != 0:
+        date -= dateutil.relativedelta.relativedelta(days=1)
+    return date
+
+
 def _format_this_week_run_data(given_runs):
     date = _current_monday()
+    if given_runs:
+        date = _find_monday(given_runs[0].date)
     this_week_runs = [Run(
         date=date+dateutil.relativedelta.relativedelta(days=x),
         distance=0.0)
