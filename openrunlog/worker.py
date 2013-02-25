@@ -40,10 +40,10 @@ def export_run(run, redis):
     body = {
             'message': run.notes,
             'workout': {
+                'duration': run.time,
                 'distance': {
                     'value': run.distance ,
                     'units': 'miles',
-                    'duration': run.time
                 },
                 'activity_type': 'running',
                 'completed_at': run.date.isoformat(),
