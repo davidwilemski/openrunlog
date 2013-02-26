@@ -185,6 +185,46 @@ class StreakTests(unittest.TestCase):
 
         self.assertEqual(streaks, expected_streaks)
 
+    def test_multiple_streaks_current_is_longest(self):
+        today = datetime.date.today()
+        today_minus1 = datetime.date.today() - relativedelta(days=1)
+        today_minus2 = datetime.date.today() - relativedelta(days=2)
+        today_minus3 = datetime.date.today() - relativedelta(days=3)
+
+        runs = [
+            models.Run(date=datetime.datetime(2012, 12, 3, 0, 0), distance=4),
+            models.Run(date=datetime.datetime(2013, 1, 1, 0, 0), distance=4),
+            models.Run(date=datetime.datetime(2013, 1, 2, 0, 0), distance=4),
+            models.Run(date=datetime.datetime(2013, 1, 3, 0, 0), distance=4),
+            models.Run(date=datetime.datetime(2013, 2, 2, 0, 0), distance=4),
+            models.Run(date=datetime.datetime(2013, 2, 3, 0, 0), distance=4),
+            models.Run(date=today_minus3, distance=4),
+            models.Run(date=today_minus2, distance=4),
+            models.Run(date=today_minus1, distance=4),
+            models.Run(date=today, distance=4)
+        ]
+
+        streaks = models.User._calculate_streaks(runs)
+
+        expected_streaks = {
+            'longest': {
+                'length': 4,
+                'start': (today_minus3).strftime(
+                    "%m/%d/%Y"),
+                'end': today.strftime(
+                    "%m/%d/%Y")
+            },
+            'current': {
+                'length': 4,
+                'start': (today_minus3).strftime(
+                    "%m/%d/%Y"),
+                'end': today.strftime(
+                    "%m/%d/%Y")
+            }
+        }
+
+        self.assertEqual(streaks, expected_streaks)
+
 
 class ThisWeekTests(unittest.TestCase):
     def test_this_week_basic_formatting(self):
