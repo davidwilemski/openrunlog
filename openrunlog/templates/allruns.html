@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ static_url('css/xcharts.min.css') }}" type="text/css" />
+
+<style>
+    .center {
+        text-align: center;
+    }
+</style>
+{% end %}
+
+{% block content %}
+<div class="row">
+    <div class="span3">
+    {% include '_profile_starter.html' %}
+
+    </div>
+    <div class="span9">
+        {% for run in runs %}
+            <div class="recent_run" data-run-id="{{ run.id }}">
+                <a href="{{ run.uri }}">{{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ run.pace }}</a>
+            </div>
+        {% end %}
+        
+    </div>
+
+</div>
+
+{% end %}

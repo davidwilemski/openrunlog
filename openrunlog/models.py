@@ -224,7 +224,7 @@ class Run(mongoengine.Document):
 
     @property
     def pace(self):
-        if not self.time:
+        if not self.time or not self.distance:
             return 'N/A'
         return seconds_to_time(int(self.time/self.distance)) + ' pace'
 

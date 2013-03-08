@@ -114,3 +114,19 @@ class ShowRunHandler(base.BaseHandler):
 
         yield gen.Task(self.tf.send, {'profile.runs.views': 1})
         self.render('run.html', page_title='{}\'s {} mile run'.format(profile.display_name, run.distance), user=user, profile=profile, run=run, error=None, this_year=year)
+
+
+class AllRunsHandler(base.BaseHandler):
+    @web.asynchronous
+    @gen.engine
+    @base.authorized
+    def get(self, userurl):
+        user = self.get_current_user()
+        profile = models.User.objects(url=userurl).first()
+        runs = models.Run.get_runs(profile)
+        year = datetime.date.today().year
+        title = '{}\'s training log'.format(profile.display_name)
+
+        yield gen.Task(self.tf.send, {'profile.allruns.views': 1})
+        self.render('allruns.html', page_title=title, user=user,
+            profile=profile, runs=runs, error=None, this_year=year)
