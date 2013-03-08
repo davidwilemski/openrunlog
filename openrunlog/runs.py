@@ -123,7 +123,7 @@ class AllRunsHandler(base.BaseHandler):
     def get(self, userurl):
         user = self.get_current_user()
         profile = models.User.objects(url=userurl).first()
-        runs = models.Run.get_runs(profile)
+        runs = models.Run.get_runs(profile).order_by('-date')
         year = datetime.date.today().year
         title = '{}\'s training log'.format(profile.display_name)
 

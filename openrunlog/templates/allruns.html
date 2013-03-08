@@ -17,11 +17,26 @@
 
     </div>
     <div class="span9">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Distance (miles)</th>
+                    <th>Time</th>
+                    <th>Pace</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
         {% for run in runs %}
-            <div class="recent_run" data-run-id="{{ run.id }}">
-                <a href="{{ run.uri }}">{{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ run.pace }}</a>
-            </div>
+            <tr>
+                <td><a href="{{ run.uri }}">{{ run.date.strftime('%x') }}</a></td>
+                <td>{{ run.distance }}</td>
+                <td>{{ run.pretty_time }}</td>
+                <td>{{ run.pace}}</td>
+                <td>{{ run.pretty_notes }}</td>
+            </tr>
         {% end %}
+        </table>
         
     </div>
 

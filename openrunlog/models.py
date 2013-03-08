@@ -5,6 +5,7 @@ import dateutil
 import dateutil.parser
 from dateutil.relativedelta import relativedelta
 import logging
+from tornado import escape
 
 
 def url_unique(url, user=None):
@@ -272,6 +273,11 @@ class Run(mongoengine.Document):
     @property
     def uri(self):
         return '/u/{}/run/{}'.format(self.user.url, str(self.id))
+
+    @property
+    def pretty_notes(self):
+        return escape.xhtml_escape(self.notes).replace('\r\n', '<br />')
+
 
 class Week(mongoengine.Document):
     """

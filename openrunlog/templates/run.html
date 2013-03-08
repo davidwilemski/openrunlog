@@ -21,7 +21,7 @@
             <p class="lead center"><a href="{{ profile.uri }}">{{ profile.display_name }}</a> ran {{ run.distance }} miles in {{ run.pretty_time }} ({{ run.pace }})</p>
 
         <blockquote>
-            <p>{% raw escape(run.notes).replace('\r\n', '<br />') %}</p>
+            <p>{% raw run.pretty_notes %}</p>
         </blockquote>
     </div>
     </div>
