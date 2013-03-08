@@ -33,7 +33,7 @@
                 <td>{{ run.distance }}</td>
                 <td>{{ run.pretty_time }}</td>
                 <td>{{ run.pace}}</td>
-                <td>{{ run.pretty_notes }}</td>
+                <td>{% raw run.pretty_notes %}</td>
             </tr>
         {% end %}
         </table>
