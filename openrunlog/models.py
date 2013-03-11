@@ -220,7 +220,7 @@ class Run(mongoengine.Document):
     notes = mongoengine.StringField()
     exported_to_dailymile = mongoengine.BooleanField(default=False)
     meta = {
-        'indexes': [('user', '-date')]
+        'indexes': [('user', '-date'), ('user', '+date'), 'user']
     }
 
     @property
