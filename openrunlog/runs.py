@@ -127,6 +127,11 @@ class AllRunsHandler(base.BaseHandler):
         year = datetime.date.today().year
         title = '{}\'s training log'.format(profile.display_name)
 
+        def run_uri(run):
+            return '/u/{}/run/{}'.format(profile.url, str(run.id))
+
         yield gen.Task(self.tf.send, {'profile.allruns.views': 1})
-        self.render('allruns.html', page_title=title, user=user,
-            profile=profile, runs=runs, error=None, this_year=year)
+        self.render(
+            'allruns.html', page_title=title, user=user,
+            profile=profile, runs=runs, error=None, this_year=year,
+            run_uri=run_uri)

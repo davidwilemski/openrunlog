@@ -29,7 +29,7 @@
             </thead>
         {% for run in runs %}
             <tr>
-                <td><a href="{{ run.uri }}">{{ run.date.strftime('%x') }}</a></td>
+                <td><a href="{{ run_uri(run) }}">{{ run.date.strftime('%x') }}</a></td>
                 <td>{{ run.distance }}</td>
                 <td>{{ run.pretty_time }}</td>
                 <td>{{ run.pace}}</td>
