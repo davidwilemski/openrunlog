@@ -123,7 +123,8 @@ class AllRunsHandler(base.BaseHandler):
     def get(self, userurl):
         user = self.get_current_user()
         profile = models.User.objects(url=userurl).first()
-        runs = models.Run.get_runs(profile).order_by('-date')
+        keywords = self.get_argument('keywords', None)
+        runs = models.Run.get_runs(profile, keywords=keywords).order_by('-date')
         year = datetime.date.today().year
         title = '{}\'s training log'.format(profile.display_name)
 
@@ -136,5 +137,5 @@ class AllRunsHandler(base.BaseHandler):
             self.render(
                 'allruns.html', page_title=title, user=user,
                 profile=profile, runs=runs, error=None, this_year=year,
-                run_uri=run_uri)
+                run_uri=run_uri, keywords=keywords)
         yield gen.Task(self.execute_thread, render)

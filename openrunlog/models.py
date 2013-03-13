@@ -238,12 +238,14 @@ class Run(mongoengine.Document):
         return Run.objects(user=user).order_by('-date')[:num_runs]
 
     @classmethod
-    def get_runs(cls, user, date=None):
+    def get_runs(cls, user, date=None, keywords=None):
         """
         Will return a QuerySet of runs that happened on or after the specified date
         """
         if date:
             return cls.objects(user=user, date__gte=date)
+        if keywords is not None:
+            return cls.objects(user=user, notes__icontains=keywords)
         return cls.objects(user=user)
 
     @classmethod
