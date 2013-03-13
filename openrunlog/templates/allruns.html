@@ -17,11 +17,13 @@
 
     </div>
     <div class="span9">
-        <div class="well">
-            <form class="form-search" action="{{ profile.uri + '/runs' }}">
-                <input name="keywords" type="text" class="input-medium search-query" 
-                {% if keywords %} value="{{ keywords }}" {% end %} placeholder="Search Notes">
-            </form>
+        <div class="navbar">
+            <div class="navbar-inner">
+                <form class="navbar-search pull-left" action="{{ profile.uri + '/runs' }}">
+                    <input name="keywords" type="text" class="input-medium search-query" 
+                    {% if keywords %} value="{{ keywords }}" {% end %} placeholder="Search Notes">
+                </form>
+            </div>
         </div>
         <table class="table">
             <thead>
