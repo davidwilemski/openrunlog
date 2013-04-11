@@ -1,6 +1,6 @@
 import functools
 import futures
-from tornado import web
+from tornado import web, concurrent
 from tornado.ioloop import IOLoop
 from tornado.stack_context import ExceptionStackContext
 import urllib
@@ -31,10 +31,15 @@ class BaseHandler(web.RequestHandler):
     def thread_pool(self):
         return self.application.thread_pool
 
+    @property
+    def executor(self):
+        return self.application.thread_pool
+
     def execute_thread(self, fn, *args, **kwargs):
-        callback = kwargs['callback']
+        callback = kwargs.pop('callback', None)
         future = self.thread_pool.submit(fn, *args)
-        future.add_done_callback(
+        if callback:
+            future.add_done_callback(
                 lambda future: IOLoop.instance().add_callback(
                     functools.partial(callback, future)))
         return future

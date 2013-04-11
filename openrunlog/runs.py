@@ -7,7 +7,7 @@ import util
 import datetime
 import dateutil.parser
 
-from tornado import web, gen
+from tornado import web, gen, concurrent
 
 class AddRunHandler(base.BaseHandler):
     @web.asynchronous
@@ -117,14 +117,21 @@ class ShowRunHandler(base.BaseHandler):
 
 
 class AllRunsHandler(base.BaseHandler):
+    @concurrent.run_on_executor
+    def get_runs(self, profile, keywords):
+        runs = models.Run.get_runs(
+            profile, keywords=keywords).order_by('-date')
+        return runs
+
     @web.asynchronous
-    @gen.engine
+    @gen.coroutine
     @base.authorized
     def get(self, userurl):
         user = self.get_current_user()
         profile = models.User.objects(url=userurl).first()
         keywords = self.get_argument('keywords', None)
-        runs = models.Run.get_runs(profile, keywords=keywords).order_by('-date')
+
+        runs = yield self.get_runs(profile, keywords)
         year = datetime.date.today().year
         title = '{}\'s training log'.format(profile.display_name)
 
@@ -138,4 +145,4 @@ class AllRunsHandler(base.BaseHandler):
                 'allruns.html', page_title=title, user=user,
                 profile=profile, runs=runs, error=None, this_year=year,
                 run_uri=run_uri, keywords=keywords)
-        yield gen.Task(self.execute_thread, render)
+        yield self.execute_thread(render)

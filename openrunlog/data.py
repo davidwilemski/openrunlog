@@ -124,13 +124,11 @@ class WeekdayRunsHandler(base.BaseHandler):
             mrd = runs.map_reduce(run_map, run_reduce, 'inline')
             return mrd
 
-
-        map_reduce_document = (yield gen.Task(
-            self.execute_thread, runs_by_day, data_user)).result()
-
+        map_reduce_document = yield self.execute_thread(
+            runs_by_day, data_user)
 
         runs_per_weekday = [0] * 7
-        for i in map_reduce_document: 
+        for i in map_reduce_document:
             runs_per_weekday[int(i.key)] = int(i.value)
 
         """
@@ -156,7 +154,7 @@ class DailyRunsHandler(base.BaseHandler):
     @base.authorized_json
     def get(self, uid):
         user = models.User.objects(id=uid).first()
-        
+
         def runs_per_day(user):
             plus_one_day = datetime.timedelta(days=1)
             today = datetime.date.today()
