@@ -20,6 +20,15 @@ class ThisWeekHandler(base.BaseHandler):
         self.finish(data)
 
 
+class RecentRunsHandler(base.BaseHandler):
+    @web.asynchronous
+    @base.authorized_json
+    def get(self, uid):
+        data_user = models.User.objects(id=uid).first()
+        data = models.get_recent_run_data(data_user)
+        self.finish(data)
+
+
 class WeeklyMileageHandler(base.BaseHandler):
     @web.asynchronous
     @base.authorized_json

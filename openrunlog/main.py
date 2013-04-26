@@ -31,6 +31,10 @@ settings = {
         'login_url': '/login',
 }
 
+server_settings = {
+    "xheaders" : True,
+}
+
 application = web.Application([
     (r'/', home.HomeHandler),
     (r'/login', login.LoginHandler),
@@ -45,6 +49,7 @@ application = web.Application([
     (r'/add', runs.AddRunHandler),
     (r'/remove', runs.RemoveRunHandler),
     (r'/data/([A-Za-z0-9]{24})/this_week', data.ThisWeekHandler),
+    (r'/data/([A-Za-z0-9]{24})/recent', data.RecentRunsHandler),
     (r'/data/([A-Za-z0-9]{24})/mileage/weekly', data.WeeklyMileageHandler),
     (r'/data/([A-Za-z0-9]{24})/runs/weekday', data.WeekdayRunsHandler),
     (r'/data/([A-Za-z0-9]{24})/runs/year', data.DailyRunsHandler),
@@ -69,6 +74,6 @@ if __name__ == '__main__':
 
     if not config['debug']:
         process.fork_processes(process.cpu_count()*2 + 1)
-    application.listen(options.port)
+    application.listen(options.port, **server_settings)
     ioloop.IOLoop.instance().start()
 

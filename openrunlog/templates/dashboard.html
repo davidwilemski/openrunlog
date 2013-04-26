@@ -38,21 +38,25 @@
 
     </div>
     <div class="span9">
+        <div>
+            <h2>This Week ({{ week.distance }} miles, {{ week.pretty_time }})</h2>
+            <figure style="width: 650px; height: 300px;" id="week"></figure>
+        </div>
         <div class="tabbable tabs-below">
             <div class="tab-content">
-                <div class="tab-pane" id="thisweek2">
+                <div class="tab-pane" id="training2">
                     <h2>Runs per Weekday</h2>
                 </div>
 
-                <div class="tab-pane active" id="thisweek1">
-                    <h2>This Week ({{ week.distance }} miles, {{ week.pretty_time }})</h2>
-                    <figure style="width: 650px; height: 300px;" id="week"></figure>
+                <div class="tab-pane active" id="training1">
+                    <h2>Recent Training</h2>
+                    <figure style="width: 650px; height: 300px;" id="recent"></figure>
                 </div>
             </div>
 
             <ul class="nav nav-tabs" id="thisweek">
-                <li class="active"><a href="#thisweek1" data-toggle="tab">This Week</a></li>
-                <li><a href="#thisweek2" data-toggle="tab">Frequency By Day</a></li>
+                <li class="active"><a href="#training1" data-toggle="tab">Recent Training</a></li>
+                <li><a href="#training2" data-toggle="tab">Frequency By Day</a></li>
             </ul>
         </div>
 
@@ -173,6 +177,15 @@ div.recent_run {
             };
             weekChart = new xChart('bar', data, '#week', opts);
         });
+        
+        $.get("/data/{{ str(profile.id) }}/recent", function(data) {
+            var opts = {
+              "dataFormatX": function (x) { return d3.time.format('%c').parse(x); },
+              "tickFormatX": function (x) { return d3.time.format('%x')(x); },
+              "yMin": 0
+            };
+            weekChart = new xChart('bar', data, '#recent', opts);
+        });
 
         $.get("/data/{{ str(profile.id) }}/mileage/weekly", function(data) {
             var opts = {
@@ -221,7 +234,7 @@ div.recent_run {
                 "tickFormatX": function (x) { return days[x]; },
                 "yMin": 0
             };
-            var div = $("#thisweek2")[0];
+            var div = $("#training2")[0];
             var table = document.createElement("table");
 
             var tr = document.createElement("tr");

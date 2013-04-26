@@ -71,6 +71,12 @@ def get_this_week_run_data(user):
     return _format_this_week_run_data(this_week_runs)
 
 
+def get_recent_run_data(user):
+    day = datetime.date.today() - dateutil.relativedelta.relativedelta(days=21)
+    runs = Run.get_runs(user, date=day)
+    return _format_recent_run_data(runs)
+
+
 def _find_monday(date):
     """
     given a datetime object, return a datetime object of the
@@ -113,6 +119,36 @@ def _format_this_week_run_data(given_runs):
         ]
     }
     return data
+
+
+def _format_recent_run_data(given_runs):
+    date = datetime.date.today()
+    this_week_runs = [Run(
+        date=date-dateutil.relativedelta.relativedelta(days=x),
+        distance=0.0)
+        for x in range(21)]
+
+    runs = []
+    for r in this_week_runs:
+        runs.append({'x': r.date.strftime("%c"), 'y': 0.0})
+
+    for r in given_runs:
+        # find and add data
+        for r2 in runs:
+            if r2['x'] == r.date.ctime():
+                r2['y'] += float(r.distance)
+
+    data = {
+        'xScale': 'ordinal',
+        'yScale': 'linear',
+        'main': [
+            {
+                'data': runs
+            }
+        ]
+    }
+    return data
+
 
 
 class User(mongoengine.Document):
