@@ -33,9 +33,6 @@ class AddRunHandler(base.BaseHandler):
         notes = self.get_argument('notes', '')
         user = self.get_current_user()
 
-        if not util.validate_time(time):
-            self.finish('error, go back and try again')
-
         run = models.Run(user=user)
         run.distance = distance
         run.time = time
