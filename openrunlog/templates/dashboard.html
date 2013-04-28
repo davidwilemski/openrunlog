@@ -113,10 +113,11 @@
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="time">Time</label>
-            <div class="controls">
+                <select class="span2" name="pacetime" id="pacetime">
+                    <option value="time">Time:</option>
+                    <option value="pace">Pace:</option>
+                </select>
                 <input type="text" name="time" id="time" placeholder="28:00" data-required="true" data-time />
-            </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="notes">Notes:</label>
@@ -141,6 +142,9 @@ span.remove_run.label {
 div.recent_run {
     height: 20px;
     white-space: nowrap;
+}
+#time {
+    margin-left: 36px;
 }
 </style>
 
@@ -337,6 +341,11 @@ div.recent_run {
             },
             validators: {
                 time: function(val) {
+                    // don't do this validation if entering pace
+                    if($('#pacetime')[0].value === 'pace') {
+                        return true;
+                    }
+                    
                     var time = /^((\d+:\d\d:\d\d$)|(\d+:\d\d$)|(\d+$))/m;
                     var timetest = time.test(val);
                     if(!timetest) {
@@ -359,6 +368,14 @@ div.recent_run {
 
         });
         $('input#date').change();
+        $('#pacetime').change(function() {
+            if($('#pacetime')[0].value === "pace") {
+                $('#time')[0].placeholder = '7:00';
+            }
+            else {
+                $('#time')[0].placeholder = '28:00';
+            }
+        });
     });
 </script>
 {% end %}
