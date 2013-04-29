@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="span12">
+        <span class="pull-right">
+            <a data-toggle="modal" href="#creategroup"><button type="submit" class="btn btn-primary" type="button">Create Group</button></a>
+        </span>
+        <h2>All Groups:</h2>
+        {% if not groups %}
+        <div class="alert">
+            <em>No groups have been created yet</em>
+        </div>
+        {% end %}
+        {% for g in groups %}
+            <div>
+                <a href="{{ g.uri }}">{{ g.name }} - {{ len(g.members) }} Members</a>
+            </div>
+        {% end %}
+    </div>
+</div>
+
+<div class="modal fade" id="creategroup" style="display:none;">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">x</a>
+        <h3>Create a Group</h3>
+    </div>
+    <form id="creategroupform" method="POST" action="/g" class="form-horizontal">
+    <div class="modal-body">
+        <div class="control-group">
+            <label class="control-label" for="name">Name:</label>
+            <div class="controls">
+                <input type="text" name="name" id="name" placeholder="super awesome running group" data-required="true" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="url">URL:</label>
+            <div class="controls">
+                <div class="input-prepend" id="url-wrapper">
+                    <span class="add-on">/g/</span>
+                    <input type="text" name="url" id="url" value="" data-required="true" data-regexp="^[0-9a-z_]+$" />
+                </div>
+                <span class="help-block">This is required. May only include 0-9, a-z, and underscores.</span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button id="creategroupsubmit" type="submit" class="btn btn-primary">Create</button>
+    </div>
+    </form>
+</div>
+
+{% end %}
+
+{% block bottom %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#creategroupform').parsley({
+            trigger: 'change',
+            successClass: 'success',
+            errorClass: 'error',
+            validationMinlength: '1',
+            errors: {
+                classHandler: function(elem) {
+                    return $(elem).parents('div.control-group').first();
+                },
+                errorsWrapper: '<span class="help-inline"></span>',
+                errorElem: '<span></span>',
+            },
+        });
+    });
+</script>
+{% end %}

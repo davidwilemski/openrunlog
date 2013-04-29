@@ -14,6 +14,7 @@ import login
 import dashboard
 import data
 import runs
+import groups
 
 
 config = env.prefix('ORL_')
@@ -46,6 +47,8 @@ application = web.Application([
     (r'/u/([a-zA-Z0-9_]+)', dashboard.ProfileHandler),
     (r'/u/([a-zA-Z0-9_]+)/runs', runs.AllRunsHandler),
     (r'/u/([a-zA-Z0-9_]+)/run/([A-Za-z0-9]{24})', runs.ShowRunHandler),
+    (r'/g', groups.GroupDashboardHandler),
+    (r'/g/([a-zA-Z0-9_]+)', groups.GroupHandler),
     (r'/add', runs.AddRunHandler),
     (r'/remove', runs.RemoveRunHandler),
     (r'/data/([A-Za-z0-9]{24})/this_week', data.ThisWeekHandler),

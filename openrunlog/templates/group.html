@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="span3">
+        <div>
+            <h2>{{ group.name }}</h2>
+            <em>{{ len(members) }} members</em>
+        </div>
+        {% if user and user.public and user not in members %}
+            <form action="{{ group.uri }}" method="POST"><button class="btn btn-primary" type="submit">Join</button></form>
+        {% elif user and user in members %}
+            <form action="{{ group.uri }}" method="POST"><button class="btn btn-danger" type="submit">Leave</button></form>
+        {% end %}
+        <h4>Admins:</h4>
+        {% for u in group.admins %}
+            <p><a href="{{ u.uri }}">{{ u.display_name }}</a></p>
+        {% end %}
+    </div>
+    <div class="span9">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td>Name</td>
+                    <td>Miles This Year</td>
+                </tr>
+            </thead>
+            {% for u in members %}
+                <tr>
+                    <td><a href="{{ u.uri }}">{% raw gravatar_html(u.email, size=35) %}</a></td>
+                    <td><a href="{{ u.uri }}">{{ u.display_name }}</a></td>
+                    <td>{{ u.yearly_mileage }}</td>
+                </tr>
+            {% end %}
+        </table>
+    </div>
+</div>
+
+{% end %}

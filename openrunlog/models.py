@@ -343,3 +343,25 @@ class Week(mongoengine.Document):
             week.save()
         return week
 
+
+class Group(mongoengine.Document):
+    """
+    Stores info about a collection of users in a group
+    """
+    name = mongoengine.StringField(required=True)
+    url = mongoengine.StringField(unique=True, required=True)
+    admins = mongoengine.ListField(mongoengine.ReferenceField(User))
+    members = mongoengine.ListField(mongoengine.ReferenceField(User))
+    
+    @classmethod
+    def all_groups(self):
+        return Group.objects()
+    
+    @classmethod
+    def url_exists(self, url):
+        group = Group.objects(url=url).first()
+        return True if group else False
+
+    @property
+    def uri(self):
+        return '/g/{}'.format(self.url)
