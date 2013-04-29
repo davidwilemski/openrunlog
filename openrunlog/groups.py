@@ -57,7 +57,7 @@ class GroupHandler(base.BaseHandler):
         url = url.lower()
         group = models.Group.objects(url=url).first()
         members = [u for u in group.members]
-        members.sort(key=lambda x: x.yearly_mileage)
+        members.sort(reverse=True, key=lambda x: x.yearly_mileage)
         self.render('group.html', page_title=group.name, user=user, group=group, members=members, error=error)
     
     @web.authenticated
