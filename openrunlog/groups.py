@@ -68,6 +68,8 @@ class GroupHandler(base.BaseHandler):
         user = self.get_current_user()
         error = self.get_error()
         group = models.Group.objects(url=url).first()
+        if not user.public:
+            self.redirect(group.uri)
         if user in group.members:
             group.members.remove(user)
         else:
