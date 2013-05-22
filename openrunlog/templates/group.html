@@ -23,6 +23,7 @@
                 <tr>
                     <td></td>
                     <td>Name</td>
+                    <td>Hashtags</td>
                     <td>Miles This Year</td>
                 </tr>
             </thead>
@@ -30,6 +31,7 @@
                 <tr>
                     <td><a href="{{ u.uri }}">{% raw gravatar_html(u.email, size=35) %}</a></td>
                     <td><a href="{{ u.uri }}">{{ u.display_name }}</a></td>
+                    <td>{{ u.hashtags }}</td>
                     <td>{{ u.yearly_mileage }}</td>
                 </tr>
             {% end %}

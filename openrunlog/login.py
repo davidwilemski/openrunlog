@@ -125,6 +125,7 @@ class SettingsHandler(base.BaseHandler):
         display_name = self.get_argument('displayname', '')
         url = self.get_argument('url', '')
         public = self.get_argument('public', '')
+        hashtags = self.get_argument('hashtags', '')
 
         if not display_name:
             error = 'A display name is required!'
@@ -146,6 +147,7 @@ class SettingsHandler(base.BaseHandler):
         user.public = public
         user.url = url
         user.display_name = display_name
+        user.hashtags = hashtags
         user.save()
 
         yield gen.Task(self.tf.send, {'users.settings.changed': 1})

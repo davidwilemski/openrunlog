@@ -2,6 +2,7 @@
     {% raw gravatar_html(profile.email, 200) %}
     <h1>{{ profile.display_name }}</h1>
 </a>
+<p><strong>{{ profile.hashtags }}</strong></p>
 <p>
     All Time: {{ profile.total_mileage }} Miles<br />
     {{ this_year }}: {{ profile.yearly_mileage }} Miles<br />

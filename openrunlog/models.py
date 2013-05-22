@@ -160,6 +160,7 @@ class User(mongoengine.Document):
     dailymile_token = mongoengine.StringField()
     export_to_dailymile = mongoengine.BooleanField(default=False)
     streaks = mongoengine.DictField(default=None)
+    hashtags = mongoengine.StringField(default="")
     meta = {
         'indexes': ['id', 'url', 'email']
     }
