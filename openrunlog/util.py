@@ -19,7 +19,7 @@ def image_html(user, size='small'):
         url = 'http://graph.facebook.com/{}/picture?type={}'.format(fbid, size)
     else:
         email = user.email
-        if size == 'small':
+        if size == 'small' or size == 'square':
             px = 50
         else:
             px = 180
