@@ -249,6 +249,6 @@ class FacebookHandler(base.BaseHandler, auth.FacebookGraphMixin):
 
         else:
             self.authorize_redirect(
-                redirect_uri='http://localhost:11000/auth/facebook',
+                redirect_uri='http://openrunlog.org/auth/facebook',
                 client_id=self.config["facebook_api_key"],
                 extra_params={"scope": "read_stream,offline_access"})
