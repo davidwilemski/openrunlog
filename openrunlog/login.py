@@ -238,7 +238,7 @@ class FacebookHandler(base.BaseHandler, auth.FacebookGraphMixin):
         if self.get_argument("code", False):
             user = self.get_current_user()
             fbuser = yield self.get_authenticated_user(
-                redirect_uri='http://localhost:11000/auth/facebook',
+                redirect_uri='http://openrunlog.org/auth/facebook',
                 client_id=self.config["facebook_api_key"],
                 client_secret=self.config["facebook_secret"],
                 code=self.get_argument("code"))
