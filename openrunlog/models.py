@@ -158,6 +158,7 @@ class User(mongoengine.Document):
     email = mongoengine.EmailField(required=True, unique=True)
     password = mongoengine.StringField()
     dailymile_token = mongoengine.StringField()
+    facebook = mongoengine.DictField(default={})
     export_to_dailymile = mongoengine.BooleanField(default=False)
     streaks = mongoengine.DictField(default=None)
     hashtags = mongoengine.StringField(default="")

@@ -52,6 +52,10 @@ class BaseHandler(web.RequestHandler):
     @property
     def tf(self):
         return self.application.tf
+    
+    @property
+    def config(self):
+        return self.application.config
 
 
 def authorized_json(method, *args):

@@ -44,6 +44,7 @@ application = web.Application([
     (r'/settings', login.SettingsHandler),
     (r'/settings/dailymile/noexport', login.DailyMileLogoutHandler),
     (r'/auth/dailymile', login.DailyMileHandler),
+    (r'/auth/facebook', login.FacebookHandler),
     (r'/u/([a-zA-Z0-9_]+)', dashboard.ProfileHandler),
     (r'/u/([a-zA-Z0-9_]+)/runs', runs.AllRunsHandler),
     (r'/u/([a-zA-Z0-9_]+)/run/([A-Za-z0-9]{24})', runs.ShowRunHandler),

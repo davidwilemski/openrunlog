@@ -38,6 +38,11 @@
 
     </div>
     <div class="span9">
+        {% if user.email == profile.email and not user.facebook %}
+            <div class="alert alert-info">
+                Hey! <a href="/auth/facebook">Sign in with Facebook</a> if you want a profile picture!
+            </div>
+        {% end %}
         <div>
             <h2>This Week ({{ week.distance }} miles, {{ week.pretty_time }})</h2>
             <figure style="width: 650px; height: 300px;" id="week"></figure>

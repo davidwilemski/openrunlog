@@ -1,5 +1,5 @@
 <a href="{{ profile.uri }}">
-    {% raw gravatar_html(profile.email, 200) %}
+    {% raw image_html(profile, 'large') %}
     <h1>{{ profile.display_name }}</h1>
 </a>
 <p><strong>{{ profile.hashtags }}</strong></p>

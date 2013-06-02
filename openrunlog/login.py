@@ -229,3 +229,26 @@ class DailyMileLogoutHandler(base.BaseHandler):
 
         yield gen.Task(self.tf.send, {'users.dailymile.logout': 1})
         self.redirect('/settings')
+
+class FacebookHandler(base.BaseHandler, auth.FacebookGraphMixin):
+    @web.authenticated
+    @web.asynchronous
+    @gen.coroutine
+    def get(self):
+        if self.get_argument("code", False):
+            user = self.get_current_user()
+            fbuser = yield self.get_authenticated_user(
+                redirect_uri='http://localhost:11000/auth/facebook',
+                client_id=self.config["facebook_api_key"],
+                client_secret=self.config["facebook_secret"],
+                code=self.get_argument("code"))
+            user.facebook = fbuser
+            user.save()
+            self.redirect('/')
+            yield gen.Task(self.tf.send, {'users.facebook.login': 1})
+
+        else:
+            self.authorize_redirect(
+                redirect_uri='http://localhost:11000/auth/facebook',
+                client_id=self.config["facebook_api_key"],
+                extra_params={"scope": "read_stream,offline_access"})
