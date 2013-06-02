@@ -29,7 +29,7 @@
             </thead>
             {% for u in members %}
                 <tr>
-                    <td><a href="{{ u.uri }}">{% raw image_html(u) %}</a></td>
+                    <td><a href="{{ u.uri }}">{% raw image_html(u, 'square') %}</a></td>
                     <td><a href="{{ u.uri }}">{{ u.display_name }}</a></td>
                     <td>{{ u.hashtags }}</td>
                     <td>{{ u.yearly_mileage }}</td>
