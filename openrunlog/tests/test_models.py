@@ -48,8 +48,8 @@ class StreakTests(unittest.TestCase):
 
     def test_multiday_streak_longest_and_current(self):
         today = datetime.date.today()
-        d2 = datetime.date(today.year, today.month, today.day-1)
-        d3 = datetime.date(today.year, today.month, today.day-2)
+        d2 = today - relativedelta(days=1)
+        d3 = today - relativedelta(days=2)
         runs = [
             models.Run(date=d3, distance=4),
             models.Run(date=d2, distance=4),
