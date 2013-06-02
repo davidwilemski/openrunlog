@@ -196,7 +196,9 @@ class MonthRunsHandler(base.BaseHandler):
         def runs_in_month(user, date):
             run_map = '''
                 function() {
-                    emit(this.date, 1);
+                    if (this.distance > 0) {
+                        emit(this.date, 1);
+                    }
                 };
             '''
             run_reduce = '''

@@ -273,7 +273,7 @@ class Run(mongoengine.Document):
 
     @classmethod
     def get_recent_runs(cls, user, num_runs):
-        return Run.objects(user=user).order_by('-date')[:num_runs]
+        return Run.objects(user=user, distance__gt=0).order_by('-date')[:num_runs]
 
     @classmethod
     def get_runs(cls, user, date=None, keywords=None):
