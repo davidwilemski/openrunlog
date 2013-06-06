@@ -38,7 +38,7 @@
 
     </div>
     <div class="span9">
-        {% if user.email == profile.email and not user.facebook %}
+        {% if user and user.email == profile.email and not user.facebook %}
             <div class="alert alert-info">
                 Hey! <a href="/auth/facebook">Sign in with Facebook</a> if you want a profile picture!
             </div>
