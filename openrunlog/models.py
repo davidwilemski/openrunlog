@@ -206,15 +206,15 @@ class User(mongoengine.Document):
             longest_streak = 1
             longest_streak_start = 0
             for i in range(0, len(runs) - 1):
-                day_delta = relativedelta(runs[i+1].date, runs[i].date).days
-                if day_delta == 1:
+                delta = relativedelta(runs[i+1].date, runs[i].date)
+                if delta.days == 1 and delta.months == 0 and delta.years == 0:
                     if current_streak == 1:
                         current_streak_start = i
                     current_streak += 1
                     if current_streak > longest_streak:
                         longest_streak = current_streak
                         longest_streak_start = current_streak_start
-                elif day_delta == 0:
+                elif delta.days == 0 and delta.months == 0 and delta.years == 0:
                     continue
                 else:
                     current_streak = 1
@@ -233,10 +233,10 @@ class User(mongoengine.Document):
             }
         else:
             for i in range(len(runs)-1, -1, -1):
-                day_delta = relativedelta(runs[i-1].date, runs[i].date).days
-                if day_delta == -1:
+                delta = relativedelta(runs[i-1].date, runs[i].date)
+                if delta.days == -1 and delta.months == 0 and delta.years == 0:
                     current_streak += 1
-                elif day_delta == 0:
+                elif delta.days == 0 and delta.months == 0 and delta.years == 0:
                     continue
                 else:
                     break
