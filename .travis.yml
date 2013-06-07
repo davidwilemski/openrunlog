@@ -8,4 +8,5 @@ install:
 # command to run tests
 script: 
   - nosetests
-  - coverage run
+  - coverage run --source openrunlog setup.py test
+after_success: coveralls
