@@ -77,3 +77,4 @@ class GroupHandler(base.BaseHandler):
             group.members.append(user)
         group.save()
         self.redirect(group.uri)
+        self.tf.send({'groups.joins': 1}, lambda x: x)
