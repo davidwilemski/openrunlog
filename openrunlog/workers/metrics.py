@@ -4,13 +4,14 @@ from dateutil.relativedelta import relativedelta
 import env
 import logging
 import mongoengine
-from openrunlog import models, constants
+from openrunlog import models
 from tornado import ioloop, gen
 import tornadotinyfeedback
 
 
 def _daily_active_query():
-    yesterday = datetime.datetime.today()-relativedelta(days=1)
+    # TODO figure out why 27? timezones I'm guessing, still doesn't make sense
+    yesterday = datetime.datetime.today()-relativedelta(hours=27)
     today_runs = models.Run.objects(date__gte=yesterday)
     users = set()
 
