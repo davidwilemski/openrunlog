@@ -17,14 +17,13 @@ def _daily_active_query():
     for run in today_runs:
         users.add(run.user)
     num = len(users)
-    logging.info('found {} users active today'.format(num))
     return num
 
 
 @gen.coroutine
 def daily_active():
     logging.info('sending users.active.daily')
-    yield tf.send({'users.active.daily': _daily_active_query()})
+    yield gen.Task(tf.send, {'users.active.daily': _daily_active_query()})
 
 
 def main():
