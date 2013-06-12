@@ -9,7 +9,7 @@ import tornadotinyfeedback
 
 
 def _daily_active_query():
-    # TODO instead query in last 24 hours instead of .today() 
+    # TODO instead query in last 24 hours instead of .today()
     # so that we don't get drop offs around date changes
     today_runs = models.Run.objects(date=datetime.datetime.today())
     users = set()
