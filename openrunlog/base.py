@@ -1,5 +1,6 @@
 import functools
 import futures
+import logging
 from tornado import web, concurrent
 from tornado.ioloop import IOLoop
 from tornado.stack_context import ExceptionStackContext
@@ -76,6 +77,7 @@ def authorized(method, *args):
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         url = args[0]
+        logging.debug(args)
         profile = models.User.objects(url=url).first()
         user = self.get_current_user()
         if not profile.public and (not user or user.url != profile.url):

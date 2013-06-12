@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ static_url('css/xcharts.min.css') }}" type="text/css" />
+{% end %}
+
+{% block content %}
+<div class="row">
+    <div class="span3">
+    {% include '_profile_starter.html' %}
+
+    {% if user and user.url == 'david' %}
+    <ul class="nav nav-pills">
+        <li><a href="{{ profile.uri }}">Profile</a></li>
+        <li class="active"><a href="{{ profile.uri + '/calendar' }}">Calendar</a></li>
+    </ul>
+    {% end %}
+
+    </div>
+    
+    <div class="span9">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <td>Week Of</td>
+                    <td>Monday</td>
+                    <td>Tuesday</td>
+                    <td>Wednesday</td>
+                    <td>Thursday</td>
+                    <td>Friday</td>
+                    <td>Saturday</td>
+                    <td>Sunday</td>
+                </tr>
+            </thead>
+            <tr>
+            {% if calendar_runs[0]['date'].weekday() != 0 %}
+                {% for x in range(calendar_runs[0]['date'].weekday() + 1) %}
+                    <td></td>
+                {% end %}
+            {% end %}
+
+            {% for day in calendar_runs %}
+                {% if day['date'].weekday() == 0 %}
+                    </tr>
+                    <tr>
+                        <td>
+                            {{ day['date'].strftime('%x') }}
+                        </td>
+                {% end %}
+                <td>
+                {% for run in day['runs'] %}
+                    {% if run.id %}
+                        <p><a href="{{ run.uri }}">
+                            {{ run.distance }} @ {{ run.pace }}
+                        </a></p>
+                    {% else %}
+                        <p>{{ run.distance }}</p>
+                    {% end %}
+                {% end %}
+                </td>
+            {% end %}
+            
+            {% if calendar_runs[len(calendar_runs) - 1]['date'].weekday() != 6 %}
+                {% for x in range(6 - calendar_runs[len(calendar_runs)-1]['date'].weekday()) %}
+                    <td></td>
+                {% end %}
+            {% end %}
+            </tr>
+        </table>
+    </div>
+</div>
+
+{% end %}
+
+{% block bottom %}
+<style>
+span.remove_run.label {
+    margin-left: -26px;
+}
+div.recent_run {
+    height: 20px;
+    white-space: nowrap;
+}
+#time {
+    margin-left: 36px;
+}
+</style>
+
+{% end %}

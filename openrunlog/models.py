@@ -150,7 +150,6 @@ def _format_recent_run_data(given_runs):
     return data
 
 
-
 class User(mongoengine.Document):
     display_name = mongoengine.StringField(required=True)
     url = mongoengine.StringField(default="")
@@ -317,6 +316,68 @@ class Run(mongoengine.Document):
     @property
     def pretty_notes(self):
         return escape.xhtml_escape(self.notes).replace('\r\n', '<br />')
+
+    @classmethod
+    def get_calendar_runs(cls, user, date=None):
+        """
+        Returns runs in a format that the calendar template can interpret
+        for a given user since a given date
+
+        format:
+
+        [
+            {'date' :date, runs: [:run1, :run2]},
+            {'date' :date2, runs: [:run12, :run22]},
+        ]
+        """
+        date = datetime.datetime(2013, 5, 6)
+        def lookahead(day, date, runs, index):
+            if index >= len(runs)-1:
+                return day
+
+            if date == runs[index+1]:
+                day['runs'].append(runs[index+1])
+                day = lookahead(day, date, runs, index+1)
+            return day
+
+        runs = cls.get_runs(user, date=date)
+        result = []
+        previous_date = date - relativedelta(days=1)
+        one_day = relativedelta(days=1)
+        for i in range(len(runs)):
+            if runs[i].date == previous_date:
+                continue
+
+            next_date = previous_date + dateutil.relativedelta.relativedelta(
+                days=1)
+
+            if runs[i].date > next_date:
+                while runs[i].date > next_date:
+                    day = {
+                        'date': next_date,
+                        'runs': [Run(date=next_date, distance=0, time=0)],
+                    }
+                    previous_date += one_day
+                    next_date += one_day
+                    result.append(day)
+
+            day = {'date': runs[i].date, 'runs': [runs[i]]}
+            day = lookahead(day, previous_date, runs, i)
+            previous_date = runs[i].date
+            result.append(day)
+
+            today = datetime.datetime.today()
+            if runs[len(runs)-1].date != today:
+                date = runs[len(runs)-1].date
+                while date < today - one_day:
+                    day = {
+                        'date': date + one_day,
+                        'runs': [Run(date=next_date, distance=0, time=0)],
+                    }
+                    result.append(day)
+                    date += one_day
+
+        return result
 
 
 class Week(mongoengine.Document):
