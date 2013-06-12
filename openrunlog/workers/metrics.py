@@ -1,5 +1,6 @@
 
 import datetime
+from dateutil.relativedelta import relativedelta
 import env
 import logging
 import mongoengine
@@ -9,9 +10,8 @@ import tornadotinyfeedback
 
 
 def _daily_active_query():
-    # TODO instead query in last 24 hours instead of .today()
-    # so that we don't get drop offs around date changes
-    today_runs = models.Run.objects(date=datetime.datetime.today())
+    yesterday = datetime.datetime.today()-relativedelta(days=1)
+    today_runs = models.Run.objects(date__gte=yesterday)
     users = set()
 
     for run in today_runs:
