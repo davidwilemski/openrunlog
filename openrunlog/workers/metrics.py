@@ -21,15 +21,27 @@ def _daily_active_query():
     return num
 
 
+def _monthly_active_query():
+    # TODO figure out why 27? timezones I'm guessing, still doesn't make sense
+    monthly = datetime.datetime.today()-relativedelta(hours=27)
+    runs = models.Run.objects(date__gte=monthly)
+    users = set()
+
+    for run in runs:
+        users.add(run.user)
+    num = len(users)
+    return num
+
 @gen.coroutine
-def daily_active():
+def active_users():
     logging.info('sending users.active.daily')
     yield gen.Task(tf.send, {'users.active.daily': _daily_active_query()})
+    yield gen.Task(tf.send, {'users.active.monthly': _monthly_active_query()})
 
 
 def main():
-    logging.info('starting active daily user counter')
-    ioloop.PeriodicCallback(daily_active, 60*1000).start()
+    logging.info('starting active user counter')
+    ioloop.PeriodicCallback(active_users, 60*1000).start()
 
 
 if __name__ == '__main__':
