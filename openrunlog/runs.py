@@ -130,7 +130,7 @@ class AllRunsHandler(base.BaseHandler):
     @base.authorized
     def get(self, userurl):
         user = yield self.get_current_user_async()
-        profile = models.get_user_by_url(self.redis, userurl)
+        profile = yield models.get_user_by_url(self.redis, userurl)
         keywords = self.get_argument('keywords', None)
 
         runs = yield self.get_runs(profile, keywords)
