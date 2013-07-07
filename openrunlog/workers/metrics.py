@@ -5,6 +5,7 @@ import env
 import logging
 import mongoengine
 from openrunlog import models
+import setproctitle
 from tornado import ioloop, gen
 import tornadotinyfeedback
 
@@ -56,6 +57,7 @@ if __name__ == '__main__':
         host=config['db_uri'])
     tf = tornadotinyfeedback.Client('openrunlog')
     logging.basicConfig(level=logging.INFO)
+    setproctitle.setproctitle('orl.workers.metrics')
 
     logging.info('starting workers.metrics')
     main()

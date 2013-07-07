@@ -3,6 +3,7 @@ import env
 import logging
 from openrunlog import models, constants
 import redis
+import setproctitle
 import mongoengine
 
 
@@ -33,5 +34,6 @@ if __name__ == '__main__':
     r = redis.StrictRedis(host='localhost', port=6379)
 
     logging.basicConfig(level=logging.INFO)
+    setproctitle.setproctitle('orl.workers.streak')
 
     main(r)

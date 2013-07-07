@@ -4,6 +4,7 @@ import futures
 import sys
 import mongoengine
 import os
+import setproctitle
 from tornado import web, ioloop, process
 from tornado.options import define, options, parse_command_line
 import tornadoredis
@@ -73,6 +74,7 @@ application.redis.connect()
 if __name__ == '__main__':
     define('port', default=11000, help='TCP port to listen on')
     parse_command_line()
+    setproctitle.setproctitle('orl.app')
 
     mongoengine.connect(
             config['db_name'], 

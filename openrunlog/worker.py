@@ -1,6 +1,7 @@
 
 import env
 import logging
+import setproctitle
 import tornado.ioloop
 import tornado.options
 import tornado.gen
@@ -82,5 +83,6 @@ if __name__ == '__main__':
             host=config['db_uri'])
 
     tornado.options.parse_command_line()
+    setproctitle.setproctitle('orl.worker')
     run_exporter(r)
     tornado.ioloop.IOLoop.instance().start()
