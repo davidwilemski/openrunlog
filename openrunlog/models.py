@@ -23,6 +23,19 @@ def get_user_by_uid(r, uid):
         raise gen.Return(user)
 
 
+@gen.coroutine
+def get_user_by_email(r, u):
+    user = yield cache.get(r, u)
+    if user:
+        logging.debug('cache hit for {}'.format(u))
+        raise gen.Return(user)
+    else:
+        logging.debug('cache miss for {}'.format(u))
+        user = User.objects(email=u).first()
+        cache.send(r, user)
+        raise gen.Return(user)
+
+
 def url_unique(url, user=None):
     unique = True
     urls = User.objects(url=url)

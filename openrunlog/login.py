@@ -30,7 +30,7 @@ class LoginHandler(base.BaseHandler):
         if not email or not password:
             error = True
 
-        user = models.User.objects(email=email).first()
+        user = yield models.get_user_by_email(self.redis, email)
 
         if not user:
             error = True
@@ -82,7 +82,7 @@ class RegisterHandler(base.BaseHandler):
             return
 
         # check that email hasn't already been used
-        check_user = models.User.objects(email=email).first()
+        check_user = yield models.get_user_by_email(self.redis, email)
         if check_user:
             error_text = 'The email you tried already has an account. Please log in or register with a different email address.'
             self.render('register.html', page_title='Register', user=None, error=error_text)
