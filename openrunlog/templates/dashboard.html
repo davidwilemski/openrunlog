@@ -337,6 +337,8 @@ div.recent_run {
     }
 
     $(document).ready(function() {
+        var d = new Date();
+        $('input#date').val(d.toLocaleDateString());
         $('#addrunform').parsley({
             trigger: 'change',
             successClass: 'success',
