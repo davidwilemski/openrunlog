@@ -47,9 +47,11 @@ def uninstall():
 @task
 def setup():
     require.python.pip()
+    fabtools.python.install('virtualenv', use_sudo=True)
+    fabtools.require.deb.package('git-core')
 
     # Create venv
-    run('virtualenv -p /usr/local/bin/python2.7 ' + PROJ_NAME + '_env')
+    run('virtualenv -p `which python2.7` ' + PROJ_NAME + '_env')
 
     # activate venv
     with prefix('source ' + VENV_DIR + 'bin/activate'):
@@ -65,4 +67,11 @@ def setup():
                 run('cp -r openrunlog-0.1/openrunlog $VIRTUAL_ENV/lib/python2.7/site-packages/')
 
     install_upstart_conf()
+    install_mongo()
     start()
+
+
+@task
+def install_mongo():
+    with prefix('source ' + VENV_DIR + 'bin/activate'):
+        run('mongoctl install-mongodb')
