@@ -19,7 +19,7 @@ class ProfileHandler(base.BaseHandler):
         # if we're not looking at our own
         # we show another profile if it's public
         if not user or user.url != url:
-            profile = models.User.objects(url=url).first()
+            profile = yield models.get_user_by_url(self.redis, url)
 
         recent_runs = yield self.execute_thread(
             models.Run.get_recent_runs, profile, 10)

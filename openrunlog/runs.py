@@ -109,7 +109,7 @@ class ShowRunHandler(base.BaseHandler):
     @base.authorized
     def get(self, userurl, run):
         user = yield self.get_current_user_async()
-        profile = models.User.objects(url=userurl).first()
+        profile = yield models.get_user_by_url(self.redis, userurl)
 
         run = models.Run.objects(id=run).first()
         year = datetime.date.today().year
@@ -130,7 +130,7 @@ class AllRunsHandler(base.BaseHandler):
     @base.authorized
     def get(self, userurl):
         user = yield self.get_current_user_async()
-        profile = models.User.objects(url=userurl).first()
+        profile = models.get_user_by_url(self.redis, userurl)
         keywords = self.get_argument('keywords', None)
 
         runs = yield self.get_runs(profile, keywords)
