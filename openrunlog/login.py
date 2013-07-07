@@ -12,8 +12,11 @@ import util
 
 class LoginHandler(base.BaseHandler):
     @web.asynchronous
+    @gen.coroutine
     def get(self):
-        if self.get_current_user() is not None:
+        user = yield self.get_current_user_async()
+        logging.debug(user.email)
+        if user is not None:
             self.redirect('/')
         self.render('login.html', page_title='Log In', user=None, error='')
 
@@ -51,8 +54,9 @@ class LoginHandler(base.BaseHandler):
 
 class RegisterHandler(base.BaseHandler):
     @web.asynchronous
+    @gen.coroutine
     def get(self):
-        user = self.get_current_user()
+        user = yield self.get_current_user_async()
         if user is not None:
             self.redirect('/')
         self.render('register.html', page_title='Register', user=user, error='')
@@ -94,7 +98,7 @@ class RegisterHandler(base.BaseHandler):
         new_user.display_name = display_name
         new_user.url = url
         new_user.public = public
-        new_user.save()
+        new_user.save(self.redis)
 
         self.set_secure_cookie('user', str(new_user.id))
         self.tf.send({'users.registrations': 1}, lambda x: x)
@@ -110,17 +114,18 @@ class LogoutHandler(base.BaseHandler):
         self.redirect('/')
 
 class SettingsHandler(base.BaseHandler):
-    @web.authenticated
+    @base.authenticated_async
     @web.asynchronous
+    @gen.coroutine
     def get(self):
-        user = self.get_current_user()
+        user = yield self.get_current_user_async()
         self.render("settings.html", page_title="Settings for {}".format(user.display_name), user=user, error=None)
 
-    @web.authenticated
+    @base.authenticated_async
     @web.asynchronous
-    @gen.engine
+    @gen.coroutine
     def post(self):
-        user = self.get_current_user()
+        user = yield self.get_current_user_async()
         url = self.get_argument('url', '')
         display_name = self.get_argument('displayname', '')
         url = self.get_argument('url', '')
@@ -148,7 +153,7 @@ class SettingsHandler(base.BaseHandler):
         user.url = url
         user.display_name = display_name
         user.hashtags = hashtags
-        user.save()
+        user.save(self.redis)
 
         yield gen.Task(self.tf.send, {'users.settings.changed': 1})
         self.redirect('/settings')
@@ -209,7 +214,7 @@ class DailyMileHandler(base.BaseHandler, auth.OAuth2Mixin):
         user = self.get_current_user()
         user.dailymile_token = data['access_token']
         user.export_to_dailymile = True
-        user.save()
+        user.save(self.redis)
 
         crosspost.send_user(self.redis, user)
 
@@ -218,14 +223,14 @@ class DailyMileHandler(base.BaseHandler, auth.OAuth2Mixin):
         self.redirect('/settings')
 
 class DailyMileLogoutHandler(base.BaseHandler):
-    @web.authenticated
+    @base.authenticated_async
     @web.asynchronous
-    @gen.engine
+    @gen.coroutine
     def post(self):
-        user = self.get_current_user()
+        user = yield self.get_current_user_async()
         user.export_to_dailymile = False
         user.dailymile_token = ''
-        user.save()
+        user.save(self.redis)
 
         yield gen.Task(self.tf.send, {'users.dailymile.logout': 1})
         self.redirect('/settings')
@@ -243,7 +248,7 @@ class FacebookHandler(base.BaseHandler, auth.FacebookGraphMixin):
                 client_secret=self.config["facebook_secret"],
                 code=self.get_argument("code"))
             user.facebook = fbuser
-            user.save()
+            user.save(self.redis)
             self.redirect('/')
             yield gen.Task(self.tf.send, {'users.facebook.login': 1})
 

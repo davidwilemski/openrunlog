@@ -5,7 +5,22 @@ import dateutil
 import dateutil.parser
 from dateutil.relativedelta import relativedelta
 import logging
-from tornado import escape
+from tornado import escape, gen
+
+import cache
+
+
+@gen.coroutine
+def get_user_by_uid(r, uid):
+    user = yield cache.get(r, uid)
+    if user:
+        logging.debug('cache hit for {}'.format(uid))
+        raise gen.Return(user)
+    else:
+        logging.debug('cache miss for {}'.format(uid))
+        user = User.objects(id=uid).first()
+        cache.send(r, user)
+        raise gen.Return(user)
 
 
 def url_unique(url, user=None):
@@ -164,6 +179,10 @@ class User(mongoengine.Document):
     meta = {
         'indexes': ['id', 'url', 'email']
     }
+
+    def save(self, r):
+        cache.invalidate(r, self)
+        return super(User, self).save()
 
     @property
     def total_mileage(self):

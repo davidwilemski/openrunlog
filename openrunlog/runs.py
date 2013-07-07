@@ -12,8 +12,8 @@ from tornado import web, gen, concurrent
 
 class AddRunHandler(base.BaseHandler):
     @web.asynchronous
-    @web.authenticated
-    @gen.engine
+    @base.authenticated_async
+    @gen.coroutine
     def post(self):
         date = self.get_argument('date', '')
         date = dateutil.parser.parse(date, fuzzy=True)
@@ -31,7 +31,7 @@ class AddRunHandler(base.BaseHandler):
             self.redirect_msg('/u/%s' % user.url, {'error': msg})
             return
         notes = self.get_argument('notes', '')
-        user = self.get_current_user()
+        user = yield self.get_current_user_async()
 
         run = models.Run(user=user)
         run.distance = distance
@@ -59,11 +59,11 @@ class AddRunHandler(base.BaseHandler):
 
 class RemoveRunHandler(base.BaseHandler):
     @web.asynchronous
-    @web.authenticated
-    @gen.engine
+    @base.authenticated_async
+    @gen.coroutine
     def post(self):
         run_id = self.get_argument('run_id', '')
-        user = self.get_current_user()
+        user = yield self.get_current_user_async()
 
         if not run_id:
             self.redirect_msg('/', {'error': 'Could not find run (invalid).'})
@@ -79,7 +79,7 @@ class RemoveRunHandler(base.BaseHandler):
 
         # remove this run from the week's aggregate
         monday = run.date - dateutil.relativedelta.relativedelta(days=run.date.weekday())
-        week = models.Week.objects(date=monday, user=self.get_current_user()).first()
+        week = models.Week.objects(date=monday, user=user).first()
         if not week:
             # we shouldn't get here - there should be a week for this run
             self.redirect_msg('/', {'error': 'Something went really, really wrong removing the run (weekly totals)'})
@@ -105,10 +105,10 @@ class RemoveRunHandler(base.BaseHandler):
 
 class ShowRunHandler(base.BaseHandler):
     @web.asynchronous
-    @gen.engine
+    @gen.coroutine
     @base.authorized
     def get(self, userurl, run):
-        user = self.get_current_user()
+        user = yield self.get_current_user_async()
         profile = models.User.objects(url=userurl).first()
 
         run = models.Run.objects(id=run).first()
@@ -129,7 +129,7 @@ class AllRunsHandler(base.BaseHandler):
     @gen.coroutine
     @base.authorized
     def get(self, userurl):
-        user = self.get_current_user()
+        user = yield self.get_current_user_async()
         profile = models.User.objects(url=userurl).first()
         keywords = self.get_argument('keywords', None)
 

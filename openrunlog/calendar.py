@@ -13,7 +13,7 @@ class CalendarHandler(base.BaseHandler):
     def get(self, url):
         self.tf.send({'profile.calendar.views': 1}, lambda x: x)
         error = self.get_error()
-        user = self.get_current_user()
+        user = yield self.get_current_user_async()
         profile = user
 
         # if we're not looking at our own

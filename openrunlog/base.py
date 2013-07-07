@@ -1,7 +1,7 @@
 import functools
 import futures
 import logging
-from tornado import web, concurrent
+from tornado import web, concurrent, gen
 from tornado.ioloop import IOLoop
 from tornado.stack_context import ExceptionStackContext
 import urllib
@@ -16,6 +16,16 @@ class BaseHandler(web.RequestHandler):
 
         user = models.User.objects(id=uid).first()
         return user
+
+    @gen.coroutine
+    def get_current_user_async(self):
+        uid = self.get_secure_cookie('user', None)
+        logging.debug('current_user_async {}'.format(uid))
+        if uid:
+            user = yield models.get_user_by_uid(self.redis, uid)
+            raise gen.Return(user)
+        raise gen.Return(None)
+
 
     def redirect_msg(self, url, params):
         for k,v in params.iteritems():
@@ -87,4 +97,19 @@ def authorized(method, *args):
                 user=user, profile=profile, error=None)
 
         return method(self, *args, **kwargs)
+    return wrapper
+
+
+def authenticated_async(f):
+    @functools.wraps(f)
+    @gen.coroutine
+    def wrapper(self, *args, **kwargs):
+        self._auto_finish = False
+        self.current_user = yield self.get_current_user_async()
+        if not self.current_user:
+            self.redirect(
+                self.get_login_url() + '?' +
+                urllib.urlencode(dict(next=self.request.uri)))
+        else:
+            f(self, *args, **kwargs)
     return wrapper

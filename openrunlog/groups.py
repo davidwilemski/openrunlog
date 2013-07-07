@@ -8,7 +8,7 @@ class GroupDashboardHandler(base.BaseHandler):
     @web.asynchronous
     @gen.coroutine
     def get(self):
-        user = self.get_current_user()
+        user = yield self.get_current_user_async()
         error = self.get_error()
         groups = yield self.execute_thread(models.Group.all_groups)
 
@@ -20,11 +20,11 @@ class GroupDashboardHandler(base.BaseHandler):
             groups=groups)
         self.tf.send({'groups.dashboard.views': 1}, lambda x: x)
 
-    @web.authenticated
+    @base.authenticated_async
     @web.asynchronous
     @gen.coroutine
     def post(self):
-        user = self.get_current_user()
+        user = yield self.get_current_user_async()
         error = self.get_error()
         name = self.get_argument('name', '')
         url = self.get_argument('url', '').lower()
@@ -52,7 +52,7 @@ class GroupHandler(base.BaseHandler):
     @web.asynchronous
     @gen.coroutine
     def get(self, url):
-        user = self.get_current_user()
+        user = yield self.get_current_user_async()
         error = self.get_error()
         url = url.lower()
         group = models.Group.objects(url=url).first()
@@ -61,12 +61,12 @@ class GroupHandler(base.BaseHandler):
         self.render('group.html', page_title=group.name, user=user, group=group, members=members, error=error)
         self.tf.send({'groups.views': 1}, lambda x: x)
 
-    @web.authenticated
+    @base.authenticated_async
     @web.asynchronous
     @gen.coroutine
     def post(self, url):
         url = url.lower()
-        user = self.get_current_user()
+        user = yield self.get_current_user_async()
         error = self.get_error()
         group = models.Group.objects(url=url).first()
         if not user.public:
