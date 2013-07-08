@@ -115,7 +115,7 @@ def daily():
 
 
 def main():
-    logging.info('starting workers.metrics')
+    logging.info('starting workers.backup')
     ioloop.PeriodicCallback(daily, 1000*60*60*24).start()
 
 

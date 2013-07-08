@@ -11,8 +11,8 @@ import dateutil.parser
 from tornado import web, gen, concurrent
 
 class AddRunHandler(base.BaseHandler):
-    @web.asynchronous
     @base.authenticated_async
+    @web.asynchronous
     @gen.coroutine
     def post(self):
         date = self.get_argument('date', '')
@@ -58,8 +58,8 @@ class AddRunHandler(base.BaseHandler):
         self.redirect('/')
 
 class RemoveRunHandler(base.BaseHandler):
-    @web.asynchronous
     @base.authenticated_async
+    @web.asynchronous
     @gen.coroutine
     def post(self):
         run_id = self.get_argument('run_id', '')
