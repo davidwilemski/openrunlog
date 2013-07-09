@@ -15,7 +15,6 @@ class LoginHandler(base.BaseHandler):
     @gen.coroutine
     def get(self):
         user = yield self.get_current_user_async()
-        logging.debug(user.email)
         if user is not None:
             self.redirect('/')
         self.render('login.html', page_title='Log In', user=None, error='')
