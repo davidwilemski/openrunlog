@@ -6,36 +6,42 @@ import logging
 import mongoengine
 from openrunlog import models
 import setproctitle
+import time
 from tornado import ioloop, gen
 import tornadotinyfeedback
 
 
+def timestamp_to_oid(timestamp):
+    return '{0:x}0000000000000000'.format(timestamp)
+
+
 def _daily_active_query():
-    # TODO figure out why 27? timezones I'm guessing, still doesn't make sense
-    yesterday = datetime.datetime.today()-relativedelta(hours=27)
-    today_runs = models.Run.objects(date__gte=yesterday)
+    yesterday = timestamp_to_oid(time.time() - 60*60*24)
+    today_runs = models.Run.objects(id__gte=yesterday)
     users = set()
 
     for run in today_runs:
         users.add(run.user)
     num = len(users)
+    logging.info("daily active users: {}".format(num))
     return num
 
 
 def _monthly_active_query():
-    # TODO figure out why 27? timezones I'm guessing, still doesn't make sense
-    monthly = datetime.datetime.today()-relativedelta(hours=27)
-    runs = models.Run.objects(date__gte=monthly)
+    monthly = timestamp_to_oid(time.time() - 60*60*24*30)
+    runs = models.Run.objects(id__gte=monthly)
     users = set()
 
     for run in runs:
         users.add(run.user)
     num = len(users)
+    print num
+    logging.info("monthly active users: {}".format(num))
     return num
 
 @gen.coroutine
 def active_users():
-    logging.info('sending users.active.daily')
+    logging.info('{} sending users.active'.format(datetime.datetime.today()))
     yield gen.Task(tf.send, {'users.active.daily': _daily_active_query()})
     yield gen.Task(tf.send, {'users.active.monthly': _monthly_active_query()})
 
