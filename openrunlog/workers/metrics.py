@@ -12,7 +12,7 @@ import tornadotinyfeedback
 
 
 def timestamp_to_oid(timestamp):
-    return '{0:x}0000000000000000'.format(timestamp)
+    return '{0:x}0000000000000000'.format(int(timestamp))
 
 
 def _daily_active_query():
@@ -35,7 +35,6 @@ def _monthly_active_query():
     for run in runs:
         users.add(run.user)
     num = len(users)
-    print num
     logging.info("monthly active users: {}".format(num))
     return num
 
