@@ -15,34 +15,45 @@ def timestamp_to_oid(timestamp):
     return '{0:x}0000000000000000'.format(int(timestamp))
 
 
-def _daily_active_query():
+def _daily_timestamp():
     yesterday = timestamp_to_oid(time.time() - 60*60*24)
-    today_runs = models.Run.objects(id__gte=yesterday)
-    users = set()
-
-    for run in today_runs:
-        users.add(run.user)
-    num = len(users)
-    logging.info("daily active users: {}".format(num))
-    return num
+    return yesterday
 
 
-def _monthly_active_query():
+def _weekly_timestamp():
+    weekly = timestamp_to_oid(time.time() - 60*60*24*7)
+    return weekly 
+
+
+def _monthly_timestamp():
     monthly = timestamp_to_oid(time.time() - 60*60*24*30)
-    runs = models.Run.objects(id__gte=monthly)
-    users = set()
+    return monthly
 
+
+def _active_users_query(timestamp):
+    runs = models.Run.objects(id__gte=timestamp)
+    users = set()
+    
     for run in runs:
         users.add(run.user)
     num = len(users)
-    logging.info("monthly active users: {}".format(num))
     return num
 
 @gen.coroutine
 def active_users():
     logging.info('{} sending users.active'.format(datetime.datetime.today()))
-    yield gen.Task(tf.send, {'users.active.daily': _daily_active_query()})
-    yield gen.Task(tf.send, {'users.active.monthly': _monthly_active_query()})
+
+    daily_users = _active_users_query(_daily_timestamp())
+    yield gen.Task(tf.send, {'users.active.daily': daily_users})
+    logging.info("daily active users: {}".format(daily_users))
+
+    weekly_users = _active_users_query(_weekly_timestamp())
+    yield gen.Task(tf.send, {'users.active.weekly': weekly_users})
+    logging.info("weekly active users: {}".format(weekly_users))
+
+    monthly_users = _active_users_query(_monthly_timestamp())
+    yield gen.Task(tf.send, {'users.active.monthly': monthly_users})
+    logging.info("monthly active users: {}".format(monthly_users))
 
 
 def main():
