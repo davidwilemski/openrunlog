@@ -12,6 +12,8 @@ import cache
 
 @gen.coroutine
 def get_user_by_uid(r, uid):
+    #user = User.objects(id=uid).first()
+    #raise gen.Return(user)
     user = yield cache.get(r, uid)
     if user:
         logging.debug('cache hit for {}'.format(uid))
@@ -295,7 +297,7 @@ class User(mongoengine.Document):
 
 
 class Run(mongoengine.Document):
-    user = mongoengine.ReferenceField(User, dbref=True)
+    user = mongoengine.ReferenceField(User)
     date = mongoengine.DateTimeField(default=datetime.date.today())
     distance = mongoengine.FloatField()
     time = mongoengine.IntField()  # store time in seconds for easy manipulation
@@ -433,7 +435,7 @@ class Week(mongoengine.Document):
     - Time is stored in Seconds
     - Distance is Miles
     """
-    user = mongoengine.ReferenceField(User, dbref=True)
+    user = mongoengine.ReferenceField(User)
     date = mongoengine.DateTimeField()
     distance = mongoengine.FloatField(default=0)
     time = mongoengine.IntField(default=0) # in seconds

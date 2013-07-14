@@ -75,3 +75,12 @@ def setup():
 def install_mongo():
     with prefix('source ' + VENV_DIR + 'bin/activate'):
         run('mongoctl install-mongodb')
+
+
+@task
+def migrate_mongoengine():
+    deploy()
+    stop()
+    with cd(PROJ_DIR):
+        run('python openrunlog/scripts/migrations/mongoengine07to08.py')
+    start()
