@@ -79,8 +79,6 @@ def install_mongo():
 
 @task
 def migrate_mongoengine():
-    deploy()
-    stop()
     with prefix('source ' + VENV_DIR + 'bin/activate'):
         with cd(PROJ_DIR):
             run('python openrunlog/scripts/migrations/mongoengine07to08.py')
