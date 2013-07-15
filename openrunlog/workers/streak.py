@@ -4,6 +4,7 @@ import logging
 from openrunlog import models, constants
 import redis
 import setproctitle
+import tornadoredis
 import mongoengine
 
 
@@ -20,7 +21,7 @@ def calculate_streaks(user):
     if not user:
         return
 
-    user.calculate_streaks()
+    user.calculate_streaks(asyncr)
 
 if __name__ == '__main__':
     config = env.prefix('ORL_')
@@ -32,6 +33,8 @@ if __name__ == '__main__':
         config['db_name'],
         host=config['db_uri'])
     r = redis.StrictRedis(host='localhost', port=6379)
+    asyncr = tornadoredis.Client()
+    asyncr.connect()
 
     logging.basicConfig(level=logging.INFO)
     setproctitle.setproctitle('orl.workers.streak')
