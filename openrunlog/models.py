@@ -226,10 +226,10 @@ class User(mongoengine.Document):
     def uri(self):
         return '/u/{}'.format(self.url)
 
-    def calculate_streaks(self):
+    def calculate_streaks(self, redis):
         runs = Run.objects(user=self, distance__gt=0).order_by('date')
         self.streaks = self._calculate_streaks(runs)
-        self.save()
+        self.save(redis)
 
     @classmethod
     def _calculate_streaks(cls, runs):
