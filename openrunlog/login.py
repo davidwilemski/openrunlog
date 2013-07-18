@@ -61,6 +61,7 @@ class RegisterHandler(base.BaseHandler):
         self.render('register.html', page_title='Register', user=user, error='')
 
     @web.asynchronous
+    @gen.coroutine
     def post(self):
         email = self.get_argument('email', '')
         display_name = self.get_argument('display_name', '')
