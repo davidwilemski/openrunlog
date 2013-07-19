@@ -1,6 +1,7 @@
 
 
 from fabric.api import *
+from fabric import operations
 from fabtools import require
 import fabtools
 import os
@@ -83,3 +84,8 @@ def migrate_mongoengine():
         with cd(PROJ_DIR):
             run('python openrunlog/scripts/migrations/mongoengine07to08.py')
     start()
+
+
+@task
+def shell():
+    return operations.open_shell()
