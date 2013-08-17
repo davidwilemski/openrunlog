@@ -409,7 +409,11 @@ class Run(mongoengine.Document):
                     result.append(day)
 
             day = {'date': runs[i].date, 'runs': [runs[i]]}
-            day = lookahead(day, previous_date, runs, i)
+            j = i + 1
+            while j < len(runs) and runs[j].date == next_date:
+                day['runs'].append(runs[j])
+                j += 1
+            #day = lookahead(day, previous_date, runs, i)
             previous_date = runs[i].date
             next_date = previous_date + one_day
             result.append(day)
@@ -427,6 +431,7 @@ class Run(mongoengine.Document):
                 result.append(day)
                 date += one_day
 
+        logging.debug(result)
         return result
 
 

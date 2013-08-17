@@ -28,6 +28,7 @@
                     <td>Friday</td>
                     <td>Saturday</td>
                     <td>Sunday</td>
+                    <td>Total</td>
                 </tr>
             </thead>
             <tr>
@@ -37,9 +38,18 @@
                 {% end %}
             {% end %}
 
+            {% set miles = 0 %}
+            {% set initial = True %}
             {% for day in calendar_runs %}
                 {% if day['date'].weekday() == 0 %}
+                    {% if not initial %}
+                        <td>
+                            {{ miles }} miles
+                        </td>
+                    {% end %}
+                    {% set initial = False %}
                     </tr>
+                    {% set miles = 0 %}
                     <tr>
                         <td>
                             {{ day['date'].strftime('%x') }}
@@ -48,6 +58,7 @@
                 <td>
                 {% for run in day['runs'] %}
                     {% if run.id %}
+                        {% set miles += run.distance %}
                         <p><a href="{{ run.uri }}">
                             {% if run.distance > 0 %}
                                 {% if run.distance > 1 %}
@@ -71,6 +82,9 @@
                     <td></td>
                 {% end %}
             {% end %}
+                <td>
+                    {{ miles }} miles
+                </td>
             </tr>
         </table>
     </div>
