@@ -51,7 +51,15 @@
                 {% for run in day['runs'] %}
                     {% if run.id %}
                         <p><a href="{{ run.uri }}">
-                            {{ run.distance }} @ {{ run.pace }}
+                            {% if run.distance > 0 %}
+                                {% if run.distance > 1 %}
+                                    {{ run.distance }} Miles
+                                {% else %}
+                                    {{ run.distance }} Mile
+                                {% end %}
+                            {% else %}
+                                OFF
+                            {% end %}
                         </a></p>
                     {% else %}
                         <p>{{ run.distance }}</p>

@@ -427,7 +427,6 @@ class Run(mongoengine.Document):
                 result.append(day)
                 date += one_day
 
-        logging.info(result)
         return result
 
 
