@@ -7,7 +7,6 @@ import models
 
 
 class ProfileHandler(base.BaseHandler):
-    @base.authenticated_async
     @gen.coroutine
     @base.authorized
     def get(self, url):
