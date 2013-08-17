@@ -327,10 +327,10 @@ class Run(mongoengine.Document):
         Will return a QuerySet of runs that happened on or after the specified date
         """
         if date:
-            return cls.objects(user=user, date__gte=date)
+            return cls.objects(user=user, date__gte=date).order_by('date')
         if keywords is not None:
-            return cls.objects(user=user, notes__icontains=keywords)
-        return cls.objects(user=user)
+            return cls.objects(user=user, notes__icontains=keywords).order_by('date')
+        return cls.objects(user=user).order_by('date')
 
     @classmethod
     def this_week_mileage(cls, user):
@@ -389,16 +389,16 @@ class Run(mongoengine.Document):
 
         runs = cls.get_runs(user, date=date)
         result = []
-        previous_date = date - relativedelta(days=1)
         one_day = relativedelta(days=1)
+        previous_date = date - one_day
+        next_date = previous_date + one_day
+        
         for i in range(len(runs)):
-            if runs[i].date == previous_date:
+            if runs[i].date <= previous_date:
                 continue
 
-            next_date = previous_date + dateutil.relativedelta.relativedelta(
-                days=1)
-
             if runs[i].date > next_date:
+                # fill in days with 0s when there's no data for them
                 while runs[i].date > next_date:
                     day = {
                         'date': next_date,
@@ -411,19 +411,23 @@ class Run(mongoengine.Document):
             day = {'date': runs[i].date, 'runs': [runs[i]]}
             day = lookahead(day, previous_date, runs, i)
             previous_date = runs[i].date
+            next_date = previous_date + one_day
             result.append(day)
 
-            today = datetime.datetime.today()
-            if runs[len(runs)-1].date != today:
-                date = runs[len(runs)-1].date
-                while date < today - one_day:
-                    day = {
-                        'date': date + one_day,
-                        'runs': [Run(date=next_date, distance=0, time=0)],
-                    }
-                    result.append(day)
-                    date += one_day
+        # if the most recent days don't have runs
+        # then fill in with 0s up until today
+        today = datetime.datetime.today()
+        if runs[len(runs)-1].date != today:
+            date = runs[len(runs)-1].date
+            while date < today - one_day:
+                day = {
+                    'date': date + one_day,
+                    'runs': [Run(date=next_date, distance=0, time=0)],
+                }
+                result.append(day)
+                date += one_day
 
+        logging.info(result)
         return result
 
 
