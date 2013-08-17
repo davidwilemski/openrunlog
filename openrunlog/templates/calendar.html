@@ -9,12 +9,10 @@
     <div class="span3">
     {% include '_profile_starter.html' %}
 
-    {% if user and user.url == 'david' %}
     <ul class="nav nav-pills">
         <li><a href="{{ profile.uri }}">Profile</a></li>
         <li class="active"><a href="{{ profile.uri + '/calendar' }}">Calendar</a></li>
     </ul>
-    {% end %}
 
     </div>
     
