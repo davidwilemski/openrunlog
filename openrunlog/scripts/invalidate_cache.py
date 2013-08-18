@@ -2,7 +2,13 @@
 import env
 import mongoengine
 from openrunlog import models, cache
+import tornado.ioloop
 import tornadoredis
+
+
+def invalidate(r):
+    for user in models.User.objects():
+        cache.invalidate(r, user)
 
 if __name__ == '__main__':
     config = env.prefix('ORL_')
@@ -16,6 +22,6 @@ if __name__ == '__main__':
 
     r = tornadoredis.Client()
     r.connect()
+    invalidate(r)
 
-    for user in models.User.objects():
-        cache.invalidate(r, user)
+    tornado.ioloop.IOLoop.instance().start()
