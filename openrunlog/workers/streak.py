@@ -8,16 +8,21 @@ import tornadoredis
 import mongoengine
 
 
-def main(r):
+def main(r, asyncr):
     while True:
         key, userid = r.blpop(constants.calculate_streaks)
-        user = models.User.objects(id=userid).first()
-        calculate_streaks(user)
-        logging.info('computed streaks for {}'.format(user.display_name))
-        logging.info(user.streaks)
+        if userid == 'all':
+            users = models.User.objects()
+        else:
+            users = [models.User.objects(id=userid).first()]
+        for user in users:
+            calculate_streaks(user, asyncr)
+            logging.info(
+                'computed streaks for {}'.format(user.display_name))
+            logging.info(user.streaks)
 
 
-def calculate_streaks(user):
+def calculate_streaks(user, asyncr):
     if not user:
         return
 
@@ -39,4 +44,4 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     setproctitle.setproctitle('orl.workers.streak')
 
-    main(r)
+    main(r, asyncr)

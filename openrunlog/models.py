@@ -210,6 +210,7 @@ class User(mongoengine.Document):
 
     def save(self, r):
         cache.invalidate(r, self)
+        cache.send(r, self)
         return super(User, self).save()
 
     @property
@@ -278,7 +279,7 @@ class User(mongoengine.Document):
                 'end': 'Potato Chips'
             }
         else:
-            for i in range(len(runs)-1, -1, -1):
+            for i in range(len(runs)-1, 0, -1):
                 delta = relativedelta(runs[i-1].date, runs[i].date)
                 if delta.days == -1 and delta.months == 0 and delta.years == 0:
                     current_streak += 1
