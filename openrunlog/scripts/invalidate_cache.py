@@ -9,6 +9,7 @@ import tornadoredis
 def invalidate(r):
     for user in models.User.objects():
         cache.invalidate(r, user)
+    tornado.ioloop.IOLoop.instance().stop()
 
 if __name__ == '__main__':
     config = env.prefix('ORL_')
