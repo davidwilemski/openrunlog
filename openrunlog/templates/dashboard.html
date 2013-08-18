@@ -9,11 +9,6 @@
     <div class="span3">
     {% include '_profile_starter.html' %}
 
-    <ul class="nav nav-pills">
-        <li class="active"><a href="{{ profile.uri }}">Profile</a></li>
-        <li><a href="{{ profile.uri + '/calendar' }}">Calendar</a></li>
-    </ul>
-
     <h2>Recent Runs:</h2>
     {% if user and user.email == profile.email %}
     <p>
