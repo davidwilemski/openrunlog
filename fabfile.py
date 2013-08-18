@@ -37,8 +37,7 @@ def stop():
 
 @task
 def restart():
-    stop()
-    start()
+    run('sudo restart openrunlog')
 
 @task
 def uninstall():
