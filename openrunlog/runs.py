@@ -19,19 +19,19 @@ class AddRunHandler(base.BaseHandler):
         date = dateutil.parser.parse(date, fuzzy=True)
         distance = self.get_argument('distance', '')
         distance = float(distance)
-        time = self.get_argument('time', '0')
+        time = self.get_argument('time', '')
         pacetime = self.get_argument('pacetime', 'time')
+        notes = self.get_argument('notes', '')
+        user = yield self.get_current_user_async()
 
         try:
-            time = models.time_to_seconds(time)
+            time = models.time_to_seconds(time) if time != '' else 0
             if pacetime == 'pace':
                 time = int(time*distance)
         except ValueError, e:
             msg = "The value you entered for time was not valid. Please enter your time in format HH:MM:SS or MM:SS or MM."
             self.redirect_msg('/u/%s' % user.url, {'error': msg})
             return
-        notes = self.get_argument('notes', '')
-        user = yield self.get_current_user_async()
 
         run = models.Run(user=user)
         run.distance = distance

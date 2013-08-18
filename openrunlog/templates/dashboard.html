@@ -121,7 +121,7 @@
                     <option value="time">Time:</option>
                     <option value="pace">Pace:</option>
                 </select>
-                <input type="text" name="time" id="time" placeholder="28:00" data-required="true" data-time />
+                <input type="text" name="time" id="time" placeholder="28:00" data-time />
         </div>
         <div class="control-group">
             <label class="control-label" for="notes">Notes:</label>
@@ -348,6 +348,11 @@ div.recent_run {
                 time: function(val) {
                     // don't do this validation if entering pace
                     if($('#pacetime')[0].value === 'pace') {
+                        return true;
+                    }
+
+                    // allow not posting time :/
+                    if (val === '' || val == 0) {
                         return true;
                     }
                     
