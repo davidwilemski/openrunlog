@@ -102,3 +102,10 @@ def recalculate_streak(user=None):
     with prefix('source ' + VENV_DIR + 'bin/activate'):
         with cd(PROJ_DIR):
             run('python openrunlog/scripts/recalculate_streaks.py')
+
+
+@task
+def invalidate_cache(user=None):
+    with prefix('source ' + VENV_DIR + 'bin/activate'):
+        with cd(PROJ_DIR):
+            run('python openrunlog/scripts/invalidate_cache.py')
