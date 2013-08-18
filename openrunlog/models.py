@@ -196,7 +196,7 @@ def _format_recent_run_data(given_runs):
 class User(mongoengine.Document):
     display_name = mongoengine.StringField(required=True)
     url = mongoengine.StringField(default="")
-    public = mongoengine.BooleanField(required=True)
+    public = mongoengine.BooleanField(required=False)
     email = mongoengine.EmailField(required=True, unique=True)
     password = mongoengine.StringField()
     dailymile_token = mongoengine.StringField()
