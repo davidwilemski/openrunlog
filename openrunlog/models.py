@@ -12,8 +12,8 @@ import cache
 
 @gen.coroutine
 def get_user_by_uid(r, uid):
-    #user = User.objects(id=uid).first()
-    #raise gen.Return(user)
+    user = User.objects(id=uid).first()
+    raise gen.Return(user)
     user = yield cache.get(r, uid)
     if user:
         logging.debug('cache hit for {}'.format(uid))
@@ -27,6 +27,8 @@ def get_user_by_uid(r, uid):
 
 @gen.coroutine
 def get_user_by_email(r, u):
+    user = User.objects(email=u).first()
+    raise gen.Return(user)
     user = yield cache.get(r, u)
     if user:
         logging.debug('cache hit for {}'.format(u))
@@ -40,6 +42,8 @@ def get_user_by_email(r, u):
 
 @gen.coroutine
 def get_user_by_url(r, u):
+    user = User.objects(url=u).first()
+    raise gen.Return(user)
     user = yield cache.get(r, u)
     if user:
         logging.debug('cache hit for {}'.format(u))
