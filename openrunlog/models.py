@@ -488,3 +488,31 @@ class Group(mongoengine.Document):
     @property
     def uri(self):
         return '/g/{}'.format(self.url)
+
+
+class Race(mongoengine.Document):
+    """
+    Stores info about a race that a user runs
+    """
+    user = mongoengine.ReferenceField(User)
+    name = mongoengine.StringField(required=True)
+    notes = mongoengine.StringField(default='')
+    date = mongoengine.DateTimeField(required=True)
+    distance = mongoengine.FloatField(default=0)
+    distance_units = mongoengine.StringField(default='miles')
+    time = mongoengine.IntField(default=0) # in seconds
+
+    @property
+    def pretty_notes(self):
+        return escape.xhtml_escape(self.notes).replace('\r\n', '<br />')
+
+
+    @property
+    def pretty_time(self):
+        return seconds_to_time(self.time)
+
+
+    @property
+    def uri(self):
+        return '{}/races/{}'.format(self.user.uri, str(self.id))
+

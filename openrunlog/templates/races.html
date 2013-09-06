@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ static_url('css/jquery.dynatable.css') }}" type="text/css" />
+<script type="text/javascript" src="{{ static_url('js/jquery.dynatable.js') }}"></script>
+{% end %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-3">
+    {% include '_profile_starter.html' %}
+    </div>
+
+    <div class="col-md-9">
+    <h1>Racelog</h1>
+    {% if user and user.email == profile.email %}
+    <p>
+        <a class="label label-success" data-toggle="modal" href="#addrace" >Add Race</a>
+    </p>
+    {% end %}
+    <table id="racelogtable" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Race Name</th>
+                <th>Distance</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+    {% for race in races %}
+        <tr>
+            <td>{{ race.date.strftime('%x') }}</td>
+            <td><a href="{{ race.uri }}">{{ race.name }}</a></td>
+            <td>{{ race.distance }} {{ race.distance_units }}</td>
+            <td>{{ race.pretty_time }}</td>
+        </tr>
+    {% end %}
+    </table>
+    </div>
+</div>
+
+{% if user and user.email == profile.email %}
+<div class="modal fade" id="addrace" style="display:none;">
+    <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">x</a>
+        <h3>Add A Race</h3>
+    </div>
+    <div class="modal-body">
+        <form id="addraceform" method="POST" action="{{profile.uri + "/races"}}" class="form-horizontal">
+        <div class="form-group">
+            <label for="date">Date (MM-DD-YY)</label>
+            <input class="form-control" type="text" name="date" id="date" value="{{ today }}" data-required="true" />
+        </div>
+        <div class="form-group">
+            <label for="name">Race Name:</label>
+            <!-- awww yeah, dat 10k marathon -->
+            <input class="form-control" type="text" name="name" id="name" placeholder="Chicago 10k Marathon" data-required="true" />
+        </div>
+        <div class="form-group">
+            <label for="distance">Distance:</label>
+            <select class="form-control" name="distance_units" id="distance_units">
+                <option value="miles">Miles:</option>
+                <option value="km">Kilometers:</option>
+                <option value="m">Meters:</option>
+            </select>
+            <input class="form-control" type="text" name="distance" id="distance" placeholder="4" data-required="true" data-min="0" data-max="250" data-type="number" />
+        </div>
+        <div class="form-group">
+            <label for="time">Time:</label>
+            <input class="form-control" type="text" name="time" id="time" placeholder="28:00" data-time />
+        </div>
+        <div class="form-group">
+        </div>
+        <div class="form-group">
+            <label for="notes">Notes:</label>
+            <textarea class="form-control" name="notes" id="notes" placeholder="Race Report" data-regexp=".*"></textarea>
+        </div>
+    </form>
+    </div>
+    <div class="modal-footer">
+        <button id="addracebtn" type="button" class="btn btn-primary">Add Race</button>
+        <script>
+            $('#addracebtn').on('click', function(e){
+                e.preventDefault();
+                $('#addraceform').submit();
+            });
+        </script>
+    </div>
+    </div>
+    </div>
+</div>
+{% end # end add race modal %}
+
+{% end %}
+
+{% block bottom %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#racelogtable').dynatable();
+    });
+</script>
+
+{% end %}

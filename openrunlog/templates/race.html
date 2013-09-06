@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ static_url('css/xcharts.min.css') }}" type="text/css" />
+
+<style>
+    .center {
+        text-align: center;
+    }
+</style>
+{% end %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+    {% include '_profile_starter.html' %}
+
+    </div>
+    <div class="col-md-9">
+        <div class="jumbotron">
+            <h2 class="lead center">{{ race.name }} - {{ race.distance }} {{ race.distance_units }}</h2>
+            <p class="lead center">
+            On {{ race.date.strftime("%A, %B %d, %Y") }} <a href="{{ profile.uri }}">{{ profile.display_name }}</a> raced the {{ race.name }} ({{ race.distance }} {{ race.distance_units }}) in {{ race.pretty_time }}
+            </p>
+
+        <blockquote>
+            <p>{% raw race.pretty_notes %}</p>
+        </blockquote>
+    </div>
+    </div>
+
+</div>
+
+{% end %}
