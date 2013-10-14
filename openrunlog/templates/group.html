@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="span3">
+    <div class="col-md-3">
         <div>
             <h2>{{ group.name }}</h2>
             <em>{{ len(members) }} members</em>
@@ -17,7 +17,7 @@
             <p><a href="{{ u.uri }}">{{ u.display_name }}</a></p>
         {% end %}
     </div>
-    <div class="span9">
+    <div class="col-md-9">
         <table class="table table-condensed table-hover">
             <thead>
                 <tr>

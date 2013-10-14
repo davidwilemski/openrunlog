@@ -2,10 +2,12 @@
 
 {% block content %}
 <div class="row">
-    <div class="span12">
+    <div class="col-md-12">
+        {% if user %}
         <span class="pull-right">
-            <a data-toggle="modal" href="#creategroup"><button type="submit" class="btn btn-primary" type="button">Create Group</button></a>
+            <a data-toggle="modal" href="#creategroup"><button class="btn btn-primary" type="button">Create Group</button></a>
         </span>
+        {% end %}
         <h2>All Groups:</h2>
         {% if not groups %}
         <div class="alert">
@@ -21,22 +23,24 @@
 </div>
 
 <div class="modal fade" id="creategroup" style="display:none;">
+    <form id="creategroupform" method="POST" action="/g" class="modal-form form-horizontal">
+    <div class="modal-dialog">
+    <div class="modal-content">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">x</a>
         <h3>Create a Group</h3>
     </div>
-    <form id="creategroupform" method="POST" action="/g" class="form-horizontal">
     <div class="modal-body">
-        <div class="control-group">
-            <label class="control-label" for="name">Name:</label>
+        <div class="form-group">
+            <label for="name">Name:</label>
             <div class="controls">
-                <input type="text" name="name" id="name" placeholder="super awesome running group" data-required="true" />
+                <input class="form-control" type="text" name="name" id="name" placeholder="super awesome running group" data-required="true" />
             </div>
         </div>
-        <div class="control-group">
-            <label class="control-label" for="url">URL:</label>
+        <div class="form-group">
+            <label for="url">URL:</label>
             <div class="controls">
-                <div class="input-prepend" id="url-wrapper">
+                <div class="form-control input-prepend" id="url-wrapper">
                     <span class="add-on">/g/</span>
                     <input type="text" name="url" id="url" value="" data-required="true" data-regexp="^[0-9a-z_]+$" />
                 </div>
@@ -46,6 +50,8 @@
     </div>
     <div class="modal-footer">
         <button id="creategroupsubmit" type="submit" class="btn btn-primary">Create</button>
+    </div>
+    </div>
     </div>
     </form>
 </div>

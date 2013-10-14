@@ -12,12 +12,12 @@
 
 {% block content %}
 <div class="row">
-    <div class="span3">
+    <div class="col-md-3">
     {% include '_profile_starter.html' %}
 
     </div>
-    <div class="span9">
-        <div class="hero-unit">
+    <div class="col-md-9">
+        <div class="jumbotron">
             <p class="lead center">
             On {{ run.date.strftime("%A, %B %d, %Y") }} <a href="{{ profile.uri }}">{{ profile.display_name }}</a> ran {{ run.distance }} miles in {{ run.pretty_time }} ({{ run.pace }})
             </p>

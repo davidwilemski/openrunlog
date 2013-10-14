@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="span3">
+    <div class="col-md-3">
     {% include '_profile_starter.html' %}
 
     <h2>Recent Runs:</h2>
@@ -24,12 +24,14 @@
         </form>
         {% for run in recent_runs %}
             <div class="recent_run" data-run-id="{{ run.id }}">
-                <span style="display:none;" class="remove_run label label-important"><i type="submit" class="icon-remove icon-white"></i></span>
+                <span style="display:none;" class="remove_run">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </span>
                     <a href="{{ run.uri }}">{{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ run.pace }}</a>
                 {% if run.notes %}</span>{% end %}
             </div>
         {% end %}
-        <a href="{{ profile.uri + '/runs' }}"><button class="btn btn-large btn-block btn-primary" type="button">See All Runs</button></a>
+        <a href="{{ profile.uri + '/runs' }}"><button class="btn btn-lg btn-block btn-primary" type="button">See All Runs</button></a>
 
     </p>
 
@@ -37,7 +39,7 @@
     <div style="width: 700px;" id="run-calendar" data-url="/data/{{ profile.id }}/runs/month"></div>
 
     </div>
-    <div class="span9">
+    <div class="col-md-9">
         {% if user and user.email == profile.email and not user.facebook %}
             <div class="alert alert-info">
                 Hey! <a href="/auth/facebook">Sign in with Facebook</a> if you want a profile picture!
@@ -98,50 +100,59 @@
 </div>
 
 <div class="modal fade" id="addrun" style="display:none;">
+    <div class="modal-dialog">
+    <div class="modal-content">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">x</a>
         <h3>Add A Run</h3>
     </div>
-    <form id="addrunform" method="POST" action="/add" class="form-horizontal">
     <div class="modal-body">
-        <div class="control-group">
-            <label class="control-label" for="date">Date (MM-DD-YY)</label>
-            <div class="controls">
-                <input type="text" name="date" id="date" value="{{ today }}" data-required="true" />
+    <form id="addrunform" method="POST" action="/add" class="form-horizontal">
+        <div class="form-group">
+            <label for="date">Date (MM-DD-YY)</label>
+            <input class="form-control" type="text" name="date" id="date" value="{{ today }}" data-required="true" />
+        </div>
+        <div class="form-group">
+            <label for="distance">Distance (Miles)</label>
+            <input class="form-control" type="text" name="distance" id="distance" placeholder="4" data-required="true" data-min="0" data-max="250" data-type="number" />
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-lg-4">
+                    <select class="form-control" class="col-md-2" name="pacetime" id="pacetime">
+                        <option value="time">Time:</option>
+                        <option value="pace">Pace:</option>
+                    </select>
+                </div>
+                <div class="col-lg-4">
+                    <input class="form-control" type="text" name="time" id="time" placeholder="28:00" data-time />
+                </div>
             </div>
         </div>
-        <div class="control-group">
-            <label class="control-label" for="distance">Distance (Miles)</label>
-            <div class="controls">
-                <input type="text" name="distance" id="distance" placeholder="4" data-required="true" data-min="0" data-max="250" data-type="number" />
-            </div>
+        <div class="form-group">
+            <label for="notes">Notes:</label>
+            <textarea class="form-control" name="notes" id="notes" placeholder="Thoughts about your run here" data-regexp=".*"></textarea>
         </div>
-        <div class="control-group">
-                <select class="span2" name="pacetime" id="pacetime">
-                    <option value="time">Time:</option>
-                    <option value="pace">Pace:</option>
-                </select>
-                <input type="text" name="time" id="time" placeholder="28:00" data-time />
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="notes">Notes:</label>
-            <div class="controls">
-                <textarea name="notes" id="notes" placeholder="Thoughts about your run here" data-regexp=".*"></textarea>
-            </div>
-        </div>
+    </form>
     </div>
     <div class="modal-footer">
-        <button id="addrunbtn" onclick="" type="submit" class="btn btn-primary">Add Run</button>
-        <!--<button id="addrunbtn" onclick="return false;" type="submit" class="btn-primary">Add Run</button>-->
+        <button id="addrunbtn" type="button" class="btn btn-primary">Add Run</button>
+        <script>
+            $('#addrunbtn').on('click', function(e){
+                e.preventDefault();
+                $('#addrunform').submit();
+            });
+        </script>
     </div>
-    </form>
+    </div>
+    </div>
 </div>
 {% end %}
 
 {% block bottom %}
 <style>
-span.remove_run.label {
-    margin-left: -26px;
+span.remove_run{
+    margin-left: -18px;
 }
 div.recent_run {
     height: 20px;
@@ -277,11 +288,11 @@ div.recent_run {
 
         {% if user and user.email == profile.email %}
         $('.recent_run').on('mouseenter', function() {
-            $(this).children('.label').first().show();
+            $(this).children('.remove_run').first().show();
             $('form#remove_run > input[name="run_id"]').val($(this).attr('data-run-id'));
         });
         $('.recent_run').on('mouseleave', function() {
-            $(this).children('.label').first().hide();
+            $(this).children('.remove_run').first().hide();
             $('form#remove_run > input[name="run_id"]').val('');
         });
         $('span.remove_run').on('click', function() {
