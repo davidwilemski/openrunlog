@@ -6,40 +6,44 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-3">
-    {% include '_profile_starter.html' %}
+    <div class="col-xs-12 col-md-3">
+        <div class="row">
+        <div class="col-xs-6 col-md-12">
+            {% include '_profile_starter.html' %}
+        </div>
 
-    <h2>Recent Runs:</h2>
-    {% if user and user.email == profile.email %}
-    <p>
-        <a class="label label-success" data-toggle="modal" href="#addrun" >Add a run</a>
-    </p>
-    {% end %}
+        <div class="col-xs-6 col-md-12">
+            <h2>Recent Runs:</h2>
+            {% if user and user.email == profile.email %}
+            <p>
+                <a class="label label-success" data-toggle="modal" href="#addrun" >Add a run</a>
+            </p>
+            {% end %}
 
-    <p>
-
-        <form id="remove_run" action="/remove" method="post" style="display:none;">
-            <input type="hidden" name="run_id" value="">
-            <input type="submit">
-        </form>
-        {% for run in recent_runs %}
-            <div class="recent_run" data-run-id="{{ run.id }}">
-                <span style="display:none;" class="remove_run">
-                    <span class="glyphicon glyphicon-remove"></span>
-                </span>
-                    <a href="{{ run.uri }}">{{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ run.pace }}</a>
-                {% if run.notes %}</span>{% end %}
+            <div>
+                <form id="remove_run" action="/remove" method="post" style="display:none;">
+                    <input type="hidden" name="run_id" value="">
+                    <input type="submit">
+                </form>
+                {% for run in recent_runs %}
+                    <div class="recent_run" data-run-id="{{ run.id }}">
+                        <span style="display:none;" class="remove_run glyphicon glyphicon-remove"></span>
+                        <a href="{{ run.uri }}">{{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ run.pace }}</a>
+                    </div>
+                {% end %}
+                <a href="{{ profile.uri + '/runs' }}" class="btn btn-lg btn-block btn-primary">See All Runs</a>
             </div>
-        {% end %}
-        <a href="{{ profile.uri + '/runs' }}"><button class="btn btn-lg btn-block btn-primary" type="button">See All Runs</button></a>
+        </div>
+        </div>
 
-    </p>
-
-    <h2>Run Days</h2>
-    <div style="width: 700px;" id="run-calendar" data-url="/data/{{ profile.id }}/runs/month"></div>
-
+        <div class="row">
+        <div class="col-md-12 hidden-xs hidden-sm">
+            <h2>Run Days</h2>
+            <div class="hidden-xs" style="width: 700px;" id="run-calendar" data-url="/data/{{ profile.id }}/runs/month"></div>
+        </div>
+        </div>
     </div>
-    <div class="col-md-9">
+    <div class="col-xs-12 col-md-9">
         {% if user and user.email == profile.email and not user.facebook %}
             <div class="alert alert-info">
                 Hey! <a href="/auth/facebook">Sign in with Facebook</a> if you want a profile picture!
