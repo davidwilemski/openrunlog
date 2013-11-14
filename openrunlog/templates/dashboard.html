@@ -117,17 +117,13 @@
             <input class="form-control" type="text" name="distance" id="distance" placeholder="4" data-required="true" data-min="0" data-max="250" data-type="number" />
         </div>
         <div class="form-group">
-            <div class="row">
-                <div class="col-lg-4">
-                    <select class="form-control" class="col-md-2" name="pacetime" id="pacetime">
-                        <option value="time">Time:</option>
-                        <option value="pace">Pace:</option>
-                    </select>
-                </div>
-                <div class="col-lg-4">
-                    <input class="form-control" type="text" name="time" id="time" placeholder="28:00" data-time />
-                </div>
-            </div>
+            <select class="form-control" name="pacetime" id="pacetime">
+                <option value="time">Time:</option>
+                <option value="pace">Pace:</option>
+            </select>
+            <input class="form-control" type="text" name="time" id="time" placeholder="28:00" data-time />
+        </div>
+        <div class="form-group">
         </div>
         <div class="form-group">
             <label for="notes">Notes:</label>
@@ -159,7 +155,6 @@ div.recent_run {
     white-space: nowrap;
 }
 #time {
-    margin-left: 36px;
 }
 </style>
 
