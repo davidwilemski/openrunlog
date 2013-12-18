@@ -15,7 +15,7 @@ mongoctl==0.3.7
 mongoengine==0.8.3
 nose==1.2.1
 paramiko==1.9.0
-py-bcrypt==0.2
+py-bcrypt==0.4
 pycrypto==2.6
 pymongo==2.5.2
 python-dateutil==2.1
