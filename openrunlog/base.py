@@ -5,6 +5,7 @@ from tornado import web, concurrent, gen
 from tornado.ioloop import IOLoop
 from tornado.stack_context import ExceptionStackContext
 import urllib
+import traceback
 
 import models
 
@@ -68,6 +69,41 @@ class BaseHandler(web.RequestHandler):
     def config(self):
         return self.application.config
 
+    def write_error(self, status_code, **kwargs):
+        """custom error pages"""
+        message = []
+        if self.settings.get('debug') and 'exc_info' in kwargs:
+            # we are in debug mode and have errors to show
+            message += ['Sorry, what you have come across has created an error. The hampsters are running in the back to try and fix it as soon as possible.', '']
+            for line in traceback.format_exception(*kwargs['exc_info']):
+                message += [line]
+        else:
+            # show error page
+            self.finish('error_page')
+        self.render('error.html', page_title='Error Page', user=self.get_current_user(), message=message, error=None)
+
+class ErrorHandler(web.RequestHandler):
+    """Generates an error response with ``status_code`` for all requests."""
+    def initialize(self, status_code):
+        self.set_status(status_code)
+
+    def prepare(self):
+        raise web.HTTPError(self._status_code)
+
+    def check_xsrf_cookie(self):
+        pass
+
+    def write_error(self, status_code, **kwargs):
+        message = []
+        if self.settings.get('debug') and 'exc_info' in kwargs:
+            # we are in debug mode and have errors to show
+            message += ['Sorry, we could not find that page.', '']
+            for line in traceback.format_exception(*kwargs['exc_info']):
+                message += [line]
+        else:
+            # show error page
+            self.finish('error_page')
+        self.render('error.html', page_title='Error Page', user=self.get_current_user(), message=message, error=None)
 
 def authorized_json(method, *args):
     """Decorate methods with this to require that the user be logged in."""

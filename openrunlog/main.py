@@ -18,6 +18,7 @@ import racelog
 import runs
 import groups
 import calendar
+from base import ErrorHandler
 
 
 config = env.prefix('ORL_')
@@ -38,6 +39,8 @@ settings = {
 server_settings = {
     "xheaders" : True,
 }
+
+web.ErrorHandler = ErrorHandler
 
 application = web.Application([
     (r'/', home.HomeHandler),
