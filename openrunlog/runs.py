@@ -112,6 +112,11 @@ class ShowRunHandler(base.BaseHandler):
         profile = yield models.get_user_by_url(self.redis, userurl)
 
         run = models.Run.objects(id=run).first()
+
+        if run is None:
+            self.send_error(404)
+            return
+
         year = datetime.date.today().year
 
         yield gen.Task(self.tf.send, {'profile.runs.views': 1})
