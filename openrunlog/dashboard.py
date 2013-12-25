@@ -1,6 +1,7 @@
 
 import datetime
-from tornado import web, gen
+
+from tornado import gen, web
 
 import base
 import models

@@ -1,14 +1,16 @@
 
 import logging
-from tornado import web, auth, httpclient, gen, escape
+import time
+import urllib
+
+import env
+from tornado import auth, escape, gen, httpclient, web
 
 import base
 import crosspost
-import env
 import models
-import time
-import urllib
 import util
+
 
 class LoginHandler(base.BaseHandler):
     @web.asynchronous

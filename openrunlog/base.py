@@ -1,12 +1,14 @@
 import functools
-import futures
 import logging
-from tornado import web, concurrent, gen
-from tornado.ioloop import IOLoop
-from tornado.stack_context import ExceptionStackContext
 import urllib
 
+import futures
+from tornado import concurrent, gen, web
+from tornado.ioloop import IOLoop
+from tornado.stack_context import ExceptionStackContext
+
 import models
+
 
 class BaseHandler(web.RequestHandler):
     def get_current_user(self):

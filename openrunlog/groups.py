@@ -1,7 +1,8 @@
 
+from tornado import gen, web
+
 import base
 import models
-from tornado import web, gen
 
 
 class GroupDashboardHandler(base.BaseHandler):
@@ -78,3 +79,4 @@ class GroupHandler(base.BaseHandler):
         group.save()
         self.redirect(group.uri)
         self.tf.send({'groups.joins': 1}, lambda x: x)
+

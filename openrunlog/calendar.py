@@ -1,7 +1,8 @@
 
 import datetime
 import logging
-from tornado import web, gen
+
+from tornado import gen, web
 
 import base
 import models

@@ -1,5 +1,6 @@
 
 import pickle
+
 from tornado import gen
 
 
@@ -28,3 +29,4 @@ def invalidate(r, user):
     yield gen.Task(r.delete, key(user.id))
     yield gen.Task(r.delete, key(user.email))
     yield gen.Task(r.delete, key(user.url))
+

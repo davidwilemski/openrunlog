@@ -1,10 +1,13 @@
 
-from tornado import gen
 import logging
+
+from tornado import gen
 
 import models
 
+
 dailymile_export = 'orl:dailymile:export'
+
 
 def send_user(r, user):
     runs = models.Run.objects(user=user)
@@ -24,3 +27,4 @@ def get(r, callback):
     run = yield gen.Task(r.blpop, dailymile_export)
     run = run[dailymile_export]
     callback(run)
+

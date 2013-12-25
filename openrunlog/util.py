@@ -27,3 +27,4 @@ def image_html(user, size='small'):
             email, px, px)
     html = '<img src="{}" />'.format(url)
     return html
+
