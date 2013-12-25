@@ -72,10 +72,6 @@ application = web.Application([
 
 application.config = config
 application.thread_pool = futures.ThreadPoolExecutor(max_workers=3)
-application.tf = tornadotinyfeedback.Client('openrunlog')
-application.redis = tornadoredis.Client()
-
-application.redis.connect()
 
 
 if __name__ == '__main__':
@@ -87,8 +83,10 @@ if __name__ == '__main__':
             config['db_name'], 
             host=config['db_uri'])
 
-    if not config['debug']:
-        process.fork_processes(process.cpu_count()*2 + 1)
     application.listen(options.port, **server_settings)
-    ioloop.IOLoop.instance().start()
 
+    application.tf = tornadotinyfeedback.Client('openrunlog')
+    application.redis = tornadoredis.Client()
+    application.redis.connect()
+
+    ioloop.IOLoop.instance().start()
