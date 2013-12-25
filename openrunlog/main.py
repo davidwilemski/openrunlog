@@ -83,10 +83,10 @@ if __name__ == '__main__':
             config['db_name'], 
             host=config['db_uri'])
 
-    application.listen(options.port, **server_settings)
 
     application.tf = tornadotinyfeedback.Client('openrunlog')
     application.redis = tornadoredis.Client()
     application.redis.connect()
 
+    application.listen(options.port, **server_settings)
     ioloop.IOLoop.instance().start()
