@@ -71,13 +71,20 @@ class BaseHandler(web.RequestHandler):
     def write_error(self, status_code, **kwargs):
         """custom error pages"""
         import traceback
-        self.tf.send({'error.5xx': 1}, lambda x: x)
-        message = ['Sorry, what you have come across has created an error. The hampsters are running in the back to try and fix it as soon as possible.', '']
+
+        if status_code == 404:
+            message = ['Sorry, we could not find that page.', '']
+            self.tf.send({'error.4xx': 1}, lambda x: x)
+        else :
+            self.tf.send({'error.5xx': 1}, lambda x: x)
+            message = ['Sorry, what you have come across has created an error. The hampsters are running in the back to try and fix it as soon as possible.', '']
+
         if self.settings.get('debug') and 'exc_info' in kwargs:
             # we are in debug mode and have errors to show
             for line in traceback.format_exception(*kwargs['exc_info']):
                 message += [line]
         self.render('error.html', page_title='Error Page', user=self.get_current_user(), message=message, error=None)
+
 
 class ErrorHandler(BaseHandler):
     """Generates an error response with ``status_code`` for all requests."""
@@ -90,15 +97,6 @@ class ErrorHandler(BaseHandler):
     def check_xsrf_cookie(self):
         pass
 
-    def write_error(self, status_code, **kwargs):
-        import traceback
-        self.tf.send({'error.4xx': 1}, lambda x: x)
-        message = ['Sorry, we could not find that page.', '']
-        if self.settings.get('debug') and 'exc_info' in kwargs:
-            # we are in debug mode and have errors to show
-            for line in traceback.format_exception(*kwargs['exc_info']):
-                message += [line]
-        self.render('error.html', page_title='Error Page', user=self.get_current_user(), message=message, error=None)
 
 def authorized_json(method, *args):
     """Decorate methods with this to require that the user be logged in."""
@@ -121,6 +119,11 @@ def authorized(method, *args):
         logging.debug(args)
         profile = models.User.objects(url=url).first()
         user = self.get_current_user()
+
+        if not profile:
+            self.send_error(404)
+            return
+
         if not profile.public and (not user or user.url != profile.url):
             return self.render(
                 'private.html',

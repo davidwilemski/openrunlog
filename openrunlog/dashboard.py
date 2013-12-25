@@ -20,6 +20,10 @@ class ProfileHandler(base.BaseHandler):
         if not user or user.url != url:
             profile = yield models.get_user_by_url(self.redis, url)
 
+        if not profile:
+            self.send_error(404)
+            return
+
         recent_runs = yield self.execute_thread(
             models.Run.get_recent_runs, profile, 10)
         week = yield self.execute_thread(
