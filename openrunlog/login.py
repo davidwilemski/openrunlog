@@ -48,7 +48,13 @@ class LoginHandler(base.BaseHandler):
             self.tf.send({'users.logins.failure': 1}, lambda x: x)
             return
         
-        self.set_secure_cookie('user', str(user.id))
+        cookie_args = {'httponly': True}
+
+        logging.debug('request.protocol is {}'.format(self.request.protocol))
+        if self.request.protocol == 'https':
+            cookie_args['secure'] = True
+
+        self.set_secure_cookie('user', str(user.id), **cookie_args)
         self.tf.send({'users.logins.success': 1}, lambda x: x)
         self.redirect('/')
 

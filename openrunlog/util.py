@@ -16,14 +16,14 @@ def image_html(user, size='small'):
     """
     if user.facebook:
         fbid = user.facebook['id']
-        url = 'http://graph.facebook.com/{}/picture?type={}'.format(fbid, size)
+        url = 'https://graph.facebook.com/{}/picture?type={}'.format(fbid, size)
     else:
         email = user.email
         if size == 'small' or size == 'square':
             px = 50
         else:
             px = 180
-        url = 'http://robohash.org/{}.jpg?gravatar=yes&size={}x{}'.format(
+        url = 'https://robohash.org/{}.jpg?gravatar=yes&size={}x{}'.format(
             email, px, px)
     html = '<img src="{}" />'.format(url)
     return html
