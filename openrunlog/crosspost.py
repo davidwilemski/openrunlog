@@ -41,7 +41,7 @@ def export_run(run):
     if response.status_code == 201:
         run.exported_to_dailymile = True
         run.save()
-        tf('users.dailymile.run', {'sent': 1})
+        tf('openrunlog', {'users.dailymile.run.sent': 1})
     else:
         logging.error(response)
         logging.error(response.json())
