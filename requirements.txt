@@ -1,33 +1,53 @@
 Fabric==1.5.1
+Flask==0.10.1
+Jinja2==2.7.1
+Mako==0.9.1
+MarkupSafe==0.18
 PyYAML==3.10
+Routes==2.0
+Twisted==13.2.0
+Werkzeug==0.9.4
 argparse==1.2.1
 boto==2.9.7
 coverage==3.6
 coveralls==0.2
 dargparse==0.2.1
+distribute==0.6.49
 docopt==0.6.1
 env==0.1.0
 fabtools==0.8.1
 futures==2.1.3
 hiredis==0.1.1
+itsdangerous==0.23
 meld3==0.6.10
 mongoctl==0.3.7
 mongoengine==0.8.3
 nose==1.2.1
+-e git+git@github.com:davidwilemski/openrunlog.git@b69bcfd9b30f0fc8fb6bb0b3cc6f5634521617c8#egg=openrunlog-dev
 paramiko==1.9.0
 py-bcrypt==0.4
 pycrypto==2.6
 pymongo==2.5.2
 python-dateutil==2.1
+pytz==2013.8
 redis==2.7.2
+repoze.lru==0.6
 requests==1.2.3
+rq==0.3.13
+rq-dashboard==0.3.3
 setproctitle==1.1.8
 sh==1.08
+simplejson==3.3.1
 six==1.2.0
 supervisor==3.0b1
+times==0.6.2
+-e git://github.com/davidwilemski/tinyfeedback.git@0be77868894128ffe4a43611784d71c1392dd06c#egg=tinyfeedback-dev
 tornado==3.1
 tornado-redis==1.0.1
--e git://github.com/davidwilemski/tinyfeedback.git#egg=tinyfeedback
--e git://github.com/davidwilemski/tornado-tinyfeedback.git#egg=tornadotinyfeedback-dev
+-e git://github.com/davidwilemski/tornado-tinyfeedback.git@ca115cee9a4f0ff1d5285ab8543eb3e3f3ab5852#egg=tornadotinyfeedback-dev
+txredisapi==1.0
+txroutes==0.0.6
 verlib==0.1
+virtualenv==1.10.1
 wsgiref==0.1.2
+zope.interface==4.0.5
