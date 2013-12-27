@@ -250,5 +250,34 @@ class FindMondayTests(unittest.TestCase):
         self.assertEqual(mon, models._find_monday(thurs))
 
 
+class CalendarTests(unittest.TestCase):
+    def test_fill_date_with_data(self):
+        then = datetime.date(2013, 12, 10)
+        now = datetime.date(2013, 12, 21)
+
+        result = models.fill_date(then, now=now)
+
+        self.assertEqual(12, len(result))
+        self.assertEqual(result[0], then)
+        self.assertEqual(result[-1], now)
+
+    def test_fill_date_with_one_date(self):
+        then = datetime.date(2013, 12, 10)
+
+        result = models.fill_date(then, now=then)
+
+        self.assertEqual(1, len(result))
+        self.assertEqual(result[0], then)
+        self.assertEqual(result[-1], then)
+
+    def test_fill_date_with_invalid_data(self):
+        then = datetime.date(2013, 12, 10)
+        now = datetime.date(2013, 12, 8)
+
+        result = models.fill_date(then, now=now)
+
+        self.assertEqual(0, len(result))
+
+
 if __name__ == '__main__':
     unittest.main()

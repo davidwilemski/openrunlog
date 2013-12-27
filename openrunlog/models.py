@@ -198,6 +198,21 @@ def _format_recent_run_data(given_runs):
     return data
 
 
+def fill_date(then, now=datetime.date.today()):
+    """
+    return list of DateTime()s between Date(then) and Date(now) inclusive
+    (now defaults to today)
+    """
+    result = []
+    one_day = relativedelta(days=1)
+
+    while then <= now:
+        result.append(then)
+        then += one_day
+
+    return result
+
+
 class User(mongoengine.Document):
     display_name = mongoengine.StringField(required=True)
     url = mongoengine.StringField(default="")
@@ -427,15 +442,16 @@ class Run(mongoengine.Document):
         # if the most recent days don't have runs
         # then fill in with 0s up until today
         today = datetime.datetime.today()
-        if runs[len(runs)-1].date != today:
+        if len(runs) > 0 and runs[len(runs)-1].date != today:
             date = runs[len(runs)-1].date
-            while date < today - one_day:
-                day = {
-                    'date': date + one_day,
-                    'runs': [Run(date=next_date, distance=0, time=0)],
-                }
-                result.append(day)
-                date += one_day
+
+        while date < today - one_day:
+            day = {
+                'date': date + one_day,
+                'runs': [Run(date=next_date, distance=0, time=0)],
+            }
+            result.append(day)
+            date += one_day
 
         logging.debug(result)
         return result
