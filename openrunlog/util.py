@@ -10,21 +10,34 @@ def check_pwd(password, hashed):
     return bcrypt.hashpw(password, hashed) == hashed
 
 
-def image_html(user, size='small'):
+def fb_image_url(fbid, size='small'):
+    url = 'https://graph.facebook.com/{}/picture?type={}'.format(fbid, size)
+    return url
+
+
+def robohash_image_url(email, size='50'):
+    url = 'https://robohash.org/{}.jpg?gravatar=yes&size={}x{}'.format(
+        email, size, size)
+    return url
+
+def image_html(user, size):
     """
     use robohash.org and have it default to gravatar if the user has one
     """
     if user.facebook:
         fbid = user.facebook['id']
-        url = 'https://graph.facebook.com/{}/picture?type={}'.format(fbid, size)
+        url = fb_image_url(fbid, size)
+
     else:
         email = user.email
+
         if size == 'small' or size == 'square':
-            px = 50
+            size = 50
         else:
-            px = 180
-        url = 'https://robohash.org/{}.jpg?gravatar=yes&size={}x{}'.format(
-            email, px, px)
+            size = 180
+
+        url = robohash_image_url(email, size)
+
     html = '<img src="{}" />'.format(url)
     return html
 
