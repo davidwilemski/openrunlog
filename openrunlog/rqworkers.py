@@ -33,5 +33,4 @@ def crosspost_user(user):
 
     for run in runs:
         if not run.exported_to_dailymile:
-            pass
-            #crosspost_run.delay(run)
+            crosspost_run.delay(run)
