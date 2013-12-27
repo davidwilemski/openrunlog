@@ -10,6 +10,7 @@ import constants
 import crosspost
 import models
 import util
+import rqworkers
 
 
 class AddRunHandler(base.BaseHandler):
@@ -51,10 +52,10 @@ class AddRunHandler(base.BaseHandler):
         week.distance += run.distance
         week.save()
 
-        self.redis.rpush(constants.calculate_streaks, str(user.id))
+        rqworkers.calculate_streaks.delay(user)
 
         if user.export_to_dailymile:
-            crosspost.send_run(self.redis, run)
+            rqworkers.crosspost_run.delay(run)
 
         yield gen.Task(self.tf.send, {'profile.runs.added': 1})
         self.redirect('/')

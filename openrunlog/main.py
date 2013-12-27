@@ -5,6 +5,8 @@ import sys
 import env
 import futures
 import mongoengine
+import redis
+import rq
 import setproctitle
 import tornadoredis
 import tornadotinyfeedback
@@ -89,6 +91,9 @@ if __name__ == '__main__':
     application.tf = tornadotinyfeedback.Client('openrunlog')
     application.redis = tornadoredis.Client()
     application.redis.connect()
+
+    application.redis_sync = redis.StrictRedis()
+    application.q = rq.Queue(connection=application.redis_sync)
 
     application.listen(options.port, **server_settings)
     ioloop.IOLoop.instance().start()

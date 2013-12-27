@@ -65,6 +65,16 @@ class BaseHandler(web.RequestHandler):
     @property
     def tf(self):
         return self.application.tf
+
+    @property
+    def redis_sync(self):
+        self.tf.send({'redis.getconnection': 1}, lambda x: x)
+        return self.application.redis_sync
+
+    @property
+    def q(self):
+        self.tf.send({'rq.getq': 1}, lambda x: x)
+        return self.application.q
     
     @property
     def config(self):

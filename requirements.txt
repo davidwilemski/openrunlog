@@ -27,6 +27,7 @@ six==1.2.0
 supervisor==3.0b1
 tornado==3.1
 tornado-redis==1.0.1
--e git://github.com/davidwilemski/tornado-tinyfeedback.git@5efb9a9cef4ae27d10c2b52798c5ed4f109070db#egg=tornadotinyfeedback-dev
+-e git://github.com/davidwilemski/tinyfeedback.git#egg=tinyfeedback
+-e git://github.com/davidwilemski/tornado-tinyfeedback.git#egg=tornadotinyfeedback-dev
 verlib==0.1
 wsgiref==0.1.2

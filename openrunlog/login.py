@@ -10,6 +10,7 @@ import base
 import crosspost
 import models
 import util
+import rqworkers
 
 
 class LoginHandler(base.BaseHandler):
@@ -224,7 +225,7 @@ class DailyMileHandler(base.BaseHandler, auth.OAuth2Mixin):
         user.export_to_dailymile = True
         user.save(self.redis)
 
-        crosspost.send_user(self.redis, user)
+        rqworkers.crosspost_user.delay(user)
 
         # queue past runs for the worker process to cross post
         self.tf.send({'users.dailymile.login': 1}, lambda x: x)
