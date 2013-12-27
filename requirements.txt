@@ -23,7 +23,6 @@ meld3==0.6.10
 mongoctl==0.3.7
 mongoengine==0.8.3
 nose==1.2.1
--e git+git@github.com:davidwilemski/openrunlog.git@b69bcfd9b30f0fc8fb6bb0b3cc6f5634521617c8#egg=openrunlog-dev
 paramiko==1.9.0
 py-bcrypt==0.4
 pycrypto==2.6
