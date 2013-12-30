@@ -23,9 +23,9 @@ class CalendarHandler(base.BaseHandler):
         if not user or user.url != url:
             profile = models.User.objects(url=url).first()
 
-        #calendar_runs = yield self.execute_thread(
-        #    models.Run.get_calendar_runs, profile)
-        calendar_runs = models.Run.get_calendar_runs(profile)
+        calendar_runs = yield self.thread_pool.submit(
+            models.Run.get_calendar_runs, profile)
+        #calendar_runs = models.Run.get_calendar_runs(profile)
 
         self.render('calendar.html', page_title='Calendar', user=user, today=datetime.date.today().strftime("%x"), this_year=datetime.date.today().year, error=error, profile=profile, calendar_runs=calendar_runs)
 
@@ -51,4 +51,3 @@ class CalendarMilesHandler(base.BaseHandler):
         distances = [x.distance for day in calendar_runs for x in day['runs']]
         logging.debug(distances)
         self.finish(str(sum(distances)))
-
