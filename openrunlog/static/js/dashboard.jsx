@@ -193,7 +193,6 @@ var NotesInput = React.createClass({
   }
 });
 
-// TODO - refactor to have *Input value properties flow from a single source 
 // TODO - make this a dynamic UI component that doesn't refresh the page on submit
 var RunForm = React.createClass({
   propTypes: {
