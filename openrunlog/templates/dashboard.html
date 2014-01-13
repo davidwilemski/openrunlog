@@ -16,8 +16,8 @@
         <div class="col-xs-6 col-md-12">
             <h2>Recent Runs:</h2>
             {% if user and user.email == profile.email %}
-            <span id="addrun">
-            </span>
+            <p id="addrun">
+            </p>
             {% end %}
 
             <div>
@@ -285,22 +285,12 @@ div.recent_run {
         }
         return seconds;
     }
+</script>
 
+<script type="text/jsx">
+    /** @jsx React.DOM */
     $(document).ready(function() {
-            /*
-        var d = new Date();
-        $('input#date').val(d.toLocaleDateString());
-
-        $('input#date').change();
-        $('#pacetime').change(function() {
-            if($('#pacetime')[0].value === "pace") {
-                $('#time')[0].placeholder = '7:00';
-            }
-            else {
-                $('#time')[0].placeholder = '28:00';
-            }
-        });
-        */
+        React.renderComponent(<AddRunModal/>, document.getElementById('addrun'));
     });
 </script>
 {% end %}

@@ -6,7 +6,6 @@ var BootstrapButton = React.createClass({
   render: function() {
     // transferPropsTo() is smart enough to merge classes provided
     // to this component.
-    console.log(this);
     return this.transferPropsTo(
       <a href={this.props.href} role="button" className={this.className} >
         {this.props.children}
@@ -125,18 +124,24 @@ var DateInput = React.createClass({
 var PaceTimeInput = React.createClass({
   getInitialState: function() {
     return {
-      value: "time" 
+      toggle: "time",
+      time: ""
     };
   },
 
-  handleChange: function(event) {
-    this.setState({value: event.target.value});
+  handleChange: function(val) {
+    var that = this;
+    return function(event) {
+      var state = {}
+      state[val] = event.target.value;
+      that.setState(state);
+    }
   },
 
   render: function() {
     var form = (
       <div className="form-group">
-        <select value={this.state.value} 
+        <select value={this.state.toggle} onChange={this.handleChange("toggle")}
         className="form-control" name="pacetime" id="pacetime">
           <option value="time">Time:</option>
           <option value="pace">Pace:</option>
@@ -144,7 +149,9 @@ var PaceTimeInput = React.createClass({
         <input className="form-control" type="text"
         name="time" 
         id="time" 
-        placeholder="28:00" data-time 
+        placeholder={this.state.toggle === "time" ? "28:00" : "7:30"}
+        value={this.state.time} onChange={this.handleChange("time")}
+        data-time 
         />
       </div>
     );
@@ -199,7 +206,15 @@ var NotesInput = React.createClass({
 // TODO - refactor to have *Input value properties flow from a single source 
 // TODO - make this a dynamic UI component that doesn't refresh the page on submit
 var RunForm = React.createClass({
+  componentWillUnmount: function(node) {
+    $('#' + this.props.id).parsley('destroy');
+  },
+
   componentDidMount: function(node) {
+    this.doParsley();
+  },
+
+  doParsley: function() {
         // TODO - use react's built in validation?
         $('#' + this.props.id).parsley({
             trigger: 'change',
@@ -310,5 +325,3 @@ var AddRunModal = React.createClass({
     alert("Your run\'s information has some errors. Fix them and resubmit");
   }
 });
-
-React.renderComponent(<AddRunModal/>, document.getElementById('addrun'));
