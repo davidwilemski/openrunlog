@@ -219,13 +219,13 @@ var RunForm = React.createClass({
         $('#' + this.props.id).parsley({
             trigger: 'change',
             successClass: 'success',
-            errorClass: 'error',
+            errorClass: 'error has-error',
             validationMinlength: '1',
             errors: {
                 classHandler: function(elem) {
                     return $(elem).parents('div.control-group').first();
                 },
-                errorsWrapper: '<span class="help-inline"></span>',
+                errorsWrapper: '<span class="control-label"></span>',
                 errorElem: '<span></span>',
             },
             validators: {
