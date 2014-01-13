@@ -91,20 +91,12 @@ var BootstrapModal = React.createClass({
 });
 
 var DateInput = React.createClass({
-
-  getInitialState: function() {
-    return {
-      value: (new Date()).toLocaleDateString("en-US")
-    };
-  },
-
-  handleChange: function(event) {
-    //TODO validate date here
-    this.setState({value: event.target.value});
+  getDefaultProps: function() {
+    return {value: (new Date()).toLocaleDateString("en-US")}
   },
 
   render: function() {
-    var value = this.state.value;
+    var value = this.props.value;
 
     var form = (
       <div className="form-group">
@@ -112,7 +104,7 @@ var DateInput = React.createClass({
         <input className="form-control" type="text"
         name="date" id="date"
         value={value}
-        onChange={this.handleChange}
+        onChange={this.props.onChange}
         data-required="true" />
       </div>
     );
@@ -122,11 +114,113 @@ var DateInput = React.createClass({
 });
 
 var PaceTimeInput = React.createClass({
-  getInitialState: function() {
+  propTypes: {
+    toggle: React.PropTypes.oneOf(["pace", "time"]),
+    time: React.PropTypes.string,
+  },
+
+  getDefaultProps: function() {
     return {
       toggle: "time",
       time: ""
     };
+  },
+
+  render: function() {
+    var form = (
+      <div className="form-group">
+        <select value={this.props.toggle} onChange={this.props.onChange("toggle")}
+        className="form-control" name="pacetime" id="pacetime">
+          <option value="time">Time:</option>
+          <option value="pace">Pace:</option>
+        </select>
+        <input className="form-control" type="text"
+        name="time" 
+        id="time" 
+        placeholder={this.props.toggle === "time" ? "28:00" : "7:30"}
+        value={this.props.time} onChange={this.props.onChange("time")}
+        data-time 
+        />
+      </div>
+    );
+
+    return form;
+  }
+});
+
+var DistanceInput = React.createClass({
+  propTypes: {
+    onChange: React.PropTypes.func.isRequired,
+    distance: React.PropTypes.string
+  },
+
+  getDefaultProps: function() {
+    return {distance: ""};
+  },
+
+  render: function() {
+    var form = (
+        <div className="form-group">
+          <label for="distance">Distance (Miles)</label>
+          <input className="form-control" type="text" name="distance" 
+          value={this.props.distance} onChange={this.props.onChange}
+          id="distance" placeholder="4" data-required="true" 
+          data-min="0" data-max="250" data-type="number" />
+        </div>
+    );
+
+    return form;
+  }
+});
+
+var NotesInput = React.createClass({
+  propTypes: {
+    value: React.PropTypes.string.isRequired
+  },
+
+  render: function() {
+    var form = (
+      <div className="form-group">
+        <label for="notes">Notes:</label>
+        <textarea className="form-control" 
+        name="notes" id="notes" 
+        placeholder="Thoughts about your run here" 
+        data-regexp=".*" value={this.props.value} onChange={this.props.onChange} />
+      </div>
+    );
+
+    return form;
+  }
+});
+
+// TODO - refactor to have *Input value properties flow from a single source 
+// TODO - make this a dynamic UI component that doesn't refresh the page on submit
+var RunForm = React.createClass({
+  propTypes: {
+    date: React.PropTypes.string,
+    distance: React.PropTypes.string,
+    toggle: React.PropTypes.oneOf(['pace','time']),
+    time: React.PropTypes.string,
+  },
+
+  getDefaultProps: function() {
+    return {
+      date: (new Date()).toLocaleDateString("en-US"),
+      toggle: "time",
+      time: "",
+      distance: "",
+      notes: ""
+    }
+  },
+
+  getInitialState: function() {
+    return {
+      date: this.props.date,
+      toggle: this.props.toggle,
+      time: this.props.time,
+      distance: this.props.distance,
+      notes: this.props.notes
+    }
   },
 
   handleChange: function(val) {
@@ -138,74 +232,6 @@ var PaceTimeInput = React.createClass({
     }
   },
 
-  render: function() {
-    var form = (
-      <div className="form-group">
-        <select value={this.state.toggle} onChange={this.handleChange("toggle")}
-        className="form-control" name="pacetime" id="pacetime">
-          <option value="time">Time:</option>
-          <option value="pace">Pace:</option>
-        </select>
-        <input className="form-control" type="text"
-        name="time" 
-        id="time" 
-        placeholder={this.state.toggle === "time" ? "28:00" : "7:30"}
-        value={this.state.time} onChange={this.handleChange("time")}
-        data-time 
-        />
-      </div>
-    );
-
-    return form;
-  }
-});
-
-var DistanceInput = React.createClass({
-  getInitialState: function() {
-    return {
-      value: "" 
-    };
-  },
-
-  handleChange: function(event) {
-    //TODO validate time here
-    this.setState({value: event.target.value});
-  },
-
-  render: function() {
-    var form = (
-        <div className="form-group">
-          <label for="distance">Distance (Miles)</label>
-          <input className="form-control" type="text" name="distance" 
-          id="distance" placeholder="4" data-required="true" 
-          data-min="0" data-max="250" data-type="number" />
-        </div>
-    );
-
-    return form;
-  }
-});
-
-var NotesInput = React.createClass({
-
-  render: function() {
-    var form = (
-      <div className="form-group">
-        <label for="notes">Notes:</label>
-        <textarea className="form-control" 
-        name="notes" id="notes" 
-        placeholder="Thoughts about your run here" 
-        data-regexp=".*"></textarea>
-      </div>
-    );
-
-    return form;
-  }
-});
-
-// TODO - refactor to have *Input value properties flow from a single source 
-// TODO - make this a dynamic UI component that doesn't refresh the page on submit
-var RunForm = React.createClass({
   componentWillUnmount: function(node) {
     $('#' + this.props.id).parsley('destroy');
   },
@@ -268,10 +294,12 @@ var RunForm = React.createClass({
     form = (
       <form id={this.props.id} method="POST" action="/add" 
       className="form-horizontal">
-        <DateInput />
-        <PaceTimeInput />
-        <DistanceInput />
-        <NotesInput />
+        <DateInput value={this.state.date} onChange={this.handleChange("date")}/>
+        <PaceTimeInput toggle={this.state.toggle} time={this.state.time}
+            onChange={this.handleChange} />
+        <DistanceInput distance={this.state.distance}
+            onChange={this.handleChange("distance")} />
+        <NotesInput value={this.state.notes} onChange={this.handleChange("notes")} />
       </form>
     );
     return <span>{form}</span>;
@@ -285,6 +313,7 @@ var AddRunModal = React.createClass({
       this.refs.modal.close();
     }
   },
+
   render: function() {
     var modal = null;
     var submitbtnid = 'addrunbtn';
@@ -317,7 +346,7 @@ var AddRunModal = React.createClass({
     this.refs.modal.close();
   },
   submitModal: function() {
-    if ($("#addrunbtn").parsley('validate')) {
+    if ($("#addrunform").parsley('validate')) {
       document.getElementById("addrunform").submit();
       return;
     }
