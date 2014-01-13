@@ -2,6 +2,7 @@
 
 {% block head %}
 <link rel="stylesheet" href="{{ static_url('css/xcharts.min.css') }}" type="text/css" />
+<script type="text/jsx" src="{{static_url('js/dashboard.jsx') }}"></script>
 {% end %}
 
 {% block content %}
@@ -15,9 +16,8 @@
         <div class="col-xs-6 col-md-12">
             <h2>Recent Runs:</h2>
             {% if user and user.email == profile.email %}
-            <p>
-                <a class="label label-success" data-toggle="modal" href="#addrun" >Add a run</a>
-            </p>
+            <span id="addrun">
+            </span>
             {% end %}
 
             <div>
@@ -103,50 +103,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="addrun" style="display:none;">
-    <div class="modal-dialog">
-    <div class="modal-content">
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">x</a>
-        <h3>Add A Run</h3>
-    </div>
-    <div class="modal-body">
-    <form id="addrunform" method="POST" action="/add" class="form-horizontal">
-        <div class="form-group">
-            <label for="date">Date (MM-DD-YY)</label>
-            <input class="form-control" type="text" name="date" id="date" value="{{ today }}" data-required="true" />
-        </div>
-        <div class="form-group">
-            <label for="distance">Distance (Miles)</label>
-            <input class="form-control" type="text" name="distance" id="distance" placeholder="4" data-required="true" data-min="0" data-max="250" data-type="number" />
-        </div>
-        <div class="form-group">
-            <select class="form-control" name="pacetime" id="pacetime">
-                <option value="time">Time:</option>
-                <option value="pace">Pace:</option>
-            </select>
-            <input class="form-control" type="text" name="time" id="time" placeholder="28:00" data-time />
-        </div>
-        <div class="form-group">
-        </div>
-        <div class="form-group">
-            <label for="notes">Notes:</label>
-            <textarea class="form-control" name="notes" id="notes" placeholder="Thoughts about your run here" data-regexp=".*"></textarea>
-        </div>
-    </form>
-    </div>
-    <div class="modal-footer">
-        <button id="addrunbtn" type="button" class="btn btn-primary">Add Run</button>
-        <script>
-            $('#addrunbtn').on('click', function(e){
-                e.preventDefault();
-                $('#addrunform').submit();
-            });
-        </script>
-    </div>
-    </div>
-    </div>
-</div>
 {% end %}
 
 {% block bottom %}
@@ -300,15 +256,6 @@ div.recent_run {
         });
         {% end %}
 
-
-        /*
-        $("#addrunbtn").click(function(){
-            $.post("/add",$("#addrunform").serialize(), function(data){
-                alert("hiya");
-            });
-        });
-        */
-
         Calendar.month("#run-calendar");
 
     });
@@ -340,53 +287,10 @@ div.recent_run {
     }
 
     $(document).ready(function() {
+            /*
         var d = new Date();
         $('input#date').val(d.toLocaleDateString());
-        $('#addrunform').parsley({
-            trigger: 'change',
-            successClass: 'success',
-            errorClass: 'error',
-            validationMinlength: '1',
-            errors: {
-                classHandler: function(elem) {
-                    return $(elem).parents('div.control-group').first();
-                },
-                errorsWrapper: '<span class="help-inline"></span>',
-                errorElem: '<span></span>',
-            },
-            validators: {
-                time: function(val) {
-                    // don't do this validation if entering pace
-                    if($('#pacetime')[0].value === 'pace') {
-                        return true;
-                    }
 
-                    // allow not posting time :/
-                    if (val === '' || val == 0) {
-                        return true;
-                    }
-                    
-                    var time = /^((\d+:\d\d:\d\d$)|(\d+:\d\d$)|(\d+$))/m;
-                    var timetest = time.test(val);
-                    if(!timetest) {
-                        return false;
-                    }
-
-                    var distance = parseInt($("#distance")[0].value, 10);
-                    var seconds = time_to_seconds($("#time")[0].value);
-
-                    if(seconds/distance < 200) {
-                        return false;
-                    }
-
-                    return true;
-                }
-            },
-            messages: {
-                time: "HH:MM:SS, MM:SS, or MM formats only. Double check that you entered the correct time (we might have detected an impossibly fast pace)."
-            }
-
-        });
         $('input#date').change();
         $('#pacetime').change(function() {
             if($('#pacetime')[0].value === "pace") {
@@ -396,6 +300,7 @@ div.recent_run {
                 $('#time')[0].placeholder = '28:00';
             }
         });
+        */
     });
 </script>
 {% end %}
