@@ -277,7 +277,6 @@ var RunForm = React.createClass({
 
     try {
       var secs = time_to_seconds(time);
-      console.log(secs);
     } catch(e) {
       return false;
     }
