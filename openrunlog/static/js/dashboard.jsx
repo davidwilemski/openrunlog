@@ -92,20 +92,27 @@ var BootstrapModal = React.createClass({
 
 var DateInput = React.createClass({
   getDefaultProps: function() {
-    return {value: (new Date()).toLocaleDateString("en-US")}
+    return {value: (new Date()).toLocaleDateString("en-US"), error: false}
   },
 
   render: function() {
     var value = this.props.value;
+    var div_classes = "form-group";
+    var date_error_text = "Must be a valid date.";
+
+    if (this.props.error) {
+      div_classes += " has-error";
+    }
 
     var form = (
-      <div className="form-group">
-        <label for="date">Date (MM/DD/YY)</label>
+      <div className={div_classes}>
+        <label for="date">Date (MM/DD/YYYY)</label>
         <input className="form-control" type="text"
         name="date" id="date"
         value={value}
         onChange={this.props.onChange}
         data-required="true" />
+        <label className="control-label" for="date"> {this.props.error ? date_error_text : ""} </label>
       </div>
     );
 
@@ -122,13 +129,21 @@ var PaceTimeInput = React.createClass({
   getDefaultProps: function() {
     return {
       toggle: "time",
-      time: ""
+      time: "",
+      error: false
     };
   },
 
   render: function() {
+    var div_classes = "form-group";
+    var pace_error_text = "HH:MM:SS, MM:SS, or MM formats only. Double check that you entered the correct time (we might have detected an impossibly fast pace).";
+
+    if (this.props.error) {
+      div_classes += " has-error";
+    }
+
     var form = (
-      <div className="form-group">
+      <div className={div_classes}>
         <select value={this.props.toggle} onChange={this.props.onChange("toggle")}
         className="form-control" name="pacetime" id="pacetime">
           <option value="time">Time:</option>
@@ -141,6 +156,7 @@ var PaceTimeInput = React.createClass({
         value={this.props.time} onChange={this.props.onChange("time")}
         data-time 
         />
+        <label className="control-label" for="time"> {this.props.error ? pace_error_text : ""} </label>
       </div>
     );
 
@@ -155,17 +171,27 @@ var DistanceInput = React.createClass({
   },
 
   getDefaultProps: function() {
-    return {distance: ""};
+    return {distance: "", error: false};
   },
 
+  // XXX not perfectly happy with displaying error by default but it's a start
   render: function() {
+    var div_classes = "form-group";
+
+    var distance_error_text = "Must be a number between 0 and 250.";
+
+    if (this.props.error) {
+      div_classes += " has-error"
+    }
+
     var form = (
-        <div className="form-group">
+        <div className={div_classes}>
           <label for="distance">Distance (Miles)</label>
           <input className="form-control" type="text" name="distance" 
           value={this.props.distance} onChange={this.props.onChange}
           id="distance" placeholder="4" data-required="true" 
           data-min="0" data-max="250" data-type="number" />
+          <label className="control-label" for="distance" >{this.props.error ? distance_error_text : ""} </label>
         </div>
     );
 
@@ -231,73 +257,72 @@ var RunForm = React.createClass({
     }
   },
 
-  componentWillUnmount: function(node) {
-    $('#' + this.props.id).parsley('destroy');
+  submit: function() {
+    if (this.paceTimeIsValid(this.state.time) && 
+        this.dateIsValid(this.state.date) && 
+        this.distanceIsValid(this.state.distance)) {
+      document.getElementById(this.props.id).submit();
+      return;
+    }
+
+    alert("Your run\'s information has some errors. Fix them and resubmit");
   },
 
-  componentDidMount: function(node) {
-    this.doParsley();
+  paceTimeIsValid: function(value) {
+    var time = value;
+
+    if (time === "") {
+      return true
+    }
+
+    try {
+      var secs = time_to_seconds(time);
+      console.log(secs);
+    } catch(e) {
+      return false;
+    }
+
+    if (time_to_seconds(time) < 0) {
+      return false;
+    }
+
+    //TODO validate that pace doesn't seem impossibly fast
+
+    return true;
   },
 
-  doParsley: function() {
-        // TODO - use react's built in validation?
-        $('#' + this.props.id).parsley({
-            trigger: 'change',
-            successClass: 'success',
-            errorClass: 'error has-error',
-            validationMinlength: '1',
-            errors: {
-                classHandler: function(elem) {
-                    return $(elem).parents('div.control-group').first();
-                },
-                errorsWrapper: '<span class="control-label"></span>',
-                errorElem: '<span></span>',
-            },
-            validators: {
-                time: function(val) {
-                    // don't do this validation if entering pace
-                    if($('#pacetime')[0].value === 'pace') {
-                        return true;
-                    }
+  distanceIsValid: function(value) {
+    return (/^[0-9]+$/.test(value) && parseInt(value, 10) <= 250);
+  },
 
-                    // allow not posting time :/
-                    if (val === '' || val == 0) {
-                        return true;
-                    }
-                    
-                    var time = /^((\d+:\d\d:\d\d$)|(\d+:\d\d$)|(\d+$))/m;
-                    var timetest = time.test(val);
-                    if(!timetest) {
-                        return false;
-                    }
-
-                    var distance = parseInt($("#distance")[0].value, 10);
-                    var seconds = time_to_seconds($("#time")[0].value);
-
-                    if(seconds/distance < 200) {
-                        return false;
-                    }
-
-                    return true;
-                }
-            },
-            messages: {
-                time: "HH:MM:SS, MM:SS, or MM formats only. Double check that you entered the correct time (we might have detected an impossibly fast pace)."
-            }
-
-        });
+  // XXX better than nothing, for now
+  dateIsValid: function(value) {
+    return /^[0-1]?[0-9]\/[0-3]?[0-9]\/[0-9]{4}$/g.test(value);
   },
 
   render: function() {
-    var form = null;
+    var div_classes = "form-group";
+
+    var isPaceTimeValid = this.paceTimeIsValid(this.state.time);
+    var isDistanceValid = this.distanceIsValid(this.state.distance);
+    var isDateValid = this.dateIsValid(this.state.date);
+
+   var form = null;
     form = (
       <form id={this.props.id} method="POST" action="/add" 
       className="form-horizontal">
-        <DateInput value={this.state.date} onChange={this.handleChange("date")}/>
+
+        <DateInput 
+            error={!isDateValid ? true : false}
+            value={this.state.date} onChange={this.handleChange("date")}/>
+
         <PaceTimeInput toggle={this.state.toggle} time={this.state.time}
-            onChange={this.handleChange} />
-        <DistanceInput distance={this.state.distance}
+            onChange={this.handleChange} error={!isPaceTimeValid ? true : false} />
+
+        <DistanceInput distance={this.state.distance} 
+            error={!isDistanceValid ? true : false}
             onChange={this.handleChange("distance")} />
+
         <NotesInput value={this.state.notes} onChange={this.handleChange("notes")} />
       </form>
     );
@@ -325,7 +350,7 @@ var AddRunModal = React.createClass({
         confirmId={submitbtnid}
         cancel="Cancel"
         onCancel={this.handleCancel}
-        onConfirm={this.submitModal}
+        onConfirm={this.handleSubmit}
         title="Add A Run">
           <RunForm id="addrunform" ref="runform" />
       </BootstrapModal>
@@ -344,12 +369,7 @@ var AddRunModal = React.createClass({
   closeModal: function() {
     this.refs.modal.close();
   },
-  submitModal: function() {
-    if ($("#addrunform").parsley('validate')) {
-      document.getElementById("addrunform").submit();
-      return;
-    }
-
-    alert("Your run\'s information has some errors. Fix them and resubmit");
+  handleSubmit: function() {
+    this.refs.runform.submit();
   }
 });

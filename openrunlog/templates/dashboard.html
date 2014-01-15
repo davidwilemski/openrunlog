@@ -268,21 +268,33 @@ div.recent_run {
         var seconds = 0;
         var parts = time.split(':');
 
+        function parse_int_wrapper(value, base) {
+            var tmp = parseInt(value, base);
+
+            if (isNaN(tmp)) {
+                throw new Error("Time not in correct format");
+            }
+
+            return tmp;
+
+        }
+
         if (parts.length == 3) {
-            seconds += parseInt(parts[0], 10) * 60 * 60;
-            seconds += parseInt(parts[1], 10) * 60;
-            seconds += parseInt(parts[2], 10);
+            seconds += parse_int_wrapper(parts[0], 10) * 60 * 60;
+            seconds += parse_int_wrapper(parts[1], 10) * 60;
+            seconds += parse_int_wrapper(parts[2], 10);
         }
         else if (parts.length == 2) {
-            seconds += parseInt(parts[0], 10) *  60;
-            seconds += parseInt(parts[1], 10);
+            seconds += parse_int_wrapper(parts[0], 10) *  60;
+            seconds += parse_int_wrapper(parts[1], 10);
         }
         else if (parts.length == 1) {
-            seconds += parseInt(parts[0], 10) *  60;
+            seconds += parse_int_wrapper(parts[0], 10) *  60;
         }
         else {
             throw new Error("Time not in correct format");
         }
+
         return seconds;
     }
 </script>
