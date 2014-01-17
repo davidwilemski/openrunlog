@@ -1,6 +1,5 @@
 
 import os
-import sys
 
 import env
 import futures
@@ -10,7 +9,7 @@ import rq
 import setproctitle
 import tornadoredis
 import tornadotinyfeedback
-from tornado import ioloop, process, web
+from tornado import ioloop, web
 from tornado.options import define, options, parse_command_line
 
 import calendar
@@ -33,16 +32,18 @@ else:
     config['debug'] = False
 
 settings = {
-        'debug': config['debug'],
-        'cookie_secret': config['cookie_secret'],
-        'template_path': os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates"),
-        'static_path': os.path.join(os.path.dirname(os.path.abspath(__file__)), "static"),
-        'login_url': '/login',
-        'static_handler_class': jsx.JSXStaticFileHandler,
+    'debug': config['debug'],
+    'cookie_secret': config['cookie_secret'],
+    'template_path': os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "templates"),
+    'static_path': os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "static"),
+    'login_url': '/login',
+    'static_handler_class': jsx.JSXStaticFileHandler,
 }
 
 server_settings = {
-    "xheaders" : True,
+    "xheaders": True,
 }
 
 web.ErrorHandler = ErrorHandler
@@ -86,9 +87,8 @@ if __name__ == '__main__':
     setproctitle.setproctitle('orl.app')
 
     mongoengine.connect(
-            config['db_name'], 
-            host=config['db_uri'])
-
+        config['db_name'],
+        host=config['db_uri'])
 
     application.tf = tornadotinyfeedback.Client('openrunlog')
     application.redis = tornadoredis.Client()
