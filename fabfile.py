@@ -57,6 +57,8 @@ def setup():
     fabtools.python.install('virtualenv', use_sudo=True)
     fabtools.require.deb.package('git-core')
 
+    install_node()
+
     # Create venv
     run('virtualenv -p `which python2.7` ' + PROJ_NAME + '_env')
 
@@ -82,6 +84,12 @@ def setup():
 def install_mongo():
     with prefix('source ' + VENV_DIR + 'bin/activate'):
         run('mongoctl install-mongodb')
+
+
+@task
+def install_node():
+    # needed for PyExecJS
+    fabtools.require.deb.package('nodejs')
 
 
 @task
