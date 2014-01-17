@@ -456,6 +456,15 @@ class Run(mongoengine.Document):
         logging.debug(result)
         return result
 
+    def public_dict(self):
+        return {
+            'uid': str(self.user.id),
+            'distance': self.distance,
+            'time': self.time,
+            'notes': self.notes,
+            'date': self.date.strftime("%m/%d/%Y")
+        }
+
 
 class Week(mongoengine.Document):
     """

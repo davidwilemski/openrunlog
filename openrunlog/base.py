@@ -111,13 +111,26 @@ class ErrorHandler(BaseHandler):
 
 
 def authorized_json(method, *args):
-    """Decorate methods with this to require that the user be logged in."""
+    """Decorate API methods with this to require that the user be logged in."""
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         uid = args[0]
         user = self.get_current_user()
-        data_user = models.User.objects(id=uid).first()
-        if not data_user.public and (not user or user.email != data_user.email):
+        datauser = models.User.objects(id=uid).first()
+        if not datauser.public and (not user or user.email != datauser.email):
+            raise web.HTTPError(403)
+        return method(self, *args, **kwargs)
+    return wrapper
+
+
+def authorized_json_url(method, *args):
+    """Decorate API methods with this to require that the user be logged in."""
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        url = args[0]
+        user = self.get_current_user()
+        datauser = models.User.objects(url=url).first()
+        if not datauser.public and (not user or user.email != datauser.email):
             raise web.HTTPError(403)
         return method(self, *args, **kwargs)
     return wrapper

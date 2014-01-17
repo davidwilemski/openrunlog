@@ -16,6 +16,7 @@ import calendar
 import dashboard
 import data
 import groups
+import profiledata
 import home
 import jsx
 import login
@@ -64,6 +65,7 @@ application = web.Application([
     (r'/u/([a-zA-Z0-9_]+)/races/([A-Za-z0-9]{24})', racelog.ShowRaceHandler),
     (r'/u/([a-zA-Z0-9_]+)/runs', runs.AllRunsHandler),
     (r'/u/([a-zA-Z0-9_]+)/run/([A-Za-z0-9]{24})', runs.ShowRunHandler),
+    (r'/u/([A-Za-z0-9]+)/data/recent.json', profiledata.RecentRunsHandler),
     (r'/g', groups.GroupDashboardHandler),
     (r'/g/([a-zA-Z0-9_]+)', groups.GroupHandler),
     (r'/add', runs.AddRunHandler),
