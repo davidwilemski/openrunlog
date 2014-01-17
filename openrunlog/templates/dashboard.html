@@ -2,7 +2,6 @@
 
 {% block head %}
 <link rel="stylesheet" href="{{ static_url('css/xcharts.min.css') }}" type="text/css" />
-<script type="text/jsx" src="{{static_url('js/dashboard.jsx') }}"></script>
 {% end %}
 
 {% block content %}
@@ -299,13 +298,9 @@ div.recent_run {
     }
 </script>
 
+<script type="text/javascript" src="{{static_url('jsx/dashboard.jsx') }}"></script>
 {% if user and user.email == profile.email %}
-<script type="text/jsx">
-    /** @jsx React.DOM */
-    $(document).ready(function() {
-        React.renderComponent(<AddRunModal/>, document.getElementById('addrun'));
-    });
-</script>
+<script type="text/javascript" src="{{ static_url('jsx/run_dashboard.jsx') }}"></script>
 {% end %}
 
 {% end %}

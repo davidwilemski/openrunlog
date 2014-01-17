@@ -18,11 +18,11 @@ import dashboard
 import data
 import groups
 import home
+import jsx
 import login
 import racelog
 import runs
 from base import ErrorHandler
-
 
 
 config = env.prefix('ORL_')
@@ -38,6 +38,7 @@ settings = {
         'template_path': os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates"),
         'static_path': os.path.join(os.path.dirname(os.path.abspath(__file__)), "static"),
         'login_url': '/login',
+        'static_handler_class': jsx.JSXStaticFileHandler,
 }
 
 server_settings = {
@@ -72,6 +73,7 @@ application = web.Application([
     (r'/data/([A-Za-z0-9]{24})/runs/weekday', data.WeekdayRunsHandler),
     (r'/data/([A-Za-z0-9]{24})/runs/year', data.DailyRunsHandler),
     (r'/data/([A-Za-z0-9]{24})/runs/month', data.MonthRunsHandler),
+    #(r'/jsx/(.*)', jsx.JSXStaticFileHandler, {'path': JSXPATH}),
 ], **settings)
 
 application.config = config
