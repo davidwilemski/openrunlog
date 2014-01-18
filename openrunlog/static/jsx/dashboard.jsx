@@ -291,7 +291,7 @@ var RunForm = React.createClass({
   },
 
   distanceIsValid: function(value) {
-    return (/^[0-9]+$/.test(value) && parseInt(value, 10) <= 250);
+    return (/^[0-9\.]+$/.test(value) && parseInt(value, 10) <= 250);
   },
 
   // XXX better than nothing, for now
