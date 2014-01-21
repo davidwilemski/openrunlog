@@ -76,7 +76,6 @@ application = web.Application([
     (r'/data/([A-Za-z0-9]{24})/runs/weekday', data.WeekdayRunsHandler),
     (r'/data/([A-Za-z0-9]{24})/runs/year', data.DailyRunsHandler),
     (r'/data/([A-Za-z0-9]{24})/runs/month', data.MonthRunsHandler),
-    #(r'/jsx/(.*)', jsx.JSXStaticFileHandler, {'path': JSXPATH}),
 ], **settings)
 
 application.config = config
