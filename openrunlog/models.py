@@ -316,6 +316,16 @@ class User(mongoengine.Document):
 
         return {'longest': longest, 'current': current}
 
+    def public_dict(self):
+        return {
+            'id': str(self.id),
+            'display_name': self.display_name,
+            'uri': self.uri,
+            'public': self.public,
+            'streaks': self.streaks,
+            'hashtags': self.hashtags,
+        }
+
 
 class Run(mongoengine.Document):
     user = mongoengine.ReferenceField(User)
@@ -458,11 +468,14 @@ class Run(mongoengine.Document):
 
     def public_dict(self):
         return {
-            'uid': str(self.user.id),
+            'id': str(self.id),
+            'user': self.user.public_dict(),
             'distance': self.distance,
             'time': self.time,
             'notes': self.notes,
-            'date': self.date.strftime("%m/%d/%Y")
+            'date': self.date.strftime("%m/%d/%Y"),
+            'uri': self.uri,
+            'pace': self.pace,
         }
 
 
