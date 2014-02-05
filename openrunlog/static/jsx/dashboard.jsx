@@ -20,7 +20,7 @@ var BootstrapModal = React.createClass({
   componentDidMount: function() {
     // When the component is added, turn it into a modal
     $(this.getDOMNode())
-      .modal({backdrop: 'static', keyboard: false, show: false})
+      .modal({backdrop: 'static', keyboard: false, show: false});
   },
   componentWillUnmount: function() {
     $(this.getDOMNode()).off('hidden', this.handleHidden);
@@ -257,11 +257,32 @@ var RunForm = React.createClass({
     }
   },
 
-  submit: function() {
+  ajaxSubmit: function(callback) {
     if (this.paceTimeIsValid(this.state.time) && 
         this.dateIsValid(this.state.date) && 
         this.distanceIsValid(this.state.distance)) {
-      document.getElementById(this.props.id).submit();
+      $.ajax({
+        type: "POST",
+        url: "/add",
+        data: {
+          date: this.state.date,
+          distance: this.state.distance,
+          time: this.state.time,
+          pacetime: this.state.toggle,
+          notes: this.state.notes
+        },
+        success: function(data) {
+          callback({
+            date: this.state.date,
+            distance: this.state.distance,
+            time: this.state.time,
+            pacetime: this.state.toggle,
+            notes: this.state.notes
+          });
+          this.setState(this.getInitialState());
+          update_charts();
+        }.bind(this)
+      });
       return;
     }
 
@@ -331,6 +352,10 @@ var RunForm = React.createClass({
 
 
 var AddRunModal = React.createClass({
+  propTypes: {
+    onSubmit: React.PropTypes.func.isRequired
+  },
+
   handleCancel: function() {
     if (confirm('Are you sure you want to cancel?')) {
       this.refs.modal.close();
@@ -369,6 +394,75 @@ var AddRunModal = React.createClass({
     this.refs.modal.close();
   },
   handleSubmit: function() {
-    this.refs.runform.submit();
+    this.refs.runform.ajaxSubmit(this.props.onSubmit);
+    this.closeModal();
+  }
+});
+
+var Run = React.createClass({
+  propTypes: {
+    run: React.PropTypes.object.isRequired
+  },
+  render: function() {
+    var run = this.props.run;
+    return <div key={run.id}><a href={run.uri}>{run.date} - {run.distance} Miles - {run.pace}</a></div>;
+  }
+});
+
+var RunList = React.createClass({
+  propTypes: {
+    runs: React.PropTypes.array.isRequired
+  },
+  render: function() {
+    var runNodes = null;
+    runNodes = this.props.runs.map(function (run) {
+      return <Run run={run} />
+    });
+    return <span>{runNodes}</span>;
+  }
+
+});
+
+var RecentRuns = React.createClass({
+  propTypes: {
+    url: React.PropTypes.string.isRequired
+  },
+
+  fetchRuns: function() {
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      success: function(data) {
+        this.setState({data: data.data}); 
+      }.bind(this)
+    });
+  },
+
+  getInitialState: function() {
+    return {data: []};
+  },
+
+  componentWillMount: function() {
+    this.fetchRuns();
+  },
+
+  addRunToState: function(run) {
+    this.fetchRuns();
+  },
+
+  render: function() {
+    var addrunmodal = null;
+
+    if (document.getElementById("addrun")) {
+      addrunmodal = <AddRunModal onSubmit={this.addRunToState} />;
+    }
+
+    return ( 
+      <div>
+        <h2>Recent Runs:</h2>
+        {addrunmodal}
+        <RunList runs={this.state.data} />
+      </div>
+    );
   }
 });

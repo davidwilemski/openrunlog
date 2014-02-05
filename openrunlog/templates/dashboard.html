@@ -13,25 +13,15 @@
         </div>
 
         <div class="col-xs-6 col-md-12">
-            <h2>Recent Runs:</h2>
-            {% if user and user.email == profile.email %}
-            <p id="addrun">
-            </p>
-            {% end %}
+        <div id="recentruns"></div>
+        {% if user and user.email == profile.email %}
+            <p id="addrun"></p>
+        {% end %}
 
-            <div>
-                <form id="remove_run" action="/remove" method="post" style="display:none;">
-                    <input type="hidden" name="run_id" value="">
-                    <input type="submit">
-                </form>
-                {% for run in recent_runs %}
-                    <div class="recent_run" data-run-id="{{ run.id }}">
-                        <span style="display:none;" class="remove_run glyphicon glyphicon-remove"></span>
-                        <a href="{{ run.uri }}">{{ escape(run.date.strftime('%x')) }} - {{ escape(str(run.distance)) }} Miles - {{ run.pace }}</a>
-                    </div>
-                {% end %}
-                <a href="{{ profile.uri + '/runs' }}" class="btn btn-lg btn-block btn-primary">See All Runs</a>
-            </div>
+        <a href="{{ profile.uri + '/runs' }}"
+           class="btn btn-lg btn-block btn-primary">
+                See All Runs
+        </a>
         </div>
         </div>
 
@@ -122,12 +112,17 @@ div.recent_run {
 <script src="{{ static_url('js/d3-calendars.js') }}"></script>
 
 <script>
-    var weekChart;
-    var mileageChart;
-    var mileageChartThisYear;
-    var mileageChartSixMonths;
-    var mileageChartThreeMonths;
-    var totalMileageChart;
+    var charts = [];
+
+    function update_charts() {
+        charts.map(function(chart) {
+            $.get(chart.url, function(data) { 
+                $(chart.tag).empty();
+                new xChart(chart.type, data, chart.tag, chart.opts);
+            });
+        });
+    }
+
     $(function() {
         $('#weekly-tabs a').click(function (e) {
             e.preventDefault();
@@ -139,68 +134,85 @@ div.recent_run {
             $(this).tab('show');
         });
 
-        $("#msg").ajaxError(function(event, request, settings){
-          $(this).append("<li>Error requesting page " + settings.url + "</li>");
-        });
+        var opts = null;
 
-        $.get("/data/{{ str(profile.id) }}/this_week", function(data) {
-            var opts = {
-              "dataFormatX": function (x) { return d3.time.format('%c').parse(x); },
-              "tickFormatX": function (x) { return d3.time.format('%A')(x); },
-              "yMin": 0
-            };
-            weekChart = new xChart('bar', data, '#week', opts);
+        var opts = {
+          "dataFormatX": function (x) { return d3.time.format('%c').parse(x); },
+          "tickFormatX": function (x) { return d3.time.format('%A')(x); },
+          "yMin": 0
+        };
+        charts.push({
+            url: "/data/{{ str(profile.id) }}/this_week",
+            tag: "#week",
+            opts: opts,
+            type: "bar"
         });
         
-        $.get("/data/{{ str(profile.id) }}/recent", function(data) {
-            var opts = {
-              "dataFormatX": function (x) { return d3.time.format('%c').parse(x); },
-              "tickFormatX": function (x) { return d3.time.format('%x')(x); },
-              "yMin": 0
-            };
-            weekChart = new xChart('bar', data, '#recent', opts);
-        });
-
-        $.get("/data/{{ str(profile.id) }}/mileage/weekly", function(data) {
-            var opts = {
-          "dataFormatX": function (x) { return d3.time.format('%m-%d-%Y').parse(x); },
-          "tickFormatX": function (x) { return d3.time.format('%m-%d-%Y')(x); }
-};
-            mileageChart = new xChart('line', data, '#weekly', opts);
-        });
-
-        $.get("/data/{{ str(profile.id) }}/mileage/weekly?window_weeks=12", function(data) {
-            var opts = {
-          "dataFormatX": function (x) { return d3.time.format('%m-%d-%Y').parse(x); },
-          "tickFormatX": function (x) { return d3.time.format('%m-%d-%Y')(x); }
-};
-            mileageChart = new xChart('line-dotted', data, '#weekly-3months', opts);
-        });
-
-        $.get("/data/{{ str(profile.id) }}/mileage/weekly?window_weeks=24", function(data) {
-            var opts = {
-          "dataFormatX": function (x) { return d3.time.format('%m-%d-%Y').parse(x); },
-          "tickFormatX": function (x) { return d3.time.format('%m-%d-%Y')(x); }
-};
-            mileageChart = new xChart('line-dotted', data, '#weekly-6months', opts);
-        });
-
-        $.get("/data/{{ str(profile.id) }}/mileage/weekly?since={{ this_year }}", function(data) {
-            var opts = {
-                "dataFormatX": function (x) { return d3.time.format('%m-%d-%Y').parse(x); },
-                "tickFormatX": function (x) { return d3.time.format('%m-%d-%Y')(x); }
-            };
-            mileageChartThisYear = new xChart('line-dotted', data, '#weekly-thisyear', opts);
-        });
-
-        $.get("/data/{{ str(profile.id) }}/mileage/weekly?since={{ this_year }}", function(data) {
-            var opts = {
-          "dataFormatX": function (x) { return d3.time.format('%m-%d-%Y').parse(x); },
-          "tickFormatX": function (x) { return d3.time.format('%m-%d-%Y')(x); },
+        opts = {
+          "dataFormatX": function (x) { return d3.time.format('%c').parse(x); },
+          "tickFormatX": function (x) { return d3.time.format('%x')(x); },
           "yMin": 0
-};
-            totalMileageChart = new xChart('cumulative', data, '#year', opts);
+        };
+        charts.push({
+            url: "/data/{{ str(profile.id) }}/recent",
+            tag: "#recent",
+            opts: opts,
+            type: "bar"
         });
+
+        opts = {
+          "dataFormatX": function(x) {return d3.time.format('%m-%d-%Y').parse(x); },
+          "tickFormatX": function(x) {return d3.time.format('%m-%d-%Y')(x); }
+        };
+        charts.push({
+            url: "/data/{{ str(profile.id) }}/mileage/weekly",
+            tag: "#weekly",
+            opts: opts,
+            type: "line"
+        });
+
+        opts = {
+            "dataFormatX": function(x) {return d3.time.format('%m-%d-%Y').parse(x);},
+            "tickFormatX": function(x) {return d3.time.format('%m-%d-%Y')(x); }
+        };
+        charts.push({
+            url: "/data/{{ str(profile.id) }}/mileage/weekly?window_weeks=14",
+            tag: "#weekly-3months",
+            opts: opts,
+            type: "line-dotted"
+        });
+
+        charts.push({
+            url: "/data/{{ str(profile.id) }}/mileage/weekly?window_weeks=27",
+            tag: "#weekly-6months",
+            opts: opts,
+            type: "line-dotted"
+        });
+
+
+        charts.push({
+            url: "/data/{{ str(profile.id) }}/mileage/weekly?since={{ this_year }}",
+            tag: "#weekly-thisyear",
+            opts: opts,
+            type: "line-dotted"
+        });
+
+        opts = {
+            "dataFormatX": function(x) {return d3.time.format('%m-%d-%Y').parse(x);},
+            "tickFormatX": function (x) { return d3.time.format('%m-%d-%Y')(x); },
+            "yMin": 0,
+            "xMin": 0
+        };
+        charts.push({
+            url: "/data/{{ str(profile.id) }}/mileage/weekly?since={{ this_year }}",
+            tag: "#year",
+            opts: opts,
+            type: "cumulative"
+        });
+
+        /* INITIALIZE ALL CHARTS */
+        update_charts();
+        /* ******* */
 
         $.get("/data/{{ str(profile.id) }}/runs/weekday", function(data) {
             var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -299,8 +311,6 @@ div.recent_run {
 </script>
 
 <script type="text/javascript" src="{{static_url('jsx/dashboard.jsx') }}"></script>
-{% if user and user.email == profile.email %}
 <script type="text/javascript" src="{{ static_url('jsx/run_dashboard.jsx') }}"></script>
-{% end %}
 
 {% end %}
