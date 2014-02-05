@@ -1,4 +1,5 @@
 /** @jsx React.DOM */
 $(document).ready(function() {
-    React.renderComponent(<RecentRuns url="/u/david/data/recent.json" />, document.getElementById('recentruns'));
+    var uri = window.location.pathname;
+    React.renderComponent(<RecentRuns url={ uri + "/data/recent.json" } />, document.getElementById('recentruns'));
 });
