@@ -1,24 +1,2 @@
-<a href="{{ profile.uri }}">
-    {% raw image_html(profile, 'large') %}
-    <h1>{{ profile.display_name }}</h1>
-</a>
-<p><strong>{{ profile.hashtags }}</strong></p>
-<p>
-    All Time: {{ profile.total_mileage }} Miles<br />
-    {{ this_year }}: {{ profile.yearly_mileage }} Miles<br />
-    {% set streaks = profile.streaks %}
-    {% if streaks %}
-        {% set streak = streaks['longest'] %}
-        Longest Streak: {{ streak['length'] }} days<br />
-        <small>{{ streak['start'] }} - {{ streak['end'] }}</small><br />
-        {% set current_streak = streaks['current'] %}
-        Current Streak: {{ current_streak['length'] }} days<br />
-        <small>{{ current_streak['start'] }} - {{ current_streak['end'] }}</small><br />
-    {% end %}
-</p>
-<ul class="nav nav-pills">
-    <li {% if request.uri == profile.uri %} class="active"{% end %}><a href="{{ profile.uri }}">Profile</a></li>
-    <li {% if request.uri.endswith('/calendar') %} class="active"{% end %}><a href="{{ profile.uri + '/calendar' }}">Calendar</a></li>
-    <li {% if request.uri.split('?')[0].endswith('/races') %} class="active"{% end %}><a href="{{ profile.uri + '/races' }}">Races</a></li>
-</ul>
-
+<div id="profile-display"></div>
+<script type="text/javascript" src="{{ static_url('jsx/profile.jsx') }}"></script>
