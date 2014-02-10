@@ -3,7 +3,6 @@ import datetime
 
 import dateutil.parser
 import dateutil.relativedelta
-from mongoengine import Q
 from tornado import auth, escape, gen, httpclient, web
 
 import models
@@ -44,7 +43,4 @@ class SevenDayMileage(base.BaseHandler):
             self.finish({'status': False})
             return
 
-        lowerdate = date - dateutil.relativedelta.relativedelta(days=7)
-        mileage = models.Run.objects(
-            Q(date__gt=lowerdate) & Q(date__lte=date)).sum('distance')
         self.finish({'status': True, 'miles': mileage})

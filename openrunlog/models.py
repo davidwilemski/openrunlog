@@ -5,6 +5,7 @@ import logging
 import dateutil
 import dateutil.parser
 import mongoengine
+from mongoengine import Q
 from dateutil.relativedelta import relativedelta
 from tornado import escape, gen
 
@@ -349,6 +350,13 @@ class User(mongoengine.Document):
         url = robohash_image_url(email, size)
         return url
 
+    def mileage_seven_days(self, date):
+        lowerdate = date - dateutil.relativedelta.relativedelta(days=7)
+        mileage = Run.objects(
+            Q(user=self) & Q(date__gt=lowerdate) & Q(date__lte=date)).sum(
+            'distance')
+        return mileage
+
     def public_dict(self):
         return {
             'id': str(self.id),
@@ -360,6 +368,7 @@ class User(mongoengine.Document):
             'photo_url': self.profile_image('large'),
             'total_mileage': self.total_mileage,
             'yearly_mileage': self.yearly_mileage,
+            'seven_days_mileage': self.mileage_seven_days(datetime.date.today()),
         }
 
 
