@@ -67,11 +67,13 @@ def url_unique(url, user=None):
             unique = False
     return unique
 
+
 def _current_monday():
     delta = dateutil.relativedelta.relativedelta(
-                weekday=dateutil.relativedelta.MO(-1))
+        weekday=dateutil.relativedelta.MO(-1))
     date = datetime.date.today() - delta
     return date
+
 
 def time_to_seconds(time):
     """
@@ -86,18 +88,19 @@ def time_to_seconds(time):
     seconds = 0
 
     parts = time.split(':')
-    if len(parts) == 3: # hours:minutes:seconds
+    if len(parts) == 3:  # hours:minutes:seconds
         seconds += int(parts[0]) * 60 * 60
         seconds += int(parts[1]) * 60
         seconds += int(parts[2])
-    elif len(parts) == 2: # minutes:seconds
+    elif len(parts) == 2:  # minutes:seconds
         seconds += int(parts[0]) * 60
         seconds += int(parts[1])
-    elif len(parts) == 1: # minutes
+    elif len(parts) == 1:  # minutes
         seconds += int(parts[0]) * 60
-    else: # error
+    else:  # error
         raise ValueError('Time not in correct format')
     return seconds
+
 
 def seconds_to_time(seconds):
     hours = 0
@@ -262,7 +265,10 @@ class User(mongoengine.Document):
                 'start': '1 step forward',
                 'end': '1 step back'
             }
-        elif len(runs) == 1 and runs[0].date.strftime("%m/%d/%Y") != today.strftime("%m/%d/%Y"):
+        elif (
+                len(runs) == 1 and
+                runs[0].date.strftime("%m/%d/%Y") != today.strftime("%m/%d/%Y")
+                ):
             longest = {
                 'length': 1,
                 'start': runs[len(runs)-1].date.strftime("%m/%d/%Y"),
@@ -282,18 +288,25 @@ class User(mongoengine.Document):
                     if current_streak > longest_streak:
                         longest_streak = current_streak
                         longest_streak_start = current_streak_start
-                elif delta.days == 0 and delta.months == 0 and delta.years == 0:
+                elif (
+                        delta.days == 0 and
+                        delta.months == 0 and
+                        delta.years == 0):
                     continue
                 else:
                     current_streak = 1
             longest = {
                 'length': longest_streak,
                 'start': runs[longest_streak_start].date.strftime("%m/%d/%Y"),
-                'end': runs[longest_streak_start+longest_streak-1].date.strftime("%m/%d/%Y"),
+                'end': runs[
+                    longest_streak_start+longest_streak-1].date.strftime(
+                    "%m/%d/%Y"),
             }
 
         current_streak = 1
-        if len(runs) == 0 or relativedelta(runs[len(runs)-1].date, today).days < -1:
+        if (
+                len(runs) == 0 or
+                relativedelta(runs[len(runs)-1].date, today).days < -1):
             current = {
                 'length': 0,
                 'start': 'Couch',
@@ -304,7 +317,10 @@ class User(mongoengine.Document):
                 delta = relativedelta(runs[i-1].date, runs[i].date)
                 if delta.days == -1 and delta.months == 0 and delta.years == 0:
                     current_streak += 1
-                elif delta.days == 0 and delta.months == 0 and delta.years == 0:
+                elif (
+                        delta.days == 0 and
+                        delta.months == 0 and
+                        delta.years == 0):
                     continue
                 else:
                     break
@@ -375,18 +391,20 @@ class Run(mongoengine.Document):
     @classmethod
     def get_runs(cls, user, date=None, keywords=None):
         """
-        Will return a QuerySet of runs that happened on or after the specified date
+        Will return a QuerySet of runs that happened on or
+        after the specified date
         """
         if date:
             return cls.objects(user=user, date__gte=date).order_by('date')
         if keywords is not None:
-            return cls.objects(user=user, notes__icontains=keywords).order_by('date')
+            return cls.objects(
+                user=user,
+                notes__icontains=keywords).order_by('date')
         return cls.objects(user=user).order_by('date')
 
     @classmethod
     def this_week_mileage(cls, user):
         return cls.get_mileage(user, date=_current_monday())
-
 
     @classmethod
     def get_mileage(cls, user, date=None):
@@ -429,6 +447,7 @@ class Run(mongoengine.Document):
         ]
         """
         date = datetime.datetime(2014, 1, 1)
+
         def lookahead(day, date, runs, index):
             if index >= len(runs)-1:
                 return day
@@ -443,7 +462,7 @@ class Run(mongoengine.Document):
         one_day = relativedelta(days=1)
         previous_date = date - one_day
         next_date = previous_date + one_day
-        
+
         for i in range(len(runs)):
             if runs[i].date <= previous_date:
                 continue
@@ -510,7 +529,7 @@ class Week(mongoengine.Document):
     user = mongoengine.ReferenceField(User)
     date = mongoengine.DateTimeField()
     distance = mongoengine.FloatField(default=0)
-    time = mongoengine.IntField(default=0) # in seconds
+    time = mongoengine.IntField(default=0)  # in seconds
 
     @property
     def pretty_time(self):
@@ -520,7 +539,7 @@ class Week(mongoengine.Document):
     def this_week(cls, user):
         monday = _current_monday()
         week = cls.objects(user=user, date=monday).first()
-        if not week: # create if it doesn't exist
+        if not week:  # create if it doesn't exist
             week = cls(user=user, date=monday)
             week.save()
         return week
@@ -534,11 +553,11 @@ class Group(mongoengine.Document):
     url = mongoengine.StringField(unique=True, required=True)
     admins = mongoengine.ListField(mongoengine.ReferenceField(User))
     members = mongoengine.ListField(mongoengine.ReferenceField(User))
-    
+
     @classmethod
     def all_groups(self):
         return Group.objects()
-    
+
     @classmethod
     def url_exists(self, url):
         group = Group.objects(url=url).first()
@@ -559,19 +578,16 @@ class Race(mongoengine.Document):
     date = mongoengine.DateTimeField(required=True)
     distance = mongoengine.FloatField(default=0)
     distance_units = mongoengine.StringField(default='miles')
-    time = mongoengine.IntField(default=0) # in seconds
+    time = mongoengine.IntField(default=0)  # in seconds
 
     @property
     def pretty_notes(self):
         return escape.xhtml_escape(self.notes).replace('\r\n', '<br />')
 
-
     @property
     def pretty_time(self):
         return seconds_to_time(self.time)
 
-
     @property
     def uri(self):
         return '{}/races/{}'.format(self.user.uri, str(self.id))
-
