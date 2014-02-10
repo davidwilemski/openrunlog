@@ -22,8 +22,8 @@ var ProfileSidebar = React.createClass({
             </a>
             <p><strong>{ profile.hashtags.join(' ') }</strong></p>
             <div>
-                All Time: { profile.total_miles } Miles<br />
-                2014: { profile.yearly_miles } Miles
+                All Time: { profile.total_mileage } Miles<br />
+                2014: { profile.yearly_mileage } Miles
             </div>
             {streaks}
         </div>);
