@@ -351,7 +351,7 @@ class Run(mongoengine.Document):
     user = mongoengine.ReferenceField(User)
     date = mongoengine.DateTimeField(default=datetime.date.today())
     distance = mongoengine.FloatField()
-    time = mongoengine.IntField()  # store time in seconds for easy manipulation
+    time = mongoengine.IntField()  # time in seconds
     notes = mongoengine.StringField()
     exported_to_dailymile = mongoengine.BooleanField(default=False)
     meta = {
