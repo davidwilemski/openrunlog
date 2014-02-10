@@ -17,13 +17,13 @@ var ProfileSidebar = React.createClass({
         
         return (<div>
             <a href="{ profile.uri }">
-                <img src={ profile.photo_url } />;
+                <img src={ profile.photo_url } />
                 <h1>{ profile.display_name }</h1>
             </a>
             <p><strong>{ profile.hashtags.join(' ') }</strong></p>
             <div>
-                All Time: { profile.total_mileage } Miles<br />
-                2014: { profile.yearly_mileage } Miles
+                All Time: { profile.total_mileage.toFixed(2) } Miles<br />
+                2014: { profile.yearly_mileage.toFixed(2) } Miles
             </div>
             {streaks}
         </div>);
