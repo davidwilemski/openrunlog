@@ -9,6 +9,7 @@ from dateutil.relativedelta import relativedelta
 from tornado import escape, gen
 
 import cache
+import util
 
 
 @gen.coroutine
@@ -316,6 +317,22 @@ class User(mongoengine.Document):
 
         return {'longest': longest, 'current': current}
 
+    def profile_image(self, size):
+        if self.facebook:
+            fbid = self.facebook['id']
+            url = util.fb_image_url(fbid, size)
+            return url
+
+        email = self.email
+
+        if size == 'small' or size == 'square':
+            size = 50
+        else:
+            size = 180
+
+        url = robohash_image_url(email, size)
+        return url
+
     def public_dict(self):
         return {
             'id': str(self.id),
@@ -323,7 +340,10 @@ class User(mongoengine.Document):
             'uri': self.uri,
             'public': self.public,
             'streaks': self.streaks,
-            'hashtags': self.hashtags,
+            'hashtags': self.hashtags.split(' '),
+            'photo_url': self.profile_image('large'),
+            'total_mileage': self.total_mileage,
+            'yearly_mileage': self.yearly_mileage,
         }
 
 
