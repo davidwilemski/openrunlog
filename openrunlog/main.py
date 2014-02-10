@@ -67,6 +67,7 @@ application = web.Application([
     (r'/u/([a-zA-Z0-9_]+)/run/([A-Za-z0-9]{24})', runs.ShowRunHandler),
     (r'/u/([A-Za-z0-9]+)/data/recent.json', profiledata.RecentRunsHandler),
     (r'/u/([A-Za-z0-9]+)/data/profile.json', profiledata.ProfileHandler),
+    (r'/u/([A-Za-z0-9]+)/data/sevendaymiles.json', profiledata.SevenDayMileage),
     (r'/g', groups.GroupDashboardHandler),
     (r'/g/([a-zA-Z0-9_]+)', groups.GroupHandler),
     (r'/add', runs.AddRunHandler),

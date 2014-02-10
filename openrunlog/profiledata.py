@@ -1,4 +1,9 @@
 
+import datetime
+
+import dateutil.parser
+import dateutil.relativedelta
+from mongoengine import Q
 from tornado import auth, escape, gen, httpclient, web
 
 import models
@@ -23,3 +28,23 @@ class ProfileHandler(base.BaseHandler):
         self.tf.send({'profile.data.profile': 1}, lambda x: x)
         user = yield models.get_user_by_url(self.redis, uri)
         self.finish(user.public_dict())
+
+
+class SevenDayMileage(base.BaseHandler):
+    @base.authorized_json_url
+    @gen.coroutine
+    def get(self, uri):
+        self.tf.send({'profile.data.7daymileage': 1}, lambda x: x)
+        user = yield models.get_user_by_url(self.redis, uri)
+        date = self.get_argument('date', str(datetime.date.today()))
+
+        try:
+            date = dateutil.parser.parse(date)
+        except ValueError, e:
+            self.finish({'status': False})
+            return
+
+        lowerdate = date - dateutil.relativedelta.relativedelta(days=7)
+        mileage = models.Run.objects(
+            Q(date__gt=lowerdate) & Q(date__lte=date)).sum('distance')
+        self.finish({'status': True, 'miles': mileage})
