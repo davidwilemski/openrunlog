@@ -43,4 +43,5 @@ class SevenDayMileage(base.BaseHandler):
             self.finish({'status': False})
             return
 
+        mileage = user.mileage_seven_days(date)
         self.finish({'status': True, 'miles': mileage})
