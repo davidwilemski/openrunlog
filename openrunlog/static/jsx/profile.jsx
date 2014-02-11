@@ -16,7 +16,7 @@ var ProfileSidebar = React.createClass({
         }
         
         return (<div>
-            <a href="{ profile.uri }">
+            <a href={ profile.uri }>
                 <img src={ profile.photo_url } />
                 <h1>{ profile.display_name }</h1>
             </a>
