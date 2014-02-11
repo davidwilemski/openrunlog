@@ -347,7 +347,7 @@ class User(mongoengine.Document):
         else:
             size = 180
 
-        url = robohash_image_url(email, size)
+        url = util.robohash_image_url(email, size)
         return url
 
     def mileage_seven_days(self, date):
