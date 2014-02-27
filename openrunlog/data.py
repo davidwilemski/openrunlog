@@ -32,6 +32,16 @@ class RecentRunsHandler(base.BaseHandler):
         self.finish(data)
 
 
+class RecentSevenDayAveragesHandler(base.BaseHandler):
+    @web.asynchronous
+    @gen.coroutine
+    @base.authorized_json
+    def get(self, uid):
+        data_user = yield models.get_user_by_uid(self.redis, uid)
+        data = models.get_recent_7day_avg_data(data_user)
+        self.finish(data)
+
+
 class WeeklyMileageHandler(base.BaseHandler):
     @web.asynchronous
     @gen.coroutine

@@ -129,6 +129,27 @@ def get_recent_run_data(user):
     runs = Run.get_runs(user, date=day)
     return _format_recent_run_data(runs)
 
+def get_recent_7day_avg_data(user):
+    day = datetime.date.today() - dateutil.relativedelta.relativedelta(days=21)
+
+    mile_averages = []
+    while day <= datetime.date.today():
+        mileage = user.mileage_seven_days(day)
+        mile_averages.append({'x': day.strftime('%c'), 'y': mileage})
+        day += dateutil.relativedelta.relativedelta(days=1)
+
+    data = {
+        'xScale': 'ordinal',
+        'yScale': 'linear',
+        'main': [
+            {
+                'data': mile_averages
+            }
+        ]
+    }
+    return data
+
+
 
 def _find_monday(date):
     """

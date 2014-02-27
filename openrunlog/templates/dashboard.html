@@ -52,10 +52,17 @@
                     <h2>Recent Training</h2>
                     <figure style="width: 650px; height: 300px;" id="recent"></figure>
                 </div>
+
+                <div class="tab-pane" id="training3">
+                    <h2>Recent Total Miles</h2>
+                    <p>(7 day totals for past 3 weeks)</p>
+                    <figure style="width: 650px; height: 300px;" id="recent_avgs"></figure>
+                </div>
             </div>
 
             <ul class="nav nav-tabs" id="thisweek">
                 <li class="active"><a href="#training1" data-toggle="tab">Recent Training</a></li>
+                <li><a href="#training3" data-toggle="tab">Seven Day Totals</a></li>
                 <li><a href="#training2" data-toggle="tab">Frequency By Day</a></li>
             </ul>
         </div>
@@ -156,6 +163,13 @@ div.recent_run {
         charts.push({
             url: "/data/{{ str(profile.id) }}/recent",
             tag: "#recent",
+            opts: opts,
+            type: "bar"
+        });
+
+        charts.push({
+            url: "/data/{{ str(profile.id) }}/recent_avgs",
+            tag: "#recent_avgs",
             opts: opts,
             type: "bar"
         });

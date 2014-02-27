@@ -74,6 +74,7 @@ application = web.Application([
     (r'/remove', runs.RemoveRunHandler),
     (r'/data/([A-Za-z0-9]{24})/this_week', data.ThisWeekHandler),
     (r'/data/([A-Za-z0-9]{24})/recent', data.RecentRunsHandler),
+    (r'/data/([A-Za-z0-9]{24})/recent_avgs', data.RecentSevenDayAveragesHandler),
     (r'/data/([A-Za-z0-9]{24})/mileage/weekly', data.WeeklyMileageHandler),
     (r'/data/([A-Za-z0-9]{24})/runs/weekday', data.WeekdayRunsHandler),
     (r'/data/([A-Za-z0-9]{24})/runs/year', data.DailyRunsHandler),
