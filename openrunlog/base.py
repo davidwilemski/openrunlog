@@ -2,10 +2,8 @@ import functools
 import logging
 import urllib
 
-import futures
-from tornado import concurrent, gen, web
+from tornado import gen, web
 from tornado.ioloop import IOLoop
-from tornado.stack_context import ExceptionStackContext
 
 import models
 
@@ -117,6 +115,8 @@ def authorized_json(method, *args):
         uid = args[0]
         user = self.get_current_user()
         datauser = models.User.objects(id=uid).first()
+        if not datauser:
+            raise web.HTTPError(403)
         if not datauser.public and (not user or user.email != datauser.email):
             raise web.HTTPError(403)
         return method(self, *args, **kwargs)
@@ -130,6 +130,8 @@ def authorized_json_url(method, *args):
         url = args[0]
         user = self.get_current_user()
         datauser = models.User.objects(url=url).first()
+        if not datauser:
+            raise web.HTTPError(403)
         if not datauser.public and (not user or user.email != datauser.email):
             raise web.HTTPError(403)
         return method(self, *args, **kwargs)

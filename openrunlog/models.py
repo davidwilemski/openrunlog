@@ -273,6 +273,10 @@ class User(mongoengine.Document):
     def uri(self):
         return '/u/{}'.format(self.url)
 
+    @property
+    def groups(self):
+        return Group.objects(members=self)
+
     def calculate_streaks(self, redis):
         runs = Run.objects(user=self, distance__gt=0).order_by('date')
         self.streaks = self._calculate_streaks(runs)
@@ -596,6 +600,10 @@ class Group(mongoengine.Document):
     @property
     def uri(self):
         return '/g/{}'.format(self.url)
+
+    def fetch_feed(self):
+        feed = models.Run.objects(user__in=mrun.members)[:10]
+        return feed
 
 
 class Race(mongoengine.Document):
