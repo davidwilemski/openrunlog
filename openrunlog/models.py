@@ -465,7 +465,7 @@ class Run(mongoengine.Document):
 
     @property
     def pretty_notes(self):
-        return escape.xhtml_escape(self.notes).replace('\r\n', '<br />')
+        return escape.xhtml_escape(self.notes).replace('\n', '<br />')
 
     @classmethod
     def get_calendar_runs(cls, user, date=None):
@@ -620,7 +620,7 @@ class Race(mongoengine.Document):
 
     @property
     def pretty_notes(self):
-        return escape.xhtml_escape(self.notes).replace('\r\n', '<br />')
+        return escape.xhtml_escape(self.notes).replace('\n', '<br />')
 
     @property
     def pretty_time(self):
