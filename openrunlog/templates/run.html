@@ -14,9 +14,21 @@
 <div class="row">
     <div class="col-md-3">
     {% include '_profile_starter.html' %}
-
     </div>
+
     <div class="col-md-9">
+
+      {% if user == profile %}
+        <div class="controls pull-right">
+          <form action="/remove" method="POST">
+            <input type="hidden" name="run_id" value="{{ run.id }}" />
+            <button type="submit" class="btn btn-danger">
+              <span class="glyphicon glyphicon-remove"></span> Delete
+            </button>
+          </form>
+        </div>
+      {% end %}
+
         <div class="jumbotron">
             <p class="lead center">
             On {{ run.date.strftime("%A, %B %d, %Y") }} <a href="{{ profile.uri }}">{{ profile.display_name }}</a> ran {{ run.distance }} miles in {{ run.pretty_time }} ({{ run.pace }})
