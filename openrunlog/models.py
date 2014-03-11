@@ -376,7 +376,7 @@ class User(mongoengine.Document):
         return url
 
     def mileage_seven_days(self, date):
-        lowerdate = date - dateutil.relativedelta.relativedelta(days=7)
+        lowerdate = date - dateutil.relativedelta.relativedelta(days=6)
         mileage = Run.objects(
             Q(user=self) & Q(date__gte=lowerdate) & Q(date__lte=date)).sum(
             'distance')
