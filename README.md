@@ -1,6 +1,7 @@
 #Open Run Log
 
-[![Build Status](https://travis-ci.org/davidwilemski/openrunlog.png?branch=master)](https://travis-ci.org/davidwilemski/openrunlog)
+[![Build Status](https://travis-ci.org/davidwilemski/openrunlog.png?branch=master)](https://travis-ci.org/davidwilemski/openrunlog) [![Requirements Status](https://requires.io/github/davidwilemski/openrunlog/requirements.png?branch=master)](https://requires.io/github/davidwilemski/openrunlog/requirements/?branch=master)
+
 
 ## What is Open Run Log?
 I intend for Open Run Log (ORL) to be an open source platform 
