@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ static_url('css/xcharts.min.css') }}" type="text/css" />
 {% end %}
 
 {% block content %}
@@ -90,7 +89,7 @@
                 <li><a href="#tab3" data-toggle="tab">6 Months</a></li>
                 <li><a href="#tab4" data-toggle="tab">3 Months</a></li>
             </ul>
-            
+
         </div>
 
         <h2>Mileage This Year</h2>
@@ -114,8 +113,6 @@ div.recent_run {
 }
 </style>
 
-<script src="{{ static_url('js/d3.v2.min.js') }}"></script>
-<script src="{{ static_url('js/xcharts.min.js') }}"></script>
 <script src="{{ static_url('js/d3-calendars.js') }}"></script>
 
 <script>
@@ -123,7 +120,7 @@ div.recent_run {
 
     function update_charts() {
         charts.map(function(chart) {
-            $.get(chart.url, function(data) { 
+            $.get(chart.url, function(data) {
                 $(chart.tag).empty();
                 new xChart(chart.type, data, chart.tag, chart.opts);
             });
@@ -154,7 +151,7 @@ div.recent_run {
             opts: opts,
             type: "bar"
         });
-        
+
         opts = {
           "dataFormatX": function (x) { return d3.time.format('%c').parse(x); },
           "tickFormatX": function (x) { return d3.time.format('%x')(x); },
