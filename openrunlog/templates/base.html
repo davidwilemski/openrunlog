@@ -3,7 +3,7 @@
 <html>
     <head>
         <title>Open Run Log | {{ escape(page_title) }}</title>
-        <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}" type="text/css" />
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/g/xcharts@0.1.3(xcharts.min.css),bootstrap@3.0(css/bootstrap.min.css)" type="text/css" />
         <style>
             html, body {
                 height: 100%;
@@ -24,8 +24,7 @@
                 text-align:center;
             }
         </style>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-        <script src="{{ static_url('js/react-0.8.0.min.js') }}"></script>
+        <script type="text/javascript" src="//cdn.jsdelivr.net/g/jquery@1.8.3(jquery-1.8.3.min.js),react@0.8(react-addons.min.js),d3js@3.0,xcharts@0.1.3,bootstrap@3.0(js/bootstrap.min.js),parsleyjs@1.1.18(parsley.min.js)"></script>
         {% block head %}
         {% end %}
     </head>
@@ -37,7 +36,7 @@
                     <div class="navbar-header">
                         <a class="navbar-brand" href="/">
                             Open Run Log
-                        </a> 
+                        </a>
                     </div>
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav">
@@ -99,14 +98,12 @@
                         <div class="col-md-12">
                             <h6>Open Run Log made by <a href="https://twitter.com/davidwilemski">@davidwilemski</a> and <a href="https://twitter.com/bkendall">@bkendall</a></h6>
                             <h6>Robots lovingly delivered by <a href="https://robohash.org">Robohash.org</a></h6>
-                        </div> 
+                        </div>
                     </div>
                 </div>
             </div>
 
     </body>
-    <script type="text/javascript" src="{{ static_url('js/bootstrap.js') }}"></script>
-    <script type="text/javascript" src="/static/js/parsley.min.js"></script>
     {% block bottom %}
     {% end %}
 </html>
