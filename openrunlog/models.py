@@ -536,7 +536,6 @@ class Run(mongoengine.Document):
             result.append(day)
             date += one_day
 
-        logging.debug(result)
         return result
 
     def public_dict(self):
