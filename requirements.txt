@@ -51,3 +51,4 @@ verlib==0.1
 virtualenv==1.10.1
 wsgiref==0.1.2
 zope.interface==4.0.5
+newrelic==2.16.0.12
