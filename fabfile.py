@@ -11,8 +11,16 @@ VENV_DIR = '~/{}_env/'.format(PROJ_NAME)
 PROJ_DIR = '~/{}/'.format(PROJ_NAME)
 
 
+def newrelic_deploy():
+    url = "https://api.newrelic.com/deployments.xml"
+    data = {"deployment[app_name]": "openrunlog.org"}
+    headers = {'x-api-key': os.environ['NEW_RELIC_API_KEY']}
+    requests.post(url, data=data, headers=headers)
+
+
 @task
 def deploy():
+    newrelic_deploy()
     with prefix('source ' + VENV_DIR + 'bin/activate'):
         with cd(PROJ_DIR):
             run('git pull')
