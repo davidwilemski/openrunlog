@@ -4,6 +4,7 @@ from fabric.api import *
 from fabric import operations
 from fabtools import require
 import fabtools
+import requests
 import os
 
 PROJ_NAME = os.environ["VIRTUAL_ENV"].split('/')[-1]
