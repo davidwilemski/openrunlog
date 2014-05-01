@@ -11,7 +11,7 @@ class HomeHandler(base.BaseHandler):
     def get(self):
         user = yield self.get_current_user_async()
         if user is not None: # then redirect to dashboard
-            self.redirect('/u/%s' % user.url)
+            self.redirect('/dashboard')
             return
 
         yield gen.Task(self.tf.send, {'homepage.views': 1})

@@ -31,4 +31,9 @@ class ProfileHandler(base.BaseHandler):
             models.Week.this_week, profile)
         year = datetime.date.today().year
 
-        self.render('dashboard.html', page_title='Dashboard', user=user, recent_runs=recent_runs, today=datetime.date.today().strftime("%x"), error=error, week=week, this_year=year, profile=profile)
+        self.render('profile.html', page_title='Dashboard', user=user, recent_runs=recent_runs, today=datetime.date.today().strftime("%x"), error=error, week=week, this_year=year, profile=profile)
+
+class DashboardHandler(base.BaseHandler):
+
+    def get(self):
+        self.write("dashboard!")
