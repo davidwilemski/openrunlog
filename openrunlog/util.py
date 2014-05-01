@@ -12,6 +12,9 @@ def check_pwd(password, hashed):
 
 def fb_image_url(fbid, size='small'):
     url = 'https://graph.facebook.com/{}/picture?type={}'.format(fbid, size)
+
+    if size != 'small':
+        url = 'https://graph.facebook.com/{}/picture?width={}&height={}'.format(fbid, size, size)
     return url
 
 
@@ -40,4 +43,3 @@ def image_html(user, size):
 
     html = '<img src="{}" />'.format(url)
     return html
-

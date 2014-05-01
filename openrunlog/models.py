@@ -390,7 +390,7 @@ class User(mongoengine.Document):
             'public': self.public,
             'streaks': self.streaks,
             'hashtags': self.hashtags.split(' '),
-            'photo_url': self.profile_image('large'),
+            'photo_url': self.profile_image(200),
             'total_mileage': self.total_mileage,
             'yearly_mileage': self.yearly_mileage,
             'seven_days_mileage': self.mileage_seven_days(datetime.date.today()),
