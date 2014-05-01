@@ -7,7 +7,6 @@ PyYAML==3.10
 Routes==2.0
 Twisted==13.2.0
 Werkzeug==0.9.4
-argparse==1.2.1
 boto==2.9.7
 coverage==3.6
 coveralls==0.2
