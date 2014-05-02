@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% end %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xs-12 col-md-3">
+        <div class="row">
+        <div class="col-xs-6 col-md-12">
+            {% module Template('_profile_starter.html', profile=user) %}
+        </div>
+
+        <div class="col-xs-6 col-md-12">
+
+        <a href="{{ user.uri + '/runs' }}"
+           class="btn btn-lg btn-block btn-primary">
+                See All Runs
+        </a>
+        </div>
+        </div>
+
+    </div>
+    <div class="col-xs-12 col-md-9">
+        {% if not user.facebook %}
+            <div class="alert alert-info">
+                Hey! <a href="/auth/facebook">Sign in with Facebook</a> if you want a profile picture!
+            </div>
+        {% end %}
+
+        <h2>People You Know</h2>
+<!--         <h2>Your Friends' Recent Runs</h2> -->
+        <div class="row">
+            <div class="user-run-story col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <div class="row">
+                <div class="col-xs-4">
+                    <img src="http://graph.facebook.com/david.wilemski/picture?size=small" />
+                </div>
+                <div class="col-xs-8">
+                  <span><h3 class="panel-title inline-header">David Wilemski</h3><h6 class="">6 minutes ago</h6></span>
+                </div>
+              </div>
+              </div>
+              <div class="panel-body">
+                  Ran 12.25 miles @ 6:50/mile
+              </div>
+            </div>
+            </div>
+
+            <div class="user-run-story col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <div class="row">
+                <div class="col-xs-4">
+                    <img src="http://graph.facebook.com/david.wilemski/picture?size=small" />
+                </div>
+                <div class="col-xs-8">
+                  <span><h3 class="panel-title inline-header">David Wilemski</h3><h6 class="">6 minutes ago</h6></span>
+                </div>
+              </div>
+              </div>
+              <div class="panel-body">
+                  Ran 12.25 miles @ 6:50/mile
+              </div>
+            </div>
+            </div>
+
+            <div class="user-run-story col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <div class="row">
+                <div class="col-xs-4">
+                    <img src="http://graph.facebook.com/david.wilemski/picture?size=small" />
+                </div>
+                <div class="col-xs-8">
+                  <span><h3 class="panel-title inline-header">David Wilemski</h3><h6 class="">6 minutes ago</h6></span>
+                </div>
+              </div>
+              </div>
+              <div class="panel-body">
+                  Ran 12.25 miles @ 6:50/mile
+              </div>
+            </div>
+            </div>
+
+            <div class="user-run-story col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <div class="row">
+                <div class="col-xs-4">
+                    <img src="http://graph.facebook.com/david.wilemski/picture?size=small" />
+                </div>
+                <div class="col-xs-8">
+                  <span><h3 class="panel-title inline-header">David Wilemski</h3><h6 class="">6 minutes ago</h6></span>
+                </div>
+              </div>
+              </div>
+              <div class="panel-body">
+                  Ran 12.25 miles @ 6:50/mile
+              </div>
+            </div>
+            </div>
+
+            <div class="user-run-story col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <div class="row">
+                <div class="col-xs-4">
+                    <img src="http://graph.facebook.com/david.wilemski/picture?size=small" />
+                </div>
+                <div class="col-xs-8">
+                  <span><h3 class="panel-title inline-header">David Wilemski</h3><h6 class="">6 minutes ago</h6></span>
+                </div>
+              </div>
+              </div>
+              <div class="panel-body">
+                  Ran 12.25 miles @ 6:50/mile
+              </div>
+            </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% end %}
+
+{% block bottom %}
+
+
+{% end %}

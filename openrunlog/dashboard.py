@@ -31,9 +31,16 @@ class ProfileHandler(base.BaseHandler):
             models.Week.this_week, profile)
         year = datetime.date.today().year
 
-        self.render('profile.html', page_title='Dashboard', user=user, recent_runs=recent_runs, today=datetime.date.today().strftime("%x"), error=error, week=week, this_year=year, profile=profile)
+        self.render('profile.html', page_title='{}\'s Profile'.format(user.display_name), user=user, recent_runs=recent_runs, today=datetime.date.today().strftime("%x"), error=error, week=week, this_year=year, profile=profile)
 
 class DashboardHandler(base.BaseHandler):
-
+    @base.authenticated_async
+    @web.asynchronous
+    @gen.coroutine
     def get(self):
-        self.write("dashboard!")
+        error = self.get_error()
+        user = yield self.get_current_user_async()
+        profile = user
+        year = datetime.date.today().year
+
+        self.render('dashboard.html', page_title='Dashboard', user=user, error=error, today=datetime.date.today().strftime("%x"), this_year=year)
