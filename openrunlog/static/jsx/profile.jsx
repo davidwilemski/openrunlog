@@ -4,7 +4,7 @@ var ProfileSidebar = React.createClass({
     render: function() {
         var profile = this.props.profile;
         var streaks = null;
-        
+
         if (profile.streaks) {
             var mystreaks = profile.streaks;
             streaks = (<span>
@@ -14,7 +14,7 @@ var ProfileSidebar = React.createClass({
                 <div><small>{mystreaks.current.start} - {mystreaks.current.end}</small></div>
             </span>);
         }
-        
+
         return (<div>
             <a href={ profile.uri }>
                 <img src={ profile.photo_url } />
@@ -30,14 +30,3 @@ var ProfileSidebar = React.createClass({
         </div>);
     }
 });
-
-//$(document).ready(function() {
-  var uri = window.location.pathname;
-  var user_uri = uri.split("/").slice(0, 3).join("/");
-
-  $.get(user_uri + "/data/profile.json", function(data) {
-    React.renderComponent(
-      <ProfileSidebar profile={data} />,
-      document.getElementById("profile-display"));
-  });
-//});

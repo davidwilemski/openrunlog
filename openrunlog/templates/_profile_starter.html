@@ -1,5 +1,6 @@
 <div id="profile-display"></div>
 <script type="text/javascript" src="{{ static_url('jsx/profile.jsx') }}"></script>
+<script type="text/javascript" src="{{ static_url('jsx/run_profile.jsx') }}"></script>
 <ul class="nav nav-pills">
     <li {% if request.uri == profile.uri %} class="active"{% end %}><a href="{{ profile.uri }}">Profile</a></li>
     <li {% if request.uri.endswith('/calendar') %} class="active"{% end %}><a href="{{ profile.uri + '/calendar' }}">Calendar</a></li>
