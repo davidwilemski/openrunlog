@@ -9,7 +9,7 @@
     <div class="col-md-3">
     {% include '_profile_starter.html' %}
     </div>
-    
+
     <div class="col-md-9">
         <table class="table table-bordered table-hover">
             <thead>
@@ -26,7 +26,7 @@
                 </tr>
             </thead>
             <tr>
-            {% if calendar_runs[0]['date'].weekday() != 0 %}
+            {% if calendar_runs and calendar_runs[0]['date'].weekday() != 0 %}
                 {% for x in range(calendar_runs[0]['date'].weekday() + 1) %}
                     <td></td>
                 {% end %}
@@ -70,7 +70,7 @@
                 {% end %}
                 </td>
             {% end %}
-            
+
             {% if calendar_runs[len(calendar_runs) - 1]['date'].weekday() != 6 %}
                 {% for x in range(6 - calendar_runs[len(calendar_runs)-1]['date'].weekday()) %}
                     <td></td>
