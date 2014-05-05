@@ -480,7 +480,7 @@ class Run(mongoengine.Document):
             {'date' :date2, runs: [:run12, :run22]},
         ]
         """
-        date = datetime.datetime(2014, 1, 1)
+        date = datetime.datetime(2014, 5, 5)
 
         def lookahead(day, date, runs, index):
             if index >= len(runs)-1:
