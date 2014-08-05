@@ -33,6 +33,7 @@ class ProfileHandler(base.BaseHandler):
 
         self.render('profile.html', page_title='{}\'s Profile'.format(user.display_name), user=user, recent_runs=recent_runs, today=datetime.date.today().strftime("%x"), error=error, week=week, this_year=year, profile=profile)
 
+
 class DashboardHandler(base.BaseHandler):
     @base.authenticated_async
     @web.asynchronous

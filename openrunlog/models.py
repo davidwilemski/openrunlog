@@ -601,7 +601,7 @@ class Group(mongoengine.Document):
         return '/g/{}'.format(self.url)
 
     def fetch_feed(self):
-        feed = models.Run.objects(user__in=mrun.members)[:10]
+        feed = Run.objects(user__in=self.members)[:10]
         return feed
 
 
