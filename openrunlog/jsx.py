@@ -11,8 +11,8 @@ class JSXStaticFileHandler(web.StaticFileHandler):
         # Only override in the case of a JSX file
         ext = abspath.split('.')[-1]
         if ext.lower() != 'jsx':
-            static =  super(JSXStaticFileHandler, cls).get_content(
-                    abspath, start=start, end=end)
+            static = super(JSXStaticFileHandler, cls).get_content(
+                abspath, start=start, end=end)
 
             for x in static:
                 yield x

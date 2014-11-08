@@ -14,10 +14,14 @@ var ProfileSidebar = React.createClass({
                 <div><small>{mystreaks.current.start} - {mystreaks.current.end}</small></div>
             </span>);
         }
+
+        var photoStyle = {
+          width: '200px'
+        };
         
         return (<div>
             <a href={ profile.uri }>
-                <img src={ profile.photo_url } />
+                <img src={ profile.photo_url } style={photoStyle} />
                 <h1>{ profile.display_name }</h1>
             </a>
             <p><strong>{ profile.hashtags.join(' ') }</strong></p>
