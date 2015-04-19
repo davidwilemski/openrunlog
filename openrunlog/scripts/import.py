@@ -15,7 +15,7 @@ def import_csv(filename, email):
     """
     user = models.User.objects(email=email).first()
     if not user:
-        print 'user does not exist'
+        print('user does not exist')
         return
 
     with open(filename) as logfile:
@@ -27,11 +27,11 @@ def import_csv(filename, email):
             try:
                 date = dateutil.parser.parse(row[0], fuzzy=True)
             except ValueError:
-                print rownum, 'badly formatted date', row[0]
+                print(rownum, 'badly formatted date', row[0])
                 continue
 
             if date == dateutil.parser.parse('12/27/12'):
-                print rownum
+                print(rownum)
 
             distance = row[1]
             if not distance:
@@ -46,7 +46,7 @@ def import_csv(filename, email):
                 else:
                     time = 0
             except ValueError, e:
-                print rownum, 'badly formatted time', time
+                print(rownum, 'badly formatted time', time)
 
             notes = row[4]
 
@@ -57,7 +57,6 @@ def import_csv(filename, email):
             run.notes = notes
             run.date = date
             run.validate()
-            #print run.date, run.distance, run.time
             run.save()
 
             # aggregate week data

@@ -50,7 +50,7 @@ def gen_key(keyname, bucket):
 
 
 def upload_file(config, filename):
-    print 'uploading', filename
+    print('uploading', filename)
     b = get_s3_bucket(config)
     k = gen_key(filename, b)
     k.set_contents_from_filename(filename)
@@ -58,7 +58,7 @@ def upload_file(config, filename):
 
 
 def delete_file(config, filename):
-    print 'deleting', filename
+    print('deleting', filename)
     b = get_s3_bucket(config)
     k = gen_key(filename, b)
     k.delete()
@@ -67,7 +67,7 @@ def delete_file(config, filename):
 @gen.coroutine
 def cleanup(filename):
     args = ['rm', '-rf', filename]
-    print ' '.join(args)
+    print(' '.join(args))
     delprocess = process.Subprocess(args)
     yield gen.Task(delprocess.set_exit_callback)
 
@@ -80,7 +80,7 @@ def dump_mongodb_to_s3(config):
     mongoctl = process.Subprocess(args)
     yield gen.Task(mongoctl.set_exit_callback)
     logging.debug('finished dumping')
-    print 'finished dumping print'
+    print('finished dumping print')
     compressed_filename = yield pool.submit(compress_file, filename)
     logging.debug('compressed file')
 
@@ -104,7 +104,7 @@ def daily():
     yield gen.Task(redis.rpush, daily_key, backupkey)
 
     numbackups = yield gen.Task(redis.llen, daily_key)
-    print 'number backups: ', numbackups
+    print('number backups: ', numbackups)
     while numbackups > 5:
         logging.debug('cleaning up old backups')
         oldbackupkey = yield gen.Task(redis.lpop, daily_key)

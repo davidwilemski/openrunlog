@@ -13,7 +13,7 @@ def check_pwd(password, hashed):
 def fb_image_url(fbid, size='small'):
     url = 'https://graph.facebook.com/{}/picture?type={}'.format(fbid, size)
 
-    print size != 'small'
+    print(size != 'small')
     if size != 'small' and size != 'square':
         url = 'https://graph.facebook.com/{}/picture?width={}&height={}'.format(fbid, size, size)
     return url

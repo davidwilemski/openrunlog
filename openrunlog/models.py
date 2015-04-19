@@ -4,6 +4,9 @@ import logging
 
 import dateutil
 import dateutil.parser
+import hashlib
+import os
+
 import mongoengine
 from mongoengine import Q
 from dateutil.relativedelta import relativedelta
@@ -11,6 +14,16 @@ from tornado import escape, gen
 
 import cache
 import util
+
+
+def gen_api_key():
+    return hashlib.sha1(os.urandom(32)).hexdigest()
+
+
+@gen.coroutine
+def get_user_by_api_key(api_key):
+    user = User.objects(_api_key=api_key).first()
+    raise gen.Return(user)
 
 
 @gen.coroutine
@@ -250,13 +263,15 @@ class User(mongoengine.Document):
     export_to_dailymile = mongoengine.BooleanField(default=False)
     streaks = mongoengine.DictField(default=None)
     hashtags = mongoengine.StringField(default="")
+    _api_key = mongoengine.StringField(default="")
     meta = {
         'indexes': ['id', 'url', 'email']
     }
 
-    def save(self, r):
-        cache.invalidate(r, self)
-        cache.send(r, self)
+    def save(self, r=None):
+        if r:
+            cache.invalidate(r, self)
+            cache.send(r, self)
         return super(User, self).save()
 
     @property
@@ -276,6 +291,13 @@ class User(mongoengine.Document):
     @property
     def groups(self):
         return Group.objects(members=self)
+
+    @property
+    def api_key(self):
+        if not self._api_key:
+            self._api_key = gen_api_key()
+            self.save()
+        return self._api_key
 
     def calculate_streaks(self, redis):
         runs = Run.objects(user=self, distance__gt=0).order_by('date')

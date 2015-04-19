@@ -26,9 +26,8 @@ class BaseHandler(web.RequestHandler):
             raise gen.Return(user)
         raise gen.Return(None)
 
-
     def redirect_msg(self, url, params):
-        for k,v in params.iteritems():
+        for k, v in params.iteritems():
             self.set_cookie('msg_' + k, urllib.quote(v))
         self.redirect(url)
 
@@ -73,7 +72,7 @@ class BaseHandler(web.RequestHandler):
     def q(self):
         self.tf.send({'rq.getq': 1}, lambda x: x)
         return self.application.q
-    
+
     @property
     def config(self):
         return self.application.config
@@ -85,19 +84,27 @@ class BaseHandler(web.RequestHandler):
         if status_code == 404:
             message = ['Sorry, we could not find that page.', '']
             self.tf.send({'error.4xx': 1}, lambda x: x)
-        else :
+        else:
             self.tf.send({'error.5xx': 1}, lambda x: x)
-            message = ['Sorry, what you have come across has created an error. The hampsters are running in the back to try and fix it as soon as possible.', '']
+            message = [
+                'Sorry, what you have come across has created an error. The hampsters are running in the back to try and fix it as soon as possible.',
+                ''
+            ]
 
         if self.settings.get('debug') and 'exc_info' in kwargs:
             # we are in debug mode and have errors to show
             for line in traceback.format_exception(*kwargs['exc_info']):
                 message += [line]
-        self.render('error.html', page_title='Error Page', user=self.get_current_user(), message=message, error=None)
+        self.render('error.html',
+                    page_title='Error Page',
+                    user=self.get_current_user(),
+                    message=message,
+                    error=None)
 
 
 class ErrorHandler(BaseHandler):
     """Generates an error response with ``status_code`` for all requests."""
+
     def initialize(self, status_code):
         self.set_status(status_code)
 
@@ -110,6 +117,7 @@ class ErrorHandler(BaseHandler):
 
 def authorized_json(method, *args):
     """Decorate API methods with this to require that the user be logged in."""
+
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         uid = args[0]
@@ -120,11 +128,13 @@ def authorized_json(method, *args):
         if not datauser.public and (not user or user.email != datauser.email):
             raise web.HTTPError(403)
         return method(self, *args, **kwargs)
+
     return wrapper
 
 
 def authorized_json_url(method, *args):
     """Decorate API methods with this to require that the user be logged in."""
+
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         url = args[0]
@@ -135,11 +145,13 @@ def authorized_json_url(method, *args):
         if not datauser.public and (not user or user.email != datauser.email):
             raise web.HTTPError(403)
         return method(self, *args, **kwargs)
+
     return wrapper
 
 
 def authorized(method, *args):
     """Decorate methods with this to require that the user be logged in."""
+
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         url = args[0]
@@ -152,12 +164,14 @@ def authorized(method, *args):
             return
 
         if not profile.public and (not user or user.url != profile.url):
-            return self.render(
-                'private.html',
-                page_title='Private Profile',
-                user=user, profile=profile, error=None)
+            return self.render('private.html',
+                               page_title='Private Profile',
+                               user=user,
+                               profile=profile,
+                               error=None)
 
         return method(self, *args, **kwargs)
+
     return wrapper
 
 
@@ -168,9 +182,20 @@ def authenticated_async(f):
         self._auto_finish = False
         self.current_user = yield self.get_current_user_async()
         if not self.current_user:
-            self.redirect(
-                self.get_login_url() + '?' +
-                urllib.urlencode(dict(next=self.request.uri)))
+            self.redirect(self.get_login_url() + '?' +
+                          urllib.urlencode(dict(next=self.request.uri)))
         else:
             f(self, *args, **kwargs)
+
     return wrapper
+
+
+class API(BaseHandler):
+    def write_error(self, status_code, **kwargs):
+        self.set_header('Content-Type', 'application/json')
+        if 'exc_info' in kwargs:
+            exception = kwargs['exc_info'][1]
+            return self.finish(
+                {'error': str(exception),
+                 'code': status_code})
+        self.finish({'error': 'unknown error', 'code': status_code})

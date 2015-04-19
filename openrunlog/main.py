@@ -26,7 +26,7 @@ from base import ErrorHandler
 
 
 config = env.prefix('ORL_')
-print config
+print(config)
 if config['debug'] == 'True':
     config['debug'] = True
 else:
