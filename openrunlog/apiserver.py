@@ -11,7 +11,6 @@ from tornado import ioloop, web
 from tornado.options import define, options, parse_command_line
 
 import api
-import base
 
 config = env.prefix('ORL_')
 print(config)
