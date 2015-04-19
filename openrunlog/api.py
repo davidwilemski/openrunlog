@@ -1,4 +1,5 @@
 import collections
+import functools
 
 import dateutil
 from tornado import gen
@@ -21,7 +22,7 @@ def one_of(a, b, value):
 
 
 def exclusive(a, b, value):
-    return a != value and b != value
+    return (a != value) != (b != value)
 
 
 @gen.coroutine
@@ -36,34 +37,20 @@ def get_api_user(request, redis):
     raise gen.Return(user)
 
 
-class AddRunHandler(base.API):
-    @gen.coroutine
-    def post(self, user_url):
+def api_method(fn):
+    @functools.wraps(fn)
+    def wrapper(self, *args, **kwargs):
         user = yield get_api_user(self.request, self.redis)
+        params = {'user': user}
 
-        if user.url != user_url:
+        # first param of api methods should be the user's url
+        user_url = args[0]
+        if params['user'].url != user_url:
             raise APIException(
                 'you do not have permission to add a run for /{}'.format(
                     user_url))
 
-        fields = [Field(name='date',
-                        default=REQUIRED,
-                        transform=dateutil.parser.parse),
-                  Field(name='distance',
-                        default=REQUIRED,
-                        transform=float),
-                  Field(name='time',
-                        default='0:00',
-                        transform=models.time_to_seconds),
-                  Field(name='pace',
-                        default='0:00',
-                        transform=models.time_to_seconds),
-                  Field(name='notes',
-                        default='',
-                        transform=str), ]
-
-        params = {'user': user}
-        for field in fields:
+        for field in self.fields:
             if field.default is REQUIRED:
                 value = self.get_argument(field.name)
             else:
@@ -74,11 +61,38 @@ class AddRunHandler(base.API):
             except ValueError:
                 raise APIException(
                     'Field "{}" was incorrectly formatted'.format(field.name))
+        kwargs['params'] = params
+        fn(self, *args, **kwargs)
+    return wrapper
+
+
+class AddRunHandler(base.API):
+    fields = [Field(name='date',
+                    default=REQUIRED,
+                    transform=dateutil.parser.parse),
+              Field(name='distance',
+                    default=REQUIRED,
+                    transform=float),
+              Field(name='time',
+                    default='0:00',
+                    transform=models.time_to_seconds),
+              Field(name='pace',
+                    default='0:00',
+                    transform=models.time_to_seconds),
+              Field(name='notes',
+                    default='',
+                    transform=str), ]
+
+    @gen.coroutine
+    @api_method
+    def post(self, user_url, params=None):
+        if params is None:
+            raise APIException('no params found')
 
         time, pace = params['time'], params['pace']
         if not one_of(time, pace, 0) or not exclusive(time, pace, 0):
-            raise APIException('One of "time" or "pace" is required')
+            raise APIException('One of "time" or "pace" is required: {}'.format(params))
 
         run = models.Run(**params)
-        yield self.thread_pool.submit(run.save)
+        run.save()
         self.finish(run.public_dict())
