@@ -63,6 +63,7 @@ def api_method(fn):
                     'Field "{}" was incorrectly formatted'.format(field.name))
         kwargs['params'] = params
         fn(self, *args, **kwargs)
+
     return wrapper
 
 
@@ -91,7 +92,8 @@ class AddRunHandler(base.API):
 
         time, pace = params['time'], params['pace']
         if not one_of(time, pace, 0) or not exclusive(time, pace, 0):
-            raise APIException('One of "time" or "pace" is required: {}'.format(params))
+            raise APIException(
+                'One of "time" or "pace" is required: {}'.format(params))
 
         run = models.Run(**params)
         run.save()
