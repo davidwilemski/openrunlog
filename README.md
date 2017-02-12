@@ -34,12 +34,7 @@ export ORL_DB_NAME="openrunlog"
 export ORL_DB_URI="mongodb://localhost/openrunlog"
 export ORL_DEBUG="True"
 export ORL_COOKIE_SECRET="insertyourrandomstringhere"
-export ORL_DAILYMILE_REDIRECT="http://localhost:11000/auth/dailymile"
-export ORL_DAILYMILE_CLIENT_ID=""
-export ORL_DAILYMILE_CLIENT_SECRET=""
 ```
-
-The dailymile OAuth credentials may be obtained from http://www.dailymile.com/api.
 
 3) Run ORL!
 

@@ -51,9 +51,6 @@ class AddRunHandler(base.BaseHandler):
 
         rqworkers.calculate_streaks.delay(user)
 
-        if user.export_to_dailymile:
-            rqworkers.crosspost_run.delay(run)
-
         yield gen.Task(self.tf.send, {'profile.runs.added': 1})
         self.redirect('/')
 

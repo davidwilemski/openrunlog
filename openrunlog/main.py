@@ -55,8 +55,6 @@ application = web.Application([
     (r'/logout', login.LogoutHandler),
     (r'/register', login.RegisterHandler),
     (r'/settings', login.SettingsHandler),
-    (r'/settings/dailymile/noexport', login.DailyMileLogoutHandler),
-    (r'/auth/dailymile', login.DailyMileHandler),
     (r'/auth/facebook', login.FacebookHandler),
     (r'/u/([a-zA-Z0-9_]+)', dashboard.ProfileHandler),
     (r'/u/([a-zA-Z0-9_]+)/calendar', calendar.CalendarHandler),
