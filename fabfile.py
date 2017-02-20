@@ -7,7 +7,7 @@ import fabtools
 import requests
 import os
 
-PROJ_NAME = os.environ["VIRTUAL_ENV"].split('/')[-1]
+PROJ_NAME = 'orl'
 VENV_DIR = '~/{}_env/'.format(PROJ_NAME)
 PROJ_DIR = '~/{}/'.format(PROJ_NAME)
 
