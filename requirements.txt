@@ -7,7 +7,7 @@ PyYAML==3.10
 Routes==2.0
 Twisted==13.2.0
 Werkzeug==0.9.4
-boto==2.9.7
+boto==2.45.0
 coverage==3.6
 coveralls==0.2
 dargparse==0.2.1
@@ -40,7 +40,7 @@ six==1.2.0
 supervisor==3.0b1
 times==0.6.2
 -e git://github.com/davidwilemski/tinyfeedback.git@0be77868894128ffe4a43611784d71c1392dd06c#egg=tinyfeedback-dev
-tornado==3.1
+tornado==4.4.2
 tornado-redis==1.0.1
 -e git://github.com/davidwilemski/tornado-tinyfeedback.git@ca115cee9a4f0ff1d5285ab8543eb3e3f3ab5852#egg=tornadotinyfeedback-dev
 txredisapi==1.0

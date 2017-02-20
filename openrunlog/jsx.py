@@ -9,8 +9,7 @@ class JSXStaticFileHandler(web.StaticFileHandler):
     @classmethod
     def get_content(cls, abspath, start=None, end=None):
         # Only override in the case of a JSX file
-        ext = abspath.split('.')[-1]
-        if ext.lower() != 'jsx':
+        if not cls._is_jsx_file(abspath):
             static = super(JSXStaticFileHandler, cls).get_content(
                 abspath, start=start, end=end)
 
@@ -46,9 +45,18 @@ class JSXStaticFileHandler(web.StaticFileHandler):
                     assert remaining == 0
                 return
 
+    @staticmethod
+    def _is_jsx_file(path):
+        ext = path.split('.')[-1]
+        return ext.lower() == 'jsx'
+
     def get_content_type(self):
-        ext = self.absolute_path.split('.')[-1]
-        if ext.lower() == 'jsx':
+        if self._is_jsx_file(self.absolute_path):
             return 'text/javascript'
 
         return super(JSXStaticFileHandler, self).get_content_type()
+
+    def get_content_size(self):
+        if self._is_jsx_file(self.absolute_path):
+            return len(jsx.transform(self.absolute_path))
+        return super(JSXStaticFileHandler, self).get_content_size()
