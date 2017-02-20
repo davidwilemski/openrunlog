@@ -12,7 +12,6 @@ import time
 
 pool = futures.ProcessPoolExecutor(max_workers=5)
 daily_key = 'orl.backups.daily'
-onchange_key = 'orl.backups.onchange'
 
 redis = tornadoredis.Client()
 redis.connect()
