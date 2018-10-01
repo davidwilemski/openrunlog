@@ -9,8 +9,8 @@ import models
 
 
 class AllRacesHandler(base.BaseHandler):
-    @gen.coroutine
     @web.asynchronous
+    @gen.coroutine
     @base.authorized
     def get(self, url):
         self.tf.send({'profile.racelog.views': 1}, lambda x: x)
