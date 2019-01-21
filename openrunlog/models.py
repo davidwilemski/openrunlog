@@ -265,7 +265,7 @@ class User(mongoengine.Document):
     hashtags = mongoengine.StringField(default="")
     _api_key = mongoengine.StringField(default="")
     meta = {
-        'indexes': ['id', 'url', 'email']
+        'indexes': ['url', 'email']
     }
 
     def save(self, r=None):
